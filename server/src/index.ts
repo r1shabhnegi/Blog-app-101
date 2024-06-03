@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 
 const app = new Hono<{
   Bindings: {
@@ -8,18 +9,15 @@ const app = new Hono<{
   };
 }>();
 
+app.use(
+  cors({
+    origin: ['http://localhost:5173'],
+    credentials: true,
+  })
+);
+
 app.get('/', (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  prisma.user.findFirst({
-    where: {
-      name: 'rishabh',
-    },
-  });
-
-  return c.text('Hello Hono!');
+  return c.json({ message: 'Server is up and running' }, 200);
 });
 
 export default app;
