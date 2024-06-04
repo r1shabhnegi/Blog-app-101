@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
