@@ -28,6 +28,7 @@ model User {
   comments Comment[]
   follower Follows[] @relation("follower")
   following Follows[] @relation("following")
+  refreshToken String[] @default([])
 }
 
 model SavedPost {
