@@ -14,17 +14,15 @@ const router = new Hono<{
     JWT_REFRESH_TOKEN_SECRET: string;
   };
   Variables: {
-    // prisma: object;
     userId: string;
     email: string;
+    prisma: PrismaClient & ReturnType<typeof withAccelerate>;
   };
 }>();
 
 // signin
 router.post("/", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = c.get("prisma");
 
   try {
     const body = await c.req.json();
@@ -134,9 +132,7 @@ router.post("/", async (c) => {
 // refresh token
 
 router.get("/", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = c.get("prisma");
 
   try {
     const cookieToken = getCookie(c, "jwt");
@@ -263,9 +259,7 @@ router.get("/", async (c) => {
 //logout
 
 router.post("/logout", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = c.get("prisma");
 
   const cookieToken = getCookie(c, "jwt");
 
