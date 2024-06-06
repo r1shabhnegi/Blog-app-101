@@ -1,21 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
-import { serverStatus } from './api';
-import ServerDown from './pages/ServerDown';
-import Loader from './components/Loader';
+import { useQuery } from "@tanstack/react-query";
+import { serverStatus } from "./api";
+import ServerDown from "./pages/ServerDown";
+import Loader from "./components/Loader";
+import AppRoutes from "./AppRoutes";
 
 const App = () => {
   const { isPending: loadingServerStatus, isError: isServerError } = useQuery({
-    queryKey: ['serverStatus'],
+    queryKey: ["serverStatus"],
     queryFn: serverStatus,
   });
-
-  // const {} = useQuery({
-
-  // })
 
   if (isServerError) return <ServerDown />;
   if (loadingServerStatus) return <Loader />;
 
-  return <div></div>;
+  return <AppRoutes />;
 };
 export default App;
