@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { signinInput } from "../../../common-types/index";
 import { sign, verify } from "hono/jwt";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { jwtVerify } from "../middlewares/jwtVerify";
 
 const router = new Hono<{
   Bindings: {
@@ -14,6 +15,7 @@ const router = new Hono<{
   };
   Variables: {
     // prisma: object;
+    userId: string;
   };
 }>();
 
@@ -130,8 +132,13 @@ router.get("/", async (c) => {
   try {
     const cookieToken = getCookie(c, "jwt");
     if (!cookieToken) {
-      return c.json({ message: "Token required" }, 403);
+      return c.json({ message: "Token required" }, 401);
     }
+
+    const verifiedToken = await verify(
+      cookieToken,
+      c.env.JWT_REFRESH_TOKEN_SECRET
+    );
 
     const foundUser = await prisma.user.findFirst({
       where: {
@@ -141,11 +148,7 @@ router.get("/", async (c) => {
       },
     });
 
-    if (foundUser) {
-      const verifiedToken = await verify(
-        cookieToken,
-        c.env.JWT_REFRESH_TOKEN_SECRET
-      );
+    if (!foundUser) {
       if (!verifiedToken) {
         return c.json({ message: "Token expired" }, 403);
       }
@@ -211,5 +214,8 @@ router.get("/", async (c) => {
 
 //logout
 
-router.post("/logout", async (c) => {});
+router.post("/logout", jwtVerify, async (c) => {
+  console.log(c.get("userId"));
+  return c.json("called");
+});
 export default router;
