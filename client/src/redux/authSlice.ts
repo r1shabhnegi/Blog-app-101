@@ -1,6 +1,7 @@
+import { UserCredentialsType } from "@/lib/types";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: UserCredentialsType = {
   isAuth: false,
   userId: null,
   name: null,
@@ -20,8 +21,15 @@ const authSlice = createSlice({
       state.email = email;
       state.token = token;
     },
+    setLogout: (state) => {
+      state.isAuth = false;
+      state.userId = null;
+      state.name = null;
+      state.email = null;
+      state.token = null;
+    },
   },
 });
 
-export const { setUserCredentials } = authSlice.actions;
+export const { setUserCredentials, setLogout } = authSlice.actions;
 export default authSlice.reducer;

@@ -9,7 +9,7 @@ new Hono<{
 }>();
 
 export const jwtVerify = createMiddleware(async (c, next) => {
-  const authHeader = c.req.header("authentication");
+  const authHeader = c.req.header("authorization");
   if (!authHeader) {
     return c.json({ message: "Unauthorized" }, 401);
   }

@@ -31,7 +31,8 @@ export const signin = async (data: SigninType) => {
       },
     });
     return response.data;
-  } catch (error) {
+  } catch (error: Error) {
+    // error.response.status;
     console.log("signin error");
   }
 };
