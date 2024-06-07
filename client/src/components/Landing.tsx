@@ -12,6 +12,9 @@ import {
 import { useState } from "react";
 import SignupCard from "./SignupCard";
 import SigninCard from "./SigninCard";
+import leftImg from "../assets/1P-ty-kpF sds.avif";
+import rightImg1 from "../assets/DsFKTQbae.avif";
+import rightImg2 from "../assets/SmU1TDZ0l.avif";
 const Landing = () => {
   const [onSignup, setOnSignup] = useState<boolean>(false);
   const [onSignin, setOnSignin] = useState<boolean>(false);
@@ -27,13 +30,22 @@ const Landing = () => {
     setOnSignup(false);
     setOnSignin(false);
   };
+
+  const handleSignInBtn = () => {
+    setOnSignin(true);
+    setOnSignup(false);
+  };
+  const handleSignupBtn = () => {
+    setOnSignup(true);
+    setOnSignin(false);
+  };
   return (
     <main className='min-h-screen flex flex-col bg-[#ffffff]'>
       <div className='border-b[0.01rem] border-black px-48 shadow-2xl shadow-gray-200/35 drop-shadow-md'>
         <header className='flex items-center justify-between h-20'>
-          <span className='flex items-center justify-center gap-2'>
-            <Newspaper className='text-green-500 size-9' />
-            <h1 className='text-3xl font-bold tracking-tighter font-logo'>
+          <span className='flex items-end justify-center gap-2'>
+            <Newspaper className='text-green-500 size-8' />
+            <h1 className='text-2xl font-bold tracking-tighter font-logo'>
               Readpool.AI
             </h1>
           </span>
@@ -45,47 +57,59 @@ const Landing = () => {
               Sign in
             </button>
             <button
-              className='px-3 py-2 text-[14px] font-semibold text-white bg-black hover:bg-green-600  rounded-full'
+              className='px-5 py-2 text-[14px] font-semibold text-white bg-black hover:bg-green-600  rounded-full'
               onClick={handleGetStartedBtn}>
               Get started
             </button>
           </nav>
         </header>
       </div>
-      <div className='flex flex-col items-center justify-center flex-1 gap-10 px-48'>
+      <div className='flex flex-col items-center justify-center flex-1 gap-10 px-48 my-28'>
         <h1 className='text-5xl tracking-tight font-logo'>
           Effortless Publishing.
         </h1>
         <span className='flex flex-col items-center justify-center'>
-          <h2 className='text-4xl text-gray-500 font-inter'>
+          <h2 className='text-4xl text-gray-600 font-inter'>
             AI-assisted blogging for
           </h2>
-          <h2 className='text-4xl text-gray-500 font-inter'>
+          <h2 className='text-4xl text-gray-600 font-inter'>
             developers and teams.
           </h2>
         </span>
         <button
-          className='px-4 py-2 text-[18px] font-semibold text-white bg-black rounded-full hover:bg-green-600  drop-shadow-lg'
+          className='px-10 py-3 text-[16px] font-semibold text-white bg-black rounded-full hover:bg-green-600  drop-shadow-lg'
           onClick={handleGetStartedBtn}>
           Get started
         </button>
       </div>
-      <div className='flex justify-between py-10 px-28'>
-        <Smile className='text-gray-100 -rotate-12 size-14' />
-        <Library className='text-gray-100 size-14' />
-        <Drum className='text-gray-100 rotate-6 size-14' />
-        <Tv className='text-gray-100 -rotate-45 size-14' />
-        <Club className='text-gray-100 size-14' />
-        <Cat className='text-gray-100 rotate-12 size-14' />
-        <KeyRound className='text-gray-100 size-14' />
+      <div className='flex flex-wrap justify-between gap-6 px-48'>
+        <div className=' w-[30rem] border-[0.1rem] border-[#e4efff] flex items-end px-2 pt-20 pb-0 bg-[#F0F6FF] rounded-2xl'>
+          <img src={leftImg} />
+        </div>
+        <div className='flex flex-col flex-1 gap-6'>
+          <div className='h-full border-[0.1rem] flex border-[#ffeede] items-end pb-0 bg-[#FFF7EE] rounded-2xl'>
+            <img src={rightImg1} />
+          </div>
+          <div className='border-[0.1rem] h-full flex border-[#e9e6ff] items-end pb-0 bg-[#EEECFE] rounded-2xl'>
+            <img src={rightImg2} />
+          </div>
+          {/* <Smile className='text-green-100 -rotate-12 size-14' />
+
+          <Library className='text-green-100 size-14' />
+          <Drum className='text-green-100 rotate-6 size-14' />
+          <Tv className='text-green-100 -rotate-45 size-14' />
+          <Club className='text-green-100 size-14' />
+          <Cat className='text-green-100 rotate-12 size-14' />
+          <KeyRound className='text-green-100 size-14' /> */}
+        </div>
       </div>
 
       {onSignup || onSignin ? (
         <div
-          className='absolute top-0 flex items-center justify-center w-full min-h-screen bg-white translate-sty bg-opacity-70'
+          className='fixed top-0 left-0 right-0 z-10 flex items-center justify-center min-h-screen overflow-hidden overflow-y-auto bg-white scroll-smooth drop-shadow-xl translate-sty bg-opacity-60'
           onClick={closeCardsModal}>
           <div
-            className='relative flex flex-col justify-center bg-white shadow-2xl rounded-3xl p-36'
+            className='relative flex flex-col items-center justify-center px-32 bg-white rounded-lg shadow-xl py-28 gap-14'
             onClick={(e) => {
               e.stopPropagation();
             }}>
@@ -93,11 +117,32 @@ const Landing = () => {
               className='absolute text-gray-400 cursor-pointer top-4 right-4'
               onClick={closeCardsModal}
             />
-            <h1 className='text-2xl tracking-tighter font-logo'>
+            <h1 className='text-2xl tracking-tight font-logo'>
               {onSignin && !onSignup ? "Welcome back." : "Join readpool.ai"}
             </h1>
             {onSignup ? <SignupCard /> : null}
             {onSignin ? <SigninCard /> : null}
+            {onSignin && !onSignup ? (
+              <p className='font-semibold'>
+                No account?
+                <span
+                  className='ml-1 font-bold text-green-600 cursor-pointer'
+                  onClick={handleSignupBtn}>
+                  Create one
+                </span>
+              </p>
+            ) : null}
+
+            {onSignup && !onSignin ? (
+              <p className='font-semibold'>
+                Already have an account?
+                <span
+                  className='ml-1 font-bold text-green-600 cursor-pointer'
+                  onClick={handleSignInBtn}>
+                  Sign in
+                </span>
+              </p>
+            ) : null}
           </div>
         </div>
       ) : null}

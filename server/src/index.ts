@@ -10,7 +10,7 @@ import authRouter from "./routes/auth";
 
 const app = new Hono();
 
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
 app.use("/api/v1/*", prismaConfigMiddleware);
 
 app.route("/", serverRouter);
