@@ -3,23 +3,44 @@ import { signupType } from "../../../common-types/index";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { signup } from "@/api";
+import { signup, signin } from "@/api";
+import { useToast } from "@/components/ui/use-toast";
+
 const SignupCard = () => {
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<signupType>();
 
-  const { mutate: mutateSignup } = useMutation({
+  const { mutateAsync: mutateSignin } = useMutation({
+    mutationFn: signin,
+  });
+
+  const {
+    mutateAsync: mutateSignup,
+    isSuccess,
+    isError,
+    status,
+  } = useMutation({
     mutationFn: signup,
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: () => {
+      toast({ title: "User created successfully!", className: "bg-green-400" });
+    },
+    onError: () => {
+      toast({
+        title: "Error creating user, Please try again!",
+        className: "bg-red-400",
+      });
     },
   });
 
-  const onSubmit = handleSubmit((formData) => {
+  const onSubmit = handleSubmit(async (formData) => {
     mutateSignup(formData);
+    console.log(isSuccess);
+    console.log(isError);
+    console.log(status);
   });
 
   return (

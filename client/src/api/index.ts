@@ -18,8 +18,20 @@ export const signup = async (data: signupType) => {
   });
 
   if (!response.statusText) {
-    throw new Error(response.data.message);
+    throw new Error(response?.data.message);
   }
   return response.data;
 };
-export const signin = async (data: SigninType) => {};
+export const signin = async (data: SigninType) => {
+  const response = await axios.post(`${SERVER_URL}/auth`, data, {
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.statusText) {
+    throw new Error(response?.data.message);
+  }
+  return response.data;
+};
