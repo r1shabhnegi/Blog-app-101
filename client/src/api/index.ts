@@ -23,15 +23,22 @@ export const signup = async (data: signupType) => {
   return response.data;
 };
 export const signin = async (data: SigninType) => {
-  const response = await axios.post(`${SERVER_URL}/auth`, data, {
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.statusText) {
-    throw new Error(response?.data.message);
+  try {
+    const response = await axios.post(`${SERVER_URL}/auth`, data, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log("signin error");
   }
+};
+
+export const refreshToken = async () => {
+  const response = await axios.get(`${SERVER_URL}/auth`, {
+    withCredentials: true,
+  });
   return response.data;
 };

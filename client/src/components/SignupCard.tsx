@@ -5,8 +5,12 @@ import { Button } from "./ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { signup, signin } from "@/api";
 import { useToast } from "@/components/ui/use-toast";
+import { useAppDispatch } from "@/redux/hook";
+import { setUserCredentials } from "@/redux/authSlice";
+import { LoaderCircle } from "lucide-react";
 
 const SignupCard = () => {
+  const dispatch = useAppDispatch();
   const { toast } = useToast();
   const {
     register,
@@ -14,16 +18,20 @@ const SignupCard = () => {
     formState: { errors },
   } = useForm<signupType>();
 
-  const { mutateAsync: mutateSignin } = useMutation({
+  const { mutateAsync: mutateSignin, isPending: signinPending } = useMutation({
     mutationFn: signin,
+    onSuccess: (response) => {
+      dispatch(setUserCredentials(response));
+    },
+    onError: () => {
+      toast({
+        title: "Error! Now try singing in",
+        className: "bg-red-400",
+      });
+    },
   });
 
-  const {
-    mutateAsync: mutateSignup,
-    isSuccess,
-    isError,
-    status,
-  } = useMutation({
+  const { mutateAsync: mutateSignup, isPending: signupPending } = useMutation({
     mutationFn: signup,
     onSuccess: () => {
       toast({ title: "User created successfully!", className: "bg-green-400" });
@@ -37,10 +45,13 @@ const SignupCard = () => {
   });
 
   const onSubmit = handleSubmit(async (formData) => {
-    mutateSignup(formData);
-    console.log(isSuccess);
-    console.log(isError);
-    console.log(status);
+    const response = await mutateSignup(formData);
+    if (response) {
+      await mutateSignin({
+        email: formData.email,
+        password: formData.password,
+      });
+    }
   });
 
   return (
@@ -111,7 +122,11 @@ const SignupCard = () => {
       </label>
       <Button
         type='submit'
+        disabled={signupPending || signinPending}
         className='mt-4'>
+        {signupPending || signinPending ? (
+          <LoaderCircle className='mr-1 animate-spin size-4' />
+        ) : null}
         Submit
       </Button>
     </form>

@@ -12,6 +12,7 @@ const router = new Hono<{
     DATABASE_URL: string;
     JWT_ACCESS_TOKEN_SECRET: string;
     JWT_REFRESH_TOKEN_SECRET: string;
+    FRONTEND_URL: string;
   };
   Variables: {
     userId: string;
@@ -109,10 +110,14 @@ router.post("/", async (c) => {
       return c.json({ message: "Error updating refresh token" }, 403);
     }
 
+    const oneDayFromNow = new Date();
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+
     setCookie(c, "jwt", refreshToken, {
       secure: true,
       httpOnly: true,
-      maxAge: 86400,
+      sameSite: "none",
+      expires: oneDayFromNow,
     });
 
     return c.json(
@@ -236,10 +241,14 @@ router.get("/", async (c) => {
       },
     });
 
+    const oneDayFromNow = new Date();
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+
     setCookie(c, "jwt", refreshToken, {
       secure: true,
       httpOnly: true,
-      maxAge: 86400,
+      sameSite: "none",
+      expires: oneDayFromNow,
     });
 
     return c.json(

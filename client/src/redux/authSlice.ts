@@ -1,21 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuth: false,
-  id: null,
+  userId: null,
   name: null,
   email: null,
   token: null,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setUserCredentials: (state, { payload }) => {
-      const { isAuth, id, name, email, token } = payload;
-      state.isAuth = isAuth;
-      state.id = id;
+      const { userId, name, email, token } = payload;
+      state.isAuth = !!token && !!userId;
+      state.userId = userId;
       state.name = name;
       state.email = email;
       state.token = token;
