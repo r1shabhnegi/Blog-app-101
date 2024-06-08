@@ -142,11 +142,19 @@ router.get("/", async (c) => {
 
   try {
     const cookieToken = getCookie(c, "jwt");
+
     if (!cookieToken) {
       return c.json({ message: "Token required" }, 403);
     }
 
-    deleteCookie(c, "jwt", { httpOnly: true, secure: true });
+    const verifiedToken = await verify(
+      cookieToken,
+      c.env.JWT_REFRESH_TOKEN_SECRET
+    );
+
+    // if (!verifiedToken) {
+    //   return c.json({ message: "Unauthenticated" }, 403);
+    // }
 
     const foundUser = await prisma.user.findFirst({
       where: {
@@ -157,16 +165,11 @@ router.get("/", async (c) => {
     });
 
     if (!foundUser) {
-      const verifiedToken = await verify(
-        cookieToken,
-        c.env.JWT_REFRESH_TOKEN_SECRET
-      );
-
       if (!verifiedToken) {
         return c.json({ message: "Unauthenticated" }, 403);
       }
 
-      const hackedUser = await prisma.user.findFirst({
+      const hackedUser = await prisma.user.findUnique({
         where: {
           email: verifiedToken.email as string,
         },
@@ -188,11 +191,6 @@ router.get("/", async (c) => {
 
     const removedPrevTokenArray = foundUser.refreshToken.filter(
       (token) => token !== cookieToken
-    );
-
-    const verifiedToken = await verify(
-      cookieToken,
-      c.env.JWT_REFRESH_TOKEN_SECRET
     );
 
     if (!verifiedToken || foundUser.email !== verifiedToken.email) {
@@ -240,6 +238,8 @@ router.get("/", async (c) => {
         refreshToken: newRefreshTokenArray,
       },
     });
+
+    deleteCookie(c, "jwt", { httpOnly: true, secure: true, sameSite: "None" });
 
     const oneDayFromNow = new Date();
     oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);

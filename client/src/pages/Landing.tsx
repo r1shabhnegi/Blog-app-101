@@ -35,7 +35,7 @@ const Landing = () => {
         <header className='flex items-center justify-between h-20'>
           <span className='flex items-end justify-center gap-2'>
             <Newspaper className='text-green-500 size-8' />
-            <h1 className='text-2xl font-bold tracking-tighter font-logo'>
+            <h1 className='-mb-0.5 text-2xl font-bold tracking-tighter text-gray-700 font-logo'>
               Readpool.AI
             </h1>
           </span>
@@ -47,7 +47,7 @@ const Landing = () => {
               Sign in
             </button>
             <button
-              className='px-5 py-2 text-[14px] font-semibold text-white bg-black hover:bg-green-600  rounded-full'
+              className='px-5 py-2 text-[14px] font-semibold text-white bg-gray-900 hover:bg-green-600  rounded-full'
               onClick={handleGetStartedBtn}>
               Get started
             </button>
@@ -55,7 +55,7 @@ const Landing = () => {
         </header>
       </div>
       <div className='flex flex-col items-center justify-center flex-1 gap-10 px-48 my-28'>
-        <h1 className='text-5xl tracking-tight font-logo'>
+        <h1 className='text-5xl tracking-tight text-gray-900 font-logo'>
           Effortless Publishing.
         </h1>
         <span className='flex flex-col items-center justify-center'>
@@ -67,12 +67,16 @@ const Landing = () => {
           </h2>
         </span>
         <button
-          className='px-10 py-3 text-[16px] font-semibold text-white bg-black rounded-full hover:bg-green-600  drop-shadow-lg'
+          className='px-10 py-3 text-[16px] font-semibold text-white bg-gray-900 rounded-full hover:bg-green-600  drop-shadow-lg'
           onClick={handleGetStartedBtn}>
           Get started
         </button>
       </div>
-      <div className='flex flex-wrap justify-between gap-6 px-48'>
+      <div
+        className='flex flex-wrap justify-between gap-6 px-48'
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}>
         <div className=' w-[30rem] border-[0.1rem] border-[#e4efff] flex items-end px-2 pt-20 pb-0 bg-[#F0F6FF] rounded-2xl'>
           <img
             src={leftImg}

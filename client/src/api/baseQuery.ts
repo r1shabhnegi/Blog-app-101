@@ -31,13 +31,13 @@ const handleError = async (
 type QueryParams = {
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  data?: FormData | JSON | object | string | number;
+  data?: unknown;
 };
 interface QueryResponse {
-  data?: FormData | JSON | object | string | number;
+  data?: unknown;
   error?: {
     status?: number;
-    data?: FormData | JSON | object | string | number;
+    data?: unknown;
   };
 }
 
