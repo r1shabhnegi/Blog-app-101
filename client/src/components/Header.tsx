@@ -7,7 +7,7 @@ import HeaderDropdown from "./HeaderDropdown";
 const Header = () => {
   const navigate = useNavigate();
   return (
-    <div className='flex items-center justify-between px-6 border-b-[0.01rem] py-2'>
+    <div className='flex items-center justify-between px-6 border-b-[0.01rem] border-gray-200 py-2'>
       <span className='flex items-center justify-center gap-4'>
         <span className='flex items-center gap-1'>
           <Newspaper className='-mt-1 text-green-500 size-6' />

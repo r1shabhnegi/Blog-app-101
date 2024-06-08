@@ -300,7 +300,16 @@ router.post("/logout", async (c) => {
       },
     });
   }
-  deleteCookie(c, "jwt", { secure: true, httpOnly: true });
+
+  const deletedCookie = deleteCookie(c, "jwt", {
+    secure: true,
+    httpOnly: true,
+    sameSite: "None",
+    partitioned: true,
+  });
+
+  console.log(deletedCookie);
+
   return c.json({ message: "logged out" }, 200);
 });
 

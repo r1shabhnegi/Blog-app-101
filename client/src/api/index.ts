@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { signupType, SigninType } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
 
@@ -13,6 +13,9 @@ export const signup = async (data: signupType) => {
     method: "POST",
     data,
   });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
   return response;
 };
 
@@ -23,7 +26,7 @@ export const signin = async (data: SigninType) => {
     data,
   });
   if (response.error) {
-    throw new Error(response?.error.data);
+    throw new Error(response?.error?.data);
   }
   return response;
 };
@@ -33,5 +36,19 @@ export const refreshToken = async () => {
     url: "/auth",
     method: "GET",
   });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response;
+};
+
+export const logout = async () => {
+  const response = await apiClient.query({
+    url: "/auth/logout",
+    method: "POST",
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
   return response;
 };
