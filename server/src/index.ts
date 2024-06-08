@@ -7,10 +7,12 @@ import postRouter from "./routes/post";
 import commentRouter from "./routes/comment";
 import tagRouter from "./routes/tag";
 import authRouter from "./routes/auth";
+import { credentials } from "./middlewares/credentials";
 
 const app = new Hono();
 
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+// app.use(credentials);
+app.use(cors({ credentials: true, origin: ["http://localhost:5173"] }));
 app.use("/api/v1/*", prismaConfigMiddleware);
 
 app.route("/", serverRouter);

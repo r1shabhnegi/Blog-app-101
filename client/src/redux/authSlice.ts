@@ -7,6 +7,7 @@ const initialState: UserCredentialsType = {
   name: null,
   email: null,
   token: null,
+  isLoading: true,
 };
 
 const authSlice = createSlice({
@@ -28,8 +29,11 @@ const authSlice = createSlice({
       state.email = null;
       state.token = null;
     },
+    setLoading: (state, { payload }) => {
+      state.isLoading = payload;
+    },
   },
 });
 
-export const { setUserCredentials, setLogout } = authSlice.actions;
+export const { setUserCredentials, setLogout, setLoading } = authSlice.actions;
 export default authSlice.reducer;

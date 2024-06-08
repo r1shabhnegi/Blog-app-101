@@ -48,7 +48,7 @@ router.post("/", async (c) => {
     );
 
     if (!isPwMatch) {
-      return c.json({ message: "Password does not match" }, 401);
+      return c.json({ message: "Password does not match" }, 403);
     }
 
     const jwtPayload = (expIn: number) => {
@@ -118,6 +118,7 @@ router.post("/", async (c) => {
       httpOnly: true,
       sameSite: "none",
       expires: oneDayFromNow,
+      partitioned: true,
     });
 
     return c.json(
@@ -141,9 +142,8 @@ router.get("/", async (c) => {
 
   try {
     const cookieToken = getCookie(c, "jwt");
-
     if (!cookieToken) {
-      return c.json({ message: "Token required" }, 401);
+      return c.json({ message: "Token required" }, 403);
     }
 
     deleteCookie(c, "jwt", { httpOnly: true, secure: true });
@@ -249,6 +249,7 @@ router.get("/", async (c) => {
       httpOnly: true,
       sameSite: "none",
       expires: oneDayFromNow,
+      partitioned: true,
     });
 
     return c.json(

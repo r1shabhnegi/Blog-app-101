@@ -1,45 +1,37 @@
 import axios from "axios";
 import { signupType, SigninType } from "../../../common-types/index";
-
-const SERVER_URL = `${import.meta.env.VITE_BACKEND_URL}/api/v1`;
+import { apiClient } from "./baseQuery";
 
 export const serverStatus = async () => {
   const response = await axios.get(import.meta.env.VITE_BACKEND_URL);
-
   return response;
 };
 
 export const signup = async (data: signupType) => {
-  const response = await axios.post(`${SERVER_URL}/user`, data, {
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json",
-    },
+  const response = await apiClient.query({
+    url: "/user",
+    method: "POST",
+    data,
   });
-
-  if (!response.statusText) {
-    throw new Error(response?.data.message);
-  }
-  return response.data;
+  return response;
 };
+
 export const signin = async (data: SigninType) => {
-  try {
-    const response = await axios.post(`${SERVER_URL}/auth`, data, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response.data;
-  } catch (error: Error) {
-    // error.response.status;
-    console.log("signin error");
+  const response = await apiClient.query({
+    url: "/auth",
+    method: "POST",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response?.error.data);
   }
+  return response;
 };
 
 export const refreshToken = async () => {
-  const response = await axios.get(`${SERVER_URL}/auth`, {
-    withCredentials: true,
+  const response = await apiClient.query({
+    url: "/auth",
+    method: "GET",
   });
-  return response.data;
+  return response;
 };

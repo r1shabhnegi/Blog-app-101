@@ -1,17 +1,7 @@
-import {
-  Cat,
-  Club,
-  Drum,
-  KeyRound,
-  Library,
-  Newspaper,
-  Smile,
-  Tv,
-  X,
-} from "lucide-react";
+import { Newspaper, X } from "lucide-react";
 import { useState } from "react";
-import SignupCard from "./SignupCard";
-import SigninCard from "./SigninCard";
+import SignupCard from "../components/SignupCard";
+import SigninCard from "../components/SigninCard";
 import leftImg from "../assets/1P-ty-kpF sds.avif";
 import rightImg1 from "../assets/DsFKTQbae.avif";
 import rightImg2 from "../assets/SmU1TDZ0l.avif";
@@ -84,14 +74,23 @@ const Landing = () => {
       </div>
       <div className='flex flex-wrap justify-between gap-6 px-48'>
         <div className=' w-[30rem] border-[0.1rem] border-[#e4efff] flex items-end px-2 pt-20 pb-0 bg-[#F0F6FF] rounded-2xl'>
-          <img src={leftImg} />
+          <img
+            src={leftImg}
+            alt='Img'
+          />
         </div>
         <div className='flex flex-col flex-1 gap-6'>
           <div className='h-full border-[0.1rem] flex border-[#ffeede] items-end pb-0 bg-[#FFF7EE] rounded-2xl'>
-            <img src={rightImg1} />
+            <img
+              src={rightImg1}
+              alt='Img'
+            />
           </div>
           <div className='border-[0.1rem] h-full flex border-[#e9e6ff] items-end pb-0 bg-[#EEECFE] rounded-2xl'>
-            <img src={rightImg2} />
+            <img
+              src={rightImg2}
+              alt='Img'
+            />
           </div>
           {/* <Smile className='text-green-100 -rotate-12 size-14' />
 

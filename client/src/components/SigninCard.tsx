@@ -42,7 +42,7 @@ const SigninCard = () => {
       <label className='text-xs font-semibold text-gray-400'>
         Email
         <Input
-          type='email'
+          type='text'
           className='text-[#454545] border-gray-300 focus-visible:ring-gray-600'
           {...register("email", {
             pattern: {

@@ -1,32 +1,22 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
-import ProtectedRoutes from "./ProtectedRoutes";
+
+import AuthLayout from "@/layout/AuthLayout";
 import Profile from "./pages/Profile";
+import MainPageLayout from "./layout/MainPageLayout";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route
         path='/'
         index
-        element={<Home />}
+        element={<MainPageLayout />}
       />
-      <Route element={<ProtectedRoutes />}>
+      <Route element={<AuthLayout />}>
         <Route
           path='/profile'
           element={<Profile />}
         />
       </Route>
-
-      <Route
-        path='/signin'
-        element={<Signin />}
-      />
-      <Route
-        path='/signup'
-        element={<Signup />}
-      />
     </Routes>
   );
 };

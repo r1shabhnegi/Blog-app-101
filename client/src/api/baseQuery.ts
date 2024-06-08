@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState, store } from "../redux/_store";
 import { setLogout, setUserCredentials } from "@/redux/authSlice";
 
@@ -10,11 +10,13 @@ const handleError = async (
   error: AxiosError,
   BASE_URL: string
 ): Promise<AxiosError | null> => {
-  if (error.response?.status === 403) {
+  if (error.response?.status === 401) {
     try {
-      const response = await axios.get(`${BASE_URL}/auth`, {
+      const response = await axios({
+        url: `${BASE_URL}/auth`,
         withCredentials: true,
       });
+
       store.dispatch(setUserCredentials(response?.data));
 
       return null;
@@ -29,13 +31,13 @@ const handleError = async (
 type QueryParams = {
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  data?: any;
+  data?: FormData | JSON | object | string | number;
 };
 interface QueryResponse {
-  data?: any;
+  data?: FormData | JSON | object | string | number;
   error?: {
     status?: number;
-    data?: any;
+    data?: FormData | JSON | object | string | number;
   };
 }
 
@@ -46,24 +48,25 @@ const baseQuery =
     const headers = getAuthHeaders(accessToken);
 
     try {
-      const config: AxiosRequestConfig = await axios({
+      const response: AxiosResponse = await axios({
         url: `${BASE_URL}${url}`,
         method,
         data,
         headers,
+        withCredentials: true,
       });
-      const response: AxiosResponse = await axios(config);
 
       return response.data;
-    } catch (error: any) {
-      const response = await handleError(error, BASE_URL);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      const response = await handleError(axiosError, BASE_URL);
       if (!response) {
         return baseQuery(BASE_URL)({ url, data, method });
       }
       return {
         error: {
-          status: error.response?.status,
-          data: error.response?.data || error.message,
+          status: axiosError.response?.status,
+          data: axiosError.response?.data || axiosError.message,
         },
       };
     }

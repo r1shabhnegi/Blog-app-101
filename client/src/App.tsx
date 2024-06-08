@@ -28,7 +28,6 @@ const App = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("called");
       dispatch(setUserCredentials(data));
     }
   }, [data, dispatch, isSuccess]);

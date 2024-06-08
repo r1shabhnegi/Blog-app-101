@@ -4,4 +4,5 @@ export type UserCredentialsType = {
   name: null | string;
   email: null | string;
   token: null | string;
+  isLoading: boolean;
 };
