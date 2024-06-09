@@ -1,9 +1,15 @@
 import { useAppSelector } from "@/redux/hook";
 
 import img from "../assets/a-warm-inviting-image-of-a-lady-cooking-delicious--dbdQWVyyQkWA8FM2B2dQfw-Ge6-fWX_RTC6sZ6a6fKKrA.jpeg";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import EditUserInfoCard from "./EditUserInfoCard";
 
 const ProfileSidebar = () => {
+  const [isEditUserInfoCard, setIsEditUserInfoCard] = useState<boolean>(false);
   const { name } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const nameFirstLetter = name?.slice(0, 1).toUpperCase();
   const nameRestLetters = name?.slice(1);
@@ -11,6 +17,14 @@ const ProfileSidebar = () => {
     nameFirstLetter && nameRestLetters
       ? `${nameFirstLetter}${nameRestLetters}`
       : "There is no name";
+
+  useEffect(() => {
+    pathname === "/settings" && setIsEditUserInfoCard(!isEditUserInfoCard);
+  }, [isEditUserInfoCard, pathname]);
+
+  const handleEditBtn = () => {
+    navigate("/settings");
+  };
   return (
     <div className='flex flex-col'>
       <span className='flex flex-col gap-5'>
@@ -22,10 +36,17 @@ const ProfileSidebar = () => {
           />
           <h1 className='text-lg font-semibold text-gray-800'>{adminName}</h1>
         </span>
-        <span className='text-xs font-medium text-green-600 cursor-pointer'>
+        <span
+          className='text-xs font-medium text-green-600 cursor-pointer'
+          onClick={handleEditBtn}>
           Edit profile
         </span>
       </span>
+      {isEditUserInfoCard ? (
+        <EditUserInfoCard
+          cancelBtn={() => setIsEditUserInfoCard(!isEditUserInfoCard)}
+        />
+      ) : null}
     </div>
   );
 };

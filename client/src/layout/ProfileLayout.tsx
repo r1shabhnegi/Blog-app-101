@@ -36,11 +36,18 @@ const ProfileLayout = () => {
               <Ellipsis className='text-gray-700' />
             </DropdownMenuTrigger>
             <DropdownMenuContent className='px-4 w-44'>
-              <DropdownMenuItem className='my-2.5 text-gray-700 cursor-pointer '>
+              <DropdownMenuItem className='my-2.5 text-gray-700 font-medium cursor-pointer '>
                 <span>Copy link to profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className='my-2.5 text-gray-700 cursor-pointer '>
+              <DropdownMenuItem
+                className='my-2.5 text-gray-700 font-medium cursor-pointer '
+                onClick={() => navigate("/reading-history")}>
                 <span>Reading history</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className='my-2.5 text-gray-700 font-medium cursor-pointer '
+                onClick={() => navigate("/settings")}>
+                <span>Settings</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

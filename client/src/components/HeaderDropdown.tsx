@@ -57,10 +57,6 @@ const HeaderDropdown = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='p-3 mr-2 w-60'>
-        {/* <DropdownMenuLabel className='mb-2 text-gray-700'>
-          My Account
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator /> */}
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
@@ -69,12 +65,16 @@ const HeaderDropdown = () => {
             <span>Profile</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'>
+          <DropdownMenuItem
+            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
+            onClick={() => navigate("/settings")}>
             <Settings className='mr-2 size-5' />
             <span>Settings</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'>
+          <DropdownMenuItem
+            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
+            onClick={() => navigate("/reading-history")}>
             <History className='mr-2 size-5' />
             <span>Reading history</span>
           </DropdownMenuItem>

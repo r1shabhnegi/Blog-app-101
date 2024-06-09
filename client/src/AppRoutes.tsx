@@ -7,6 +7,8 @@ import ProfileLayout from "./layout/ProfileLayout";
 import ProfileHome from "./pages/ProfileHome";
 import ProfileLists from "./pages/ProfileLists";
 import ProfileAbout from "./pages/ProfileAbout";
+import ReadingHistory from "./pages/ReadingHistory";
+import Settings from "./pages/Settings";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -30,6 +32,14 @@ const AppRoutes = () => {
             element={<ProfileAbout />}
           />
         </Route>
+        <Route
+          path='/reading-history'
+          element={<ReadingHistory />}
+        />
+        <Route
+          path='/settings'
+          element={<Settings />}
+        />
       </Route>
     </Routes>
   );
