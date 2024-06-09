@@ -1,8 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 
 import AuthLayout from "@/layout/AuthLayout";
-import Profile from "./pages/Profile";
+
 import MainPageLayout from "./layout/MainPageLayout";
+import ProfileLayout from "./layout/ProfileLayout";
+import ProfileHome from "./pages/ProfileHome";
+import ProfileLists from "./pages/ProfileLists";
+import ProfileAbout from "./pages/ProfileAbout";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -12,10 +16,20 @@ const AppRoutes = () => {
         element={<MainPageLayout />}
       />
       <Route element={<AuthLayout />}>
-        <Route
-          path='/profile'
-          element={<Profile />}
-        />
+        <Route element={<ProfileLayout />}>
+          <Route
+            path='/profile/:userId'
+            element={<ProfileHome />}
+          />
+          <Route
+            path='/profile/lists/:userId'
+            element={<ProfileLists />}
+          />
+          <Route
+            path='/profile/about/:userId'
+            element={<ProfileAbout />}
+          />
+        </Route>
       </Route>
     </Routes>
   );

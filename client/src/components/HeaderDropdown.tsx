@@ -1,4 +1,4 @@
-import { LogOut, Settings, User } from "lucide-react";
+import { History, LogOut, Settings, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -14,13 +14,14 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "../api";
 import { useToast } from "./ui/use-toast";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setLogout } from "@/redux/authSlice";
 
 const HeaderDropdown = () => {
   const { toast } = useToast();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { name } = useAppSelector((state) => state.auth);
 
   const { mutateAsync: mutateLogout } = useMutation({
     mutationFn: logout,
@@ -52,31 +53,36 @@ const HeaderDropdown = () => {
             src=''
             alt=''
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>{name?.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-56 mt-0.5 mr-2'>
-        <DropdownMenuLabel className='text-gray-700'>
+      <DropdownMenuContent className='p-3 mr-2 w-60'>
+        {/* <DropdownMenuLabel className='mb-2 text-gray-700'>
           My Account
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator /> */}
         <DropdownMenuGroup>
           <DropdownMenuItem
-            className='my-1 text-gray-700 cursor-pointer'
-            onClick={() => navigate("/profile")}>
-            <User className='w-4 h-4 mr-2' />
+            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
+            onClick={() => navigate("/profile/1")}>
+            <User className='mr-2 size-5' />
             <span>Profile</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className='my-1 text-gray-700 cursor-pointer'>
-            <Settings className='w-4 h-4 mr-2' />
+          <DropdownMenuItem className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'>
+            <Settings className='mr-2 size-5' />
             <span>Settings</span>
           </DropdownMenuItem>
 
+          <DropdownMenuItem className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'>
+            <History className='mr-2 size-5' />
+            <span>Reading history</span>
+          </DropdownMenuItem>
+
           <DropdownMenuItem
-            className='my-1 text-gray-700 cursor-pointer'
+            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
             onClick={() => handleLogout()}>
-            <LogOut className='w-4 h-4 mr-2' />
+            <LogOut className='mr-2 size-5' />
             <span>Log out</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>

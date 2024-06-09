@@ -1,6 +1,6 @@
 const Loader = () => {
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+    <div className='flex items-center justify-center min-h-screen bg-gray-50'>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='150'
@@ -11,7 +11,7 @@ const Loader = () => {
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'
-        className='text-gray-600 animate-bounce lucide lucide-codesandbox'>
+        className='text-gray-700 animate-bounce lucide lucide-codesandbox'>
         <path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z' />
         <polyline points='7.5 4.21 12 6.81 16.5 4.21' />
         <polyline points='7.5 19.79 7.5 14.6 3 12' />

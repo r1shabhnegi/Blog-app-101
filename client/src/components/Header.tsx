@@ -9,7 +9,9 @@ const Header = () => {
   return (
     <div className='flex items-center justify-between px-6 border-b-[0.01rem] border-gray-200 py-2'>
       <span className='flex items-center justify-center gap-4'>
-        <span className='flex items-center gap-1'>
+        <span
+          className='flex items-center gap-1 cursor-pointer'
+          onClick={() => navigate("/")}>
           <Newspaper className='-mt-1 text-green-500 size-6' />
           <h1 className='text-xl font-bold tracking-tighter text-gray-700 font-logo'>
             Readpool.AI

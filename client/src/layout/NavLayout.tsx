@@ -1,10 +1,14 @@
 import Header from "@/components/Header";
+import SidebarLayout from "./SidebarLayout";
 
 const NavLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className='flex flex-col'>
       <Header />
-      <div className='flex-1'>{children}</div>
+      <div className='max-w-[70rem] gap-20 flex w-full mx-auto flex-1'>
+        <div className='flex-1'>{children}</div>
+        <SidebarLayout />
+      </div>
     </main>
   );
 };

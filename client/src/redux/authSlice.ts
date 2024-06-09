@@ -6,6 +6,7 @@ const initialState: UserCredentialsType = {
   userId: null,
   name: null,
   email: null,
+  avatar: null,
   token: null,
   isLoading: true,
 };
@@ -15,11 +16,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUserCredentials: (state, { payload }) => {
-      const { userId, name, email, token } = payload;
+      const { userId, name, email, avatar, token } = payload;
       state.isAuth = !!token && !!userId;
       state.userId = userId;
       state.name = name;
       state.email = email;
+      state.avatar = avatar;
       state.token = token;
     },
     setLogout: (state) => {
