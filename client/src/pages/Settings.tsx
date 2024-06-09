@@ -1,4 +1,21 @@
+import EditUserInfoCard from "@/components/EditUserInfoCard";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 const Settings = () => {
+  const [isEditUserInfoCard, setIsEditUserInfoCard] = useState<boolean>(false);
+
+  const { state } = useLocation();
+  const isOpenEditCard = state?.isOpenEditCard;
+
+  useEffect(() => {
+    if (isOpenEditCard) {
+      setTimeout(() => {
+        setIsEditUserInfoCard(isOpenEditCard);
+      }, 200);
+    }
+  }, [isOpenEditCard]);
+
   return (
     <div>
       <div className='flex flex-col justify-between my-16'>
@@ -7,7 +24,9 @@ const Settings = () => {
         </h1>
       </div>
       <div className='flex flex-col gap-10'>
-        <span className='text-[13.5px] flex flex-col gap-2 font-medium cursor-pointer'>
+        <span
+          className='text-[13.5px] flex flex-col gap-2 font-medium cursor-pointer'
+          onClick={() => setIsEditUserInfoCard(!isEditUserInfoCard)}>
           <p className='text-gray-800 '>Change user information</p>
           <p className='text-gray-400'>Edit your photo, name, bio, etc.</p>
         </span>
@@ -30,6 +49,11 @@ const Settings = () => {
           </p>
         </span>
       </div>
+      {isEditUserInfoCard ? (
+        <EditUserInfoCard
+          cancelBtn={() => setIsEditUserInfoCard(!isEditUserInfoCard)}
+        />
+      ) : null}
     </div>
   );
 };

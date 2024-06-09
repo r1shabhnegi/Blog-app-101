@@ -96,14 +96,6 @@ const Landing = () => {
               alt='Img'
             />
           </div>
-          {/* <Smile className='text-green-100 -rotate-12 size-14' />
-
-          <Library className='text-green-100 size-14' />
-          <Drum className='text-green-100 rotate-6 size-14' />
-          <Tv className='text-green-100 -rotate-45 size-14' />
-          <Club className='text-green-100 size-14' />
-          <Cat className='text-green-100 rotate-12 size-14' />
-          <KeyRound className='text-green-100 size-14' /> */}
         </div>
       </div>
 
