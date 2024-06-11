@@ -7,7 +7,7 @@ import postRouter from "./routes/post";
 import commentRouter from "./routes/comment";
 import tagRouter from "./routes/tag";
 import authRouter from "./routes/auth";
-import { credentials } from "./middlewares/credentials";
+// import { credentials } from "./middlewares/credentials";
 
 const app = new Hono();
 

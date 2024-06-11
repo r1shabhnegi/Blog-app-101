@@ -1,22 +1,114 @@
-import { X } from "lucide-react";
+import { VenetianMask, X } from "lucide-react";
 import profileDeno from "../assets/profileImg.png";
 import { useAppSelector } from "@/redux/hook";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "./ui/input";
 import { EditUserInfoType } from "../../../common-types/index";
+import { useDropzone } from "react-dropzone";
+import { useMutation } from "@tanstack/react-query";
+import { editUserInfo } from "@/api";
+import imageCompression from "browser-image-compression";
 const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
-  const { avatar: avatarImg } = useAppSelector((state) => state.auth);
+  const {
+    avatar: avatarImg,
+    name,
+    bio,
+  } = useAppSelector((state) => state.auth);
 
-  const [avatar, setAvatar] = useState(avatarImg || profileDeno);
+  const [avatar, setAvatar] = useState<string>("");
 
+  useEffect(() => {
+    if (avatarImg && avatarImg?.length > 5) {
+      setAvatar(avatarImg);
+    } else {
+      setAvatar(profileDeno);
+    }
+  }, [avatarImg]);
+
+  const [isAvatarRemoved, SetIsAvatarRemoved] = useState<"false" | "true">(
+    "false"
+  );
+  const [avatarFile, setAvatarFile] = useState<File | string>("");
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<EditUserInfoType>();
 
-  const onSubmit = handleSubmit((formData) => {});
+  const { mutateAsync: mutateEditUserInfo } = useMutation({
+    mutationFn: editUserInfo,
+  });
+
+  useEffect(() => {
+    reset({ name, bio });
+  }, [bio, name, reset]);
+
+  const onDrop = (acceptedFiles: File[]) => {
+    const imgUrl = URL.createObjectURL(acceptedFiles[0]);
+    // setAvatar("");
+    SetIsAvatarRemoved("false");
+    setAvatar(imgUrl);
+    // setAvatarFile("");
+    setAvatarFile(acceptedFiles[0]);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const {
+    getRootProps: anotherGetRootProps,
+    getInputProps: anotherGetInputProps,
+  } = useDropzone({
+    onDrop,
+  });
+
+  const handleRemoveBtn = () => {
+    SetIsAvatarRemoved("true");
+    setAvatarFile("");
+    setAvatar(profileDeno);
+  };
+
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(avatarFile);
+    const options = {
+      maxSizeMB: 0.7,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+    function appendFormData(
+      formData: FormData,
+      data: EditUserInfoType,
+      avatarFile: File | string
+    ) {
+      formData.append("name", data.name);
+      formData.append("bio", data.bio);
+      formData.append("isAvatarRemoved", isAvatarRemoved);
+      if (isAvatarRemoved === "true") {
+        formData.append("avatar", "");
+      } else {
+        formData.append("avatar", avatarFile);
+      }
+      for (const [key, value] of formData) {
+        console.log(key, value);
+      }
+      return formData;
+    }
+    try {
+      let avatarImg;
+      if (avatarFile instanceof File) {
+        avatarImg = await imageCompression(avatarFile, options);
+      } else {
+        avatarImg = "";
+      }
+
+      const formData = new FormData();
+      const allInputs = appendFormData(formData, data, avatarImg);
+      await mutateEditUserInfo(allInputs);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
   return (
     <div
@@ -43,30 +135,44 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
                 Avatar
               </h2>
               <span className='flex flex-col justify-center w-24'>
-                <img
-                  src={avatar}
-                  alt='Avatar Image'
-                  className='object-cover rounded-full aspect-square'
-                />
-                <input
+                {/* <input
                   {...register("avatar", {})}
                   type='file'
                   accept='image/*'
                   className='hidden'
-                  onChange={(event) => {
-                    if (event.target.files && event.target.files[0]) {
-                      setAvatar(URL.createObjectURL(event.target.files[0]));
-                    }
-                  }}
-                />
+                  /> */}
+                <div
+                  {...getRootProps()}
+                  role='button'
+                  onClick={() => console.log("ava")}>
+                  <input {...getInputProps()} />
+
+                  <img
+                    src={avatar}
+                    alt='img'
+                    className='object-cover rounded-full aspect-square'
+                  />
+                </div>
               </span>
             </label>
             <span className='flex flex-col -mb-4 justify-evenly'>
               <span className='flex gap-4'>
-                <span className='text-[15px] text-green-600 font-medium'>
+                <span className='text-[15px] cursor-pointer text-green-600 font-medium'>
                   Change
+                  <div
+                    {...anotherGetRootProps()}
+                    role='button'
+                    onClick={() => console.log("ava")}>
+                    <input
+                      {...anotherGetInputProps()}
+                      // {...register("avatar")}
+                      accept='image/*'
+                    />
+                  </div>
                 </span>
-                <span className='text-[15px] text-red-700 font-medium'>
+                <span
+                  className='text-[15px] cursor-pointer text-red-700 font-medium'
+                  onClick={handleRemoveBtn}>
                   Remove
                 </span>
               </span>

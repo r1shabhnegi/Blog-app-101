@@ -1,5 +1,9 @@
 import axios, { AxiosError } from "axios";
-import { signupType, SigninType } from "../../../common-types/index";
+import {
+  signupType,
+  SigninType,
+  EditUserInfoType,
+} from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
 
 export const serverStatus = async () => {
@@ -50,5 +54,18 @@ export const logout = async () => {
   if (response.error) {
     throw new Error(response?.error?.data);
   }
+  return response;
+};
+
+export const editUserInfo = async (data: EditUserInfoType) => {
+  const response = await apiClient.query({
+    url: "/user",
+    method: "PATCH",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response?.error.data);
+  }
+
   return response;
 };

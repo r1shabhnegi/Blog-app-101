@@ -138,6 +138,7 @@ router.post("/", async (c) => {
         name: foundUser.name,
         email: foundUser.email,
         avatar: foundUser.avatar,
+        bio: foundUser.bio,
         token: accessToken,
       },
       201
@@ -265,6 +266,7 @@ router.get("/", async (c) => {
         name: foundUser.name,
         email: foundUser.email,
         avatar: foundUser.avatar,
+        bio: foundUser.bio,
         token: accessToken,
       },
       201

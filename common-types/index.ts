@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 // signup
 export const signupInput = z.object({
   name: z
@@ -30,20 +30,23 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   // "image/webp",
 ];
-export const EditUserInfoInput = z.object({
-  avatar: z
-    .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 1MB.`)
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg, .jpeg and .png formats are supported."
-    ),
-  name: z
-    .string()
-    .min(4, { message: "Must be 4 or more characters long" })
-    .max(20, { message: "Must be 20 or fewer characters long" }),
 
-  bio: z.string().max(160, { message: "Must be 160 or fewer characters long" }),
-});
+// const isAvatarRemovedEnum = ["true", "false"];
+
+export const EditUserInfoInput = z
+  .object({
+    avatar: z.any(),
+    name: z
+      .string()
+      .min(4, { message: "Must be 4 or more characters long" })
+      .max(20, { message: "Must be 20 or fewer characters long" }),
+
+    bio: z
+      .string()
+      .max(160, { message: "Must be 160 or fewer characters long" }),
+    isAvatarRemoved: z.string(),
+    // enum(["true", "false"]),
+  })
+  .required({ name: true, isAvatarRemoved: true });
 
 export type EditUserInfoType = z.infer<typeof EditUserInfoInput>;

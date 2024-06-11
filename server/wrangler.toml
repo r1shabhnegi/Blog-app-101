@@ -1,5 +1,6 @@
 name = "server"
 compatibility_date = "2024-05-24"
+node_compat = true
 
 [vars]
 DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiZGJkZjk4YmMtNDI2OC00NGNjLWJiNTktNDcwNGRiNDEzZWMwIiwidGVuYW50X2lkIjoiMWYwNmMwODJkZjM5ZmYzOTZkNGQ4ZTAyNTg4M2EwYzMyYzc4YTFkNzliNWEwY2JjY2EwYmJmNGVkZGMwY2Q1MSIsImludGVybmFsX3NlY3JldCI6IjBjMDQ3MGEwLThiZmEtNGViYS1iN2YzLTNkOWM3YjBlYjgxMiJ9.WeEkMfUUiOah5LkLGTQeDyR3GeauFH2ovLYyM0UIF1M"
@@ -10,13 +11,17 @@ JWT_ACCESS_TOKEN_SECRET="VnKFbWRE0CEBCgCDd7efGtrCADEEB4487519AEBE5C8ECFB4C698RWP
 
 JWT_REFRESH_TOKEN_SECRET="18A7825B411D55AC58BED0VuSmmVmiRNx41pYE3D5D77A3B26E583Xi2PpizmSLLeKHC5GqUdJm4aZpDU8S5KHF8gA7E8A6519C735cvR2DxaHGyN5ij2QX%DTvKe@es&ep5xp>%NI6QAD033A33547"
 
+R2_URL="https://pub-291575832fc04fdeac7b59be031f8c6f.r2.dev"
+
+
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+ [[r2_buckets]]
+ binding = "BLOG_APP_UPLOADS"
+ bucket_name = "blog-app-uploads"
+
 
 # [[d1_databases]]
 # binding = "DB"

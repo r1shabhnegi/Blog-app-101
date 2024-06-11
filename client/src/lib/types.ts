@@ -1,9 +1,10 @@
 export type UserCredentialsType = {
   isAuth: boolean;
-  userId: null | string;
-  name: null | string;
-  email: null | string;
-  avatar: string;
-  token: null | string;
+  userId: undefined | string;
+  name: undefined | string;
+  bio: undefined | string;
+  email: undefined | string;
+  avatar: undefined | string;
+  token: undefined | string;
   isLoading: boolean;
 };
