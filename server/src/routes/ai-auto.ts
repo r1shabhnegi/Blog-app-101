@@ -11,7 +11,6 @@ const router = new Hono<{
 router.post("/", async (c) => {
   try {
     const config = new Configuration({
-      apiKey: "sk-proj-GLQT8tc91d5kPXg31ALfT3BlbkFJv19mmL5E8aTkOCzVGJuu",
       // c.env.OPEN_AI_SECRET_KEY,""
     });
     const openai = new OpenAIApi(config);
