@@ -27,7 +27,9 @@ const Header = () => {
         </span>
       </span>
       <span className='flex items-center gap-10'>
-        <span className='flex items-center gap-2 cursor-pointer'>
+        <span
+          className='flex items-center gap-2 cursor-pointer'
+          onClick={() => navigate("/publish")}>
           <SquarePen className='text-gray-500 size-5' />
           <p className='text-[14px] text-gray-600 font-medium'>Write</p>
         </span>

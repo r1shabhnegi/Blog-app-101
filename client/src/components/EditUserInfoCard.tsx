@@ -1,15 +1,23 @@
 import { VenetianMask, X } from "lucide-react";
 import profileDeno from "../assets/profileImg.png";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "./ui/input";
 import { EditUserInfoType } from "../../../common-types/index";
 import { useDropzone } from "react-dropzone";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { editUserInfo } from "@/api";
 import imageCompression from "browser-image-compression";
+import { useToast } from "./ui/use-toast";
+import { Textarea } from "./ui/textarea";
+// import { useNavigate } from "react-router-dom";
 const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
+  // const dispatch = useAppDispatch();
+  // const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  // query.
+  const { toast } = useToast();
   const {
     avatar: avatarImg,
     name,
@@ -39,6 +47,14 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
 
   const { mutateAsync: mutateEditUserInfo } = useMutation({
     mutationFn: editUserInfo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["refreshToken"] });
+      toast({
+        title: "User information updated successfully",
+        className: "bg-green-400",
+      });
+      cancelBtn();
+    },
   });
 
   useEffect(() => {
@@ -47,10 +63,8 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
 
   const onDrop = (acceptedFiles: File[]) => {
     const imgUrl = URL.createObjectURL(acceptedFiles[0]);
-    // setAvatar("");
     SetIsAvatarRemoved("false");
     setAvatar(imgUrl);
-    // setAvatarFile("");
     setAvatarFile(acceptedFiles[0]);
   };
 
@@ -135,12 +149,6 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
                 Avatar
               </h2>
               <span className='flex flex-col justify-center w-24'>
-                {/* <input
-                  {...register("avatar", {})}
-                  type='file'
-                  accept='image/*'
-                  className='hidden'
-                  /> */}
                 <div
                   {...getRootProps()}
                   role='button'
@@ -165,7 +173,6 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
                     onClick={() => console.log("ava")}>
                     <input
                       {...anotherGetInputProps()}
-                      // {...register("avatar")}
                       accept='image/*'
                     />
                   </div>
@@ -184,7 +191,11 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
           </div>
 
           <label className='text-sm font-medium text-gray-600'>
-            Name
+            <span className='flex justify-between'>
+              <p>Name</p>
+              <p>20 or less</p>
+            </span>
+
             <Input
               {...register("name", {
                 minLength: {
@@ -198,18 +209,34 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
               })}
               className='bg-gray-100 border-none focus-visible:ring-1'
             />
+            {errors?.name && (
+              <p className='text-xs font-semibold text-red-500'>
+                {errors.name.message}
+              </p>
+            )}
           </label>
           <label className='text-sm font-medium text-gray-600'>
-            Bio
-            <Input
+            <span className='flex justify-between'>
+              <p>Bio</p>
+              <p>160 or less</p>
+            </span>
+
+            <Textarea
+              rows={4}
               {...register("bio", {
                 maxLength: {
                   value: 160,
                   message: "Must be 160 or fewer characters long",
                 },
               })}
-              className='bg-gray-100 border-none focus-visible:ring-1'
+              className='bg-gray-100 border-none resize-none focus-visible:ring-1'
             />
+
+            {errors?.bio && (
+              <p className='text-xs font-semibold text-red-500'>
+                {errors.bio.message}
+              </p>
+            )}
           </label>
           <div className='flex items-center justify-end gap-6'>
             <button

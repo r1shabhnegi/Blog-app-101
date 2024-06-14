@@ -37,16 +37,7 @@ const ProfileSidebar = () => {
           {adminName}
         </h1>
         <span className='mt-2'>
-          <p className='text-sm font-medium text-gray-500 text-wrap'>
-            {bio}asfasfsafsfassafsn njka kjsn knk nk nkn kasna nsk nskn an kas
-            nk nk nfkan ak nska nkja f Lorem ipsum dolor sit amet, consectetur
-            adipisicing elit. Obcaecati possimus tenetur impedit corrupti dolor
-            earum voluptas dolorum libero error! Omnis ipsum natus culpa
-            perspiciatis reiciendis doloribus possimus illum, harum quaerat
-            similique veniam assumenda cum odio nihil, alias neque sint enim
-            minus officiis nemo consequuntur placeat. Inventore vitae obcaecati
-            consequuntur mollitia!
-          </p>
+          <p className='text-sm font-medium text-gray-500 text-wrap'>{bio}</p>
         </span>
         <span
           className='mt-8 text-xs font-medium text-green-600 cursor-pointer'

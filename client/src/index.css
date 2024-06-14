@@ -16,3 +16,12 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #454545;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+.tiptap.ProseMirror {
+  outline: none;
+}
+
+.is-active {
+  background-color: #dadada;
+  border-radius: 9px;
+}

@@ -19,6 +19,8 @@ module.exports = {
     extend: {
       animation: {
         "spin-slow": "spin 3s linear infinite",
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
       keyframes: {
         "accordion-down": {
@@ -30,10 +32,6 @@ module.exports = {
           to: { height: "0" },
         },
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
     },
     fontFamily: {
       logo: ["Libre Baskerville"],
@@ -41,5 +39,5 @@ module.exports = {
       mainTitle: ["Source Serif 4"],
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };

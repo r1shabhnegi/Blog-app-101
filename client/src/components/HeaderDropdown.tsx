@@ -16,12 +16,13 @@ import { logout } from "../api";
 import { useToast } from "./ui/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setLogout } from "@/redux/authSlice";
+import profileDemo from "../assets/profileImg.png";
 
 const HeaderDropdown = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { name } = useAppSelector((state) => state.auth);
+  const { name, avatar } = useAppSelector((state) => state.auth);
 
   const { mutateAsync: mutateLogout } = useMutation({
     mutationFn: logout,
@@ -50,10 +51,15 @@ const HeaderDropdown = () => {
       <DropdownMenuTrigger asChild>
         <Avatar className='cursor-pointer size-9'>
           <AvatarImage
-            src=''
+            src={avatar}
             alt=''
           />
-          <AvatarFallback>{name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarFallback>
+            <img
+              src={profileDemo}
+              alt=''
+            />
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='p-3 mr-2 w-60'>

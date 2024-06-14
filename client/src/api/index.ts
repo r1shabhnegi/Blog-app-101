@@ -69,3 +69,16 @@ export const editUserInfo = async (data: EditUserInfoType) => {
 
   return response;
 };
+
+export const aiAuto = async (data) => {
+  const response = await apiClient.query({
+    url: "/ai-auto",
+    method: "POST",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response?.error.data);
+  }
+
+  return response;
+};

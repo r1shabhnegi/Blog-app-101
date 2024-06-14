@@ -9,6 +9,8 @@ import ProfileLists from "./pages/ProfileLists";
 import ProfileAbout from "./pages/ProfileAbout";
 import ReadingHistory from "./pages/ReadingHistory";
 import Settings from "./pages/Settings";
+import PublishLayout from "./layout/PublishLayout";
+import Publish from "./pages/Publish";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -39,6 +41,12 @@ const AppRoutes = () => {
         <Route
           path='/settings'
           element={<Settings />}
+        />
+      </Route>
+      <Route element={<PublishLayout />}>
+        <Route
+          path='/publish'
+          element={<Publish />}
         />
       </Route>
     </Routes>
