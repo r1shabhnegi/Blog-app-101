@@ -5,12 +5,9 @@
   },
   "dependencies": {
     "@prisma/extension-accelerate": "^1.1.0",
-    "ai": "^3.1.35",
-    "aws-sdk": "^2.1637.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
-    "hono": "^4.4.2",
-    "openai-edge": "^1.2.2"
+    "hono": "^4.4.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",

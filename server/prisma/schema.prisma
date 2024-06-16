@@ -45,7 +45,8 @@ model Post {
   title String
   content String
   authorId String
-  author User @relation(fields: [authorId],references: [id])
+  previewImage String
+  author User @relation(fields: [authorId], references: [id])
   claps Int @default(0)
   createdAt DateTime @default(now())
   readTime Int @default(0)

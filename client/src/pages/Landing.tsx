@@ -34,7 +34,7 @@ const Landing = () => {
       <div className='border-b[0.01rem] border-black px-48 shadow-2xl shadow-gray-200/35 drop-shadow-md'>
         <header className='flex items-center justify-between h-20'>
           <span className='flex items-end justify-center gap-2'>
-            <Newspaper className='text-green-500 size-8' />
+            <Newspaper className='text-green-600 size-8' />
             <h1 className='-mb-0.5 text-2xl font-bold tracking-tighter text-gray-700 font-logo'>
               Readpool.AI
             </h1>

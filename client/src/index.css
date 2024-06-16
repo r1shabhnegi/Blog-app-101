@@ -22,6 +22,6 @@ input:-webkit-autofill:active {
 }
 
 .is-active {
-  background-color: #dadada;
+  background-color: #ededed;
   border-radius: 9px;
 }

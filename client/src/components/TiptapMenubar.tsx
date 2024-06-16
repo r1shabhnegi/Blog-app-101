@@ -9,6 +9,7 @@ import {
   Heading4,
   Heading5,
   Heading6,
+  Image,
   Italic,
   List,
   ListOrdered,
@@ -18,9 +19,15 @@ import {
   Undo,
 } from "lucide-react";
 
-const TiptapMenubar = ({ editor }: { editor: Editor }) => {
+const TiptapMenubar = ({
+  editor,
+  addImage,
+}: {
+  editor: Editor;
+  addImage: () => void;
+}) => {
   return (
-    <div className='flex justify-between w-full prose prose-2xl py-1.5 px-2.5 rounded-xl bg-gray-100 text-gray-600 my-7'>
+    <div className='flex justify-between w-full prose prose-2xl py-1.5 px-2.5 mb-10 rounded-xl bg-gray-0 text-gray-600 mt-6 mb- bg-gray-50 border-'>
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -45,13 +52,13 @@ const TiptapMenubar = ({ editor }: { editor: Editor }) => {
         className={`${editor.isActive("code") ? "is-active" : ""} p-1`}>
         <Code className='w-6 h-6' />
       </button>
-      <button
+      {/* <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={`${
           editor.isActive("heading", { level: 1 }) ? "is-active" : ""
         } p-1`}>
         <Heading1 className='w-6 h-6' />
-      </button>
+      </button> */}
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`${
@@ -80,13 +87,13 @@ const TiptapMenubar = ({ editor }: { editor: Editor }) => {
         } p-1`}>
         <Heading5 className='w-6 h-6' />
       </button>
-      <button
+      {/* <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
         className={`${
           editor.isActive("heading", { level: 6 }) ? "is-active" : ""
         } p-1`}>
         <Heading6 className='w-6 h-6' />
-      </button>
+      </button> */}
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`${editor.isActive("bulletList") ? "is-active" : ""} p-1`}>
@@ -116,6 +123,9 @@ const TiptapMenubar = ({ editor }: { editor: Editor }) => {
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().chain().focus().redo().run()}>
         <Redo className='w-6 h-6' />
+      </button>
+      <button onClick={addImage}>
+        <Image className='w-6 h-6' />
       </button>
     </div>
   );

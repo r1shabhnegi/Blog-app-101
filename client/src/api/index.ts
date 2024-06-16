@@ -1,8 +1,9 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import {
   signupType,
   SigninType,
   EditUserInfoType,
+  PublishPostType,
 } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
 
@@ -70,15 +71,14 @@ export const editUserInfo = async (data: EditUserInfoType) => {
   return response;
 };
 
-export const aiAuto = async (data) => {
+export const createPost = async (data: FormData) => {
   const response = await apiClient.query({
-    url: "/ai-auto",
+    url: "/post",
     method: "POST",
     data,
   });
   if (response.error) {
     throw new Error(response?.error.data);
   }
-
   return response;
 };

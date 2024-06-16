@@ -1,6 +1,5 @@
 import { Newspaper, Search, SquarePen } from "lucide-react";
 import { Input } from "./ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import HeaderDropdown from "./HeaderDropdown";
 
@@ -12,7 +11,7 @@ const Header = () => {
         <span
           className='flex items-center gap-1 cursor-pointer'
           onClick={() => navigate("/")}>
-          <Newspaper className='-mt-1 text-green-500 size-6' />
+          <Newspaper className='-mt-1 text-green-600 size-6' />
           <h1 className='text-xl font-bold tracking-tighter text-gray-700 font-logo'>
             Readpool.AI
           </h1>

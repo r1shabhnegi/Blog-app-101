@@ -50,3 +50,12 @@ export const EditUserInfoInput = z
   .required({ name: true, isAvatarRemoved: true });
 
 export type EditUserInfoType = z.infer<typeof EditUserInfoInput>;
+
+export const PublishPostInput = z.object({
+  title: z.string(),
+  content: z.string(),
+  tags: z.string(),
+  image: z.any(),
+});
+
+export type PublishPostType = z.infer<typeof PublishPostInput>;

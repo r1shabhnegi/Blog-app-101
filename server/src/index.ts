@@ -7,8 +7,6 @@ import postRouter from "./routes/post";
 import commentRouter from "./routes/comment";
 import tagRouter from "./routes/tag";
 import authRouter from "./routes/auth";
-import aiAutoRouter from "./routes/ai-auto";
-// import { credentials } from "./middlewares/credentials";
 
 const app = new Hono();
 
@@ -22,5 +20,4 @@ app.route("/api/v1/user", userRouter);
 app.route("/api/v1/post", postRouter);
 app.route("/api/v1/comment", commentRouter);
 app.route("/api/v1/tag", tagRouter);
-app.route("/api/v1/ai-auto", aiAutoRouter);
 export default app;
