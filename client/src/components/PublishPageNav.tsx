@@ -4,7 +4,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import profileDemo from "../assets/profileImg.png";
 import { useAppSelector } from "@/redux/hook";
 
-const PublishPageNav = ({ setIsPublish }: { setIsPublish: () => void }) => {
+const PublishPageNav = ({
+  setIsPublish,
+  isPublish,
+}: {
+  setIsPublish: () => void;
+  isPublish: boolean;
+}) => {
   const navigate = useNavigate();
   const { avatar } = useAppSelector((state) => state.auth);
   return (
@@ -19,8 +25,11 @@ const PublishPageNav = ({ setIsPublish }: { setIsPublish: () => void }) => {
       </span>
       <span className='flex items-center gap-6'>
         <button
-          className='px-3 text-[13px] h-8 font-medium text-white bg-green-600 rounded-full '
-          onClick={setIsPublish}>
+          className={`px-3 text-[13px] h-8 font-medium text-white bg-green-600 rounded-full  ${
+            !isPublish && "bg-opacity-60"
+          }`}
+          onClick={setIsPublish}
+          disabled={!isPublish}>
           Publish
         </button>
         <Avatar

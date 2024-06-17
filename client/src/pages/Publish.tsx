@@ -94,7 +94,10 @@ const Publish = () => {
 
   return (
     <div className='mx-auto w-full flex flex-col bg-red-00 max-w-[65rem]'>
-      <PublishPageNav setIsPublish={() => setIsPublish(!isPublish)} />
+      <PublishPageNav
+        setIsPublish={() => setIsPublish(!isPublish)}
+        isPublish={titleValue.length > 0 && editorState.length > 9}
+      />
       <div className='flex flex-col items-center'>
         {editor && (
           <TiptapMenubar

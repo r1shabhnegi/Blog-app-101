@@ -21,6 +21,7 @@ const PublishCard = ({
   const [prevImg, setPrevImg] = useState<string>("");
   const [prevImgFile, setPrevImgFile] = useState<File | string>("");
   const { name } = useAppSelector((state) => state.auth);
+  const [err, setErr] = useState<string | undefined>(undefined);
   const nameFirstLetter = name?.slice(0, 1).toUpperCase();
   console.log(nameFirstLetter);
   const nameRestLetters = name?.slice(1);
@@ -32,6 +33,7 @@ const PublishCard = ({
   const onDrop = (acceptedFiles: File[]) => {
     const imgUrl = URL.createObjectURL(acceptedFiles[0]);
     setPrevImg(imgUrl);
+    setErr(undefined);
     setPrevImgFile(acceptedFiles[0]);
   };
 
@@ -45,12 +47,10 @@ const PublishCard = ({
   });
 
   const onSubmit = async () => {
-    console.log(titleValue);
-    console.log(editorValue);
-    console.log(tags);
-    console.log(prevImgFile);
-
-    // console.log(p)
+    if (prevImgFile === "" || tags === "") {
+      setErr("Please add preview image or at least one tag");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", titleValue);
@@ -104,12 +104,21 @@ const PublishCard = ({
               <Input
                 className='h-16 mt-10 text-lg border bg-gray-50 focus-visible:ring-gray-400'
                 value={tags}
-                onChange={(e) => setTags(e.target.value)}
+                onChange={(e) => {
+                  setTags(e.target.value);
+                  setErr(undefined);
+                }}
               />
-
+              {err && (
+                <p className='py-4 mt-10 text-sm font-medium text-red-500'>
+                  {err}
+                </p>
+              )}
               <button
                 type='button'
-                className='bg-green-600 py-1.5 px-4 font-medium mt-10 rounded-full text-white'
+                className={`${
+                  !err && "mt-10"
+                } bg-green-600 py-1.5 px-4 font-medium rounded-full text-white`}
                 onClick={onSubmit}>
                 Publish
               </button>
