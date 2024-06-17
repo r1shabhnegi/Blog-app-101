@@ -27,7 +27,7 @@ const TiptapMenubar = ({
   addImage: () => void;
 }) => {
   return (
-    <div className='flex justify-between w-full prose prose-2xl py-1.5 px-2.5 mb-10 rounded-xl bg-gray-0 text-gray-600 mt-6 mb- bg-gray-50 border-'>
+    <div className='flex justify-between w-full py-1.5 px-2.5 mb-10 rounded-xl bg-gray-0 text-gray-600 mt-6 mb- bg-gray-50 border-'>
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}

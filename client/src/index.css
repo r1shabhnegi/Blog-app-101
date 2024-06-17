@@ -25,3 +25,11 @@ input:-webkit-autofill:active {
   background-color: #ededed;
   border-radius: 9px;
 }
+
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap p {
+  color: #565555;
+}

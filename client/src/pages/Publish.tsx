@@ -9,9 +9,10 @@ import { useMutation } from "@tanstack/react-query";
 import { aiAuto } from "@/api";
 import { Input } from "@/components/ui/input";
 import PublishCard from "@/components/PublishCard";
+import Placeholder from "@tiptap/extension-placeholder";
 // import { useCompletion } from "@ai-sdk/react";
 const Publish = () => {
-  const [editorState, setEditorState] = useState("<h4>Write...</h4>");
+  const [editorState, setEditorState] = useState("");
   const [isPublish, setIsPublish] = useState(false);
   const [titleValue, setTitleValue] = useState("");
   console.log(editorState);
@@ -41,10 +42,31 @@ const Publish = () => {
 
   const editor = useEditor({
     autofocus: true,
-    extensions: [StarterKit, Image],
+    extensions: [
+      StarterKit,
+      Image,
+      Placeholder.configure({
+        // Use a placeholder:
+        placeholder: "Write something …",
+        // Use different placeholders depending on the node type:
+        // placeholder: ({ node }) => {
+        //   if (node.type.name === 'heading') {
+        //     return 'What’s the title?'
+        //   }
+
+        //   return 'Can you add some further context?'
+        // },
+      }),
+    ],
     content: editorState,
     onUpdate: ({ editor }) => {
       setEditorState(editor.getHTML());
+    },
+    editorProps: {
+      attributes: {
+        class:
+          "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none text-gray-200",
+      },
     },
   });
   // const lastCompletion = useRef("");
@@ -80,19 +102,20 @@ const Publish = () => {
             addImage={addImage}
           />
         )}
+        <div className='w-[55rem] flex flex-col justify-center'>
+          <Input
+            className='h-28 text-6xl px-7 border-t-0 border-b-0 border-r-0 rounded-none outline-none ring-0 focus-visible:ring-0 text-[#565555] placeholder:text-[#a2a2a2]'
+            placeholder='Title'
+            value={titleValue}
+            onChange={(e) => setTitleValue(e.target.value)}
+          />
 
-        <Input
-          className='w-[43.8rem] text-6xl h-24 outline-none ring-0 focus-visible:ring-0 rounded-none placeholder:text-gray-900 border-r-0 border-t-0 border-b-0'
-          placeholder='Title'
-          value={titleValue}
-          onChange={(e) => setTitleValue(e.target.value)}
-        />
-
-        <EditorContent
-          editor={editor}
-          className='w-full pb-6 pl-3 mx-auto prose prose-xl border-l border-gray-200'
-          placeholder='write'
-        />
+          <EditorContent
+            editor={editor}
+            className='w-full pb-6 pl-3 mx-auto border-l border-gray-200'
+            placeholder='write'
+          />
+        </div>
       </div>
       {isPublish ? (
         <PublishCard
