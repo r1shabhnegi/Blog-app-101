@@ -57,13 +57,10 @@ router.post("/", async (c) => {
 
     const cookieToken = getCookie(c, "jwt");
 
-    console.log(cookieToken);
-
     let prevTokens = !!cookieToken
       ? foundUser.refreshToken.filter((token) => token !== cookieToken)
       : foundUser.refreshToken;
 
-    console.log(prevTokens);
     if (cookieToken) {
       const foundUser = await prisma.user.findFirst({
         where: {
@@ -144,7 +141,8 @@ router.post("/", async (c) => {
       201
     );
   } catch (error) {
-    return c.json({ message: error || "something went wrong" }, 500);
+    c.status(500);
+    return c.text(`${error || "something went wrong"}`);
   }
 });
 
@@ -155,7 +153,6 @@ router.get("/", async (c) => {
 
   try {
     const cookieToken = getCookie(c, "jwt");
-    // console.log(cookieToken);
 
     if (!cookieToken) {
       return c.json({ message: "Token required" }, 403);
@@ -272,7 +269,8 @@ router.get("/", async (c) => {
       201
     );
   } catch (error) {
-    return c.json({ message: error }, 500);
+    c.status(500);
+    return c.text(`${error}`);
   }
 });
 
@@ -311,8 +309,6 @@ router.post("/logout", async (c) => {
     sameSite: "None",
     partitioned: true,
   });
-
-  console.log(deletedCookie);
 
   return c.json({ message: "logged out" }, 200);
 });

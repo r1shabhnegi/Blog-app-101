@@ -6,6 +6,7 @@ import {
   PublishPostType,
 } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
+import { UserType } from "@/lib/types";
 
 export const serverStatus = async () => {
   const response = await axios.get(import.meta.env.VITE_BACKEND_URL);
@@ -33,7 +34,7 @@ export const signin = async (data: SigninType) => {
   if (response.error) {
     throw new Error(response?.error?.data);
   }
-  return response;
+  return response.data;
 };
 
 export const refreshToken = async () => {
@@ -44,7 +45,7 @@ export const refreshToken = async () => {
   if (response.error) {
     throw new Error(response?.error?.data);
   }
-  return response;
+  return response.data;
 };
 
 export const logout = async () => {
@@ -55,7 +56,7 @@ export const logout = async () => {
   if (response.error) {
     throw new Error(response?.error?.data);
   }
-  return response;
+  return response.data;
 };
 
 export const editUserInfo = async (data: EditUserInfoType) => {
@@ -68,7 +69,7 @@ export const editUserInfo = async (data: EditUserInfoType) => {
     throw new Error(response?.error.data);
   }
 
-  return response;
+  return response.data;
 };
 
 export const createPost = async (data: FormData) => {
@@ -80,5 +81,50 @@ export const createPost = async (data: FormData) => {
   if (response.error) {
     throw new Error(response?.error.data);
   }
-  return response;
+  return response.data;
+};
+
+export const getUser = async (userId: string | undefined) => {
+  console.log(userId);
+  const response = await apiClient.query({
+    url: `/user/${userId}`,
+    method: "GET",
+  });
+
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+
+  return response.data;
+};
+
+export const getUserPosts = async ({
+  userId,
+  page,
+}: {
+  userId: string | undefined;
+  page: number;
+}) => {
+  const response = await apiClient.query({
+    url: `/post/${userId}/${page}`,
+    method: "GET",
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+
+  return response.data;
+};
+
+export const deleteUser = async () => {
+  const response = await apiClient.query({
+    url: "/user/delete",
+    method: "POST",
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
 };

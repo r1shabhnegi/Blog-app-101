@@ -4,15 +4,14 @@ import profileDeno from "../assets/profileImg.png";
 import { useNavigate } from "react-router-dom";
 
 const ProfileSidebar = () => {
-  const { name, avatar, bio } = useAppSelector((state) => state.auth);
+  const { name, avatar, bio } = useAppSelector((state) => state.profile);
+
   const navigate = useNavigate();
 
-  const nameFirstLetter = name?.slice(0, 1).toUpperCase();
-  const nameRestLetters = name?.slice(1);
-  const adminName =
-    nameFirstLetter && nameRestLetters
-      ? `${nameFirstLetter}${nameRestLetters}`
-      : "There is no name";
+  const adminName = name
+    ? `${name.charAt(0).toUpperCase()}${name.slice(1)}`
+    : "";
+
   const handleEditBtn = () => {
     navigate("/settings", {
       state: {

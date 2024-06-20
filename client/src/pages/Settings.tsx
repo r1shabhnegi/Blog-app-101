@@ -1,9 +1,11 @@
+import DeleteAcCard from "@/components/DeleteAcCard";
 import EditUserInfoCard from "@/components/EditUserInfoCard";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const Settings = () => {
   const [isEditUserInfoCard, setIsEditUserInfoCard] = useState<boolean>(false);
+  const [isDeleteAcCard, setIsDeleteAcCard] = useState<boolean>(false);
 
   const { state } = useLocation();
   const isOpenEditCard = state?.isOpenEditCard;
@@ -42,7 +44,9 @@ const Settings = () => {
           <p className='text-gray-800'>Add cover</p>
           <p className='text-gray-400'>Add cover photo to your profile page</p>
         </span>
-        <span className='text-sm text-[13.5px] flex flex-col gap-2 font-medium cursor-pointer  '>
+        <span
+          className='text-sm text-[13.5px] flex flex-col gap-2 font-medium cursor-pointer'
+          onClick={() => setIsDeleteAcCard(!isDeleteAcCard)}>
           <p className='text-red-600'>Delete account</p>
           <p className='text-gray-400'>
             Permanently delete your account and all of your content.
@@ -53,6 +57,10 @@ const Settings = () => {
         <EditUserInfoCard
           cancelBtn={() => setIsEditUserInfoCard(!isEditUserInfoCard)}
         />
+      ) : null}
+
+      {isDeleteAcCard ? (
+        <DeleteAcCard cancelBtn={() => setIsDeleteAcCard(!isDeleteAcCard)} />
       ) : null}
     </div>
   );

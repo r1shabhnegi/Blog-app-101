@@ -23,7 +23,7 @@ model User {
   posts Post[]
   createdAt DateTime @default(now())
   readingHistory Post[] @relation("readingHistory")
-  about String?
+  about String? @default("")
   savedPosts SavedPost[]
   comments Comment[]
   follower Follows[] @relation("follower")
@@ -45,6 +45,8 @@ model Post {
   title String
   content String
   authorId String
+  authorName String
+  authorAvatar String
   previewImage String
   author User @relation(fields: [authorId], references: [id])
   claps Int @default(0)
@@ -52,7 +54,7 @@ model Post {
   readTime Int @default(0)
   readBy User[] @relation("readingHistory")
   comments Comment[]
-  tags String[] @default([])
+  tag String
 }
 
 model Comment {

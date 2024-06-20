@@ -4,8 +4,6 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import bcrypt from "bcryptjs";
 import { signupInput, EditUserInfoInput } from "../../../common-types/index";
 import { jwtVerify } from "../middlewares/jwtVerify";
-// import { parseForm } from "../middlewares/upload";
-// import { v2 as cloudinary } from "cloudinary";
 
 const router = new Hono<{
   Bindings: {
@@ -19,14 +17,40 @@ const router = new Hono<{
   };
 }>();
 
-router.get("/", async (c) => {
+router.get("/:userId", async (c) => {
   const prisma = c.get("prisma");
-  console.log("sd");
-  const img = await c.env.BLOG_APP_UPLOADS.get(
-    "grass.jpeg1718020062005932707866"
-  );
+  const { userId } = c.req.param();
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        about: true,
+        avatar: true,
+        bio: true,
+        createdAt: true,
+        email: true,
+        name: true,
+      },
+    });
 
-  return c.json(img);
+    if (!foundUser) {
+      return c.json({ message: "Error getting user" }, 500);
+    }
+
+    const countPosts = await prisma.post.count({
+      where: {
+        authorId: userId,
+      },
+    });
+
+    return c.json({ ...foundUser, numberOfPosts: countPosts });
+    // console.log(userId);
+  } catch (error) {
+    c.status(500);
+    c.text(`${error || "Something went wrong!"}`);
+  }
 });
 
 // create user
@@ -57,7 +81,8 @@ router.post("/", async (c) => {
 
     return c.json({ message: "User registered successfully" }, 201);
   } catch (error) {
-    return c.json({ message: "Something went wrong" }, 500);
+    c.status(500);
+    return c.text(`${error || "Something went wrong!"}`);
   }
 });
 
@@ -126,7 +151,51 @@ router.patch("/", jwtVerify, async (c) => {
 
     return c.json({ message: "User updated" }, 200);
   } catch (error) {
-    return c.json({ message: error }, 500);
+    c.status(500);
+    return c.text(`${error || "Something went wrong!"}`);
+  }
+});
+
+// delete user account
+router.post("/delete", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { password } = await c.req.json();
+
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        password: true,
+      },
+    });
+
+    if (!foundUser) {
+      c.status(500);
+      return c.text("something went wrong");
+    }
+
+    const isMatch = bcrypt.compareSync(password, foundUser.password);
+
+    if (!isMatch) {
+      c.status(403);
+      return c.text("Wrong Password!");
+    }
+
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+
+    console.log(deletedUser);
+
+    return c.json({ message: "Account deleted successfully!" }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text("something went wrong");
   }
 });
 

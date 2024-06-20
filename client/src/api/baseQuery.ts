@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState, store } from "../redux/_store";
 import { setLogout, setUserCredentials } from "@/redux/authSlice";
 
-const getAuthHeaders = (accessToken: string | null) => {
+const getAuthHeaders = (accessToken: string | undefined) => {
   return accessToken ? { authorization: `Bearer ${accessToken}` } : {};
 };
 
@@ -34,10 +34,10 @@ type QueryParams = {
   data?: unknown;
 };
 interface QueryResponse {
-  data?: unknown;
+  data?: object;
   error?: {
     status?: number;
-    data?: unknown;
+    data?: string | undefined;
   };
 }
 
@@ -56,7 +56,7 @@ const baseQuery =
         withCredentials: true,
       });
 
-      return response.data;
+      return { data: response.data };
     } catch (error) {
       const axiosError = error as AxiosError;
       const response = await handleError(axiosError, BASE_URL);
@@ -66,7 +66,7 @@ const baseQuery =
       return {
         error: {
           status: axiosError.response?.status,
-          data: axiosError.response?.data || axiosError.message,
+          data: axiosError.message,
         },
       };
     }

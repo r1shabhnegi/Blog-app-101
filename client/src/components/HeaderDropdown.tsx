@@ -22,7 +22,7 @@ const HeaderDropdown = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { name, avatar } = useAppSelector((state) => state.auth);
+  const { avatar, userId } = useAppSelector((state) => state.auth);
 
   const { mutateAsync: mutateLogout } = useMutation({
     mutationFn: logout,
@@ -66,7 +66,7 @@ const HeaderDropdown = () => {
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
-            onClick={() => navigate("/profile/1")}>
+            onClick={() => navigate(`/profile/${userId}`)}>
             <User className='mr-2 size-5' />
             <span>Profile</span>
           </DropdownMenuItem>

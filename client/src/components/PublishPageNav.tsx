@@ -12,7 +12,7 @@ const PublishPageNav = ({
   isPublish: boolean;
 }) => {
   const navigate = useNavigate();
-  const { avatar } = useAppSelector((state) => state.auth);
+  const { avatar, userId } = useAppSelector((state) => state.auth);
   return (
     <div className='flex justify-between py-4'>
       <span
@@ -34,7 +34,7 @@ const PublishPageNav = ({
         </button>
         <Avatar
           className='cursor-pointer size-9'
-          onClick={() => navigate("/profile/1")}>
+          onClick={() => navigate(`/profile/${userId}`)}>
           <AvatarImage
             src={avatar}
             alt=''

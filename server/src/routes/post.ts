@@ -16,6 +16,7 @@ const router = new Hono<{
   };
 }>();
 
+// create post
 router.post("/", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -32,33 +33,29 @@ router.post("/", jwtVerify, async (c) => {
       return c.json({ message: error.message }, 403);
     }
 
-    const tags = inputData.tags.split(",");
+    // const tags = inputData.tags.split(",");
 
-    const createTags = async (tags: string[]) => {
-      try {
-        for (const tag of tags) {
-          const foundTag = await prisma.tag.findUnique({
-            where: {
-              name: tag,
-            },
-            select: {
-              name: true,
-            },
-          });
+    try {
+      const foundTag = await prisma.tag.findUnique({
+        where: {
+          name: inputData.tag,
+        },
+        select: {
+          name: true,
+        },
+      });
 
-          if (!foundTag) {
-            await prisma.tag.create({
-              data: {
-                name: tag,
-              },
-            });
-          }
-        }
-      } catch (error) {
-        return c.json({ message: "Error creating tag" }, 500);
+      if (!foundTag) {
+        await prisma.tag.create({
+          data: {
+            name: inputData.tag,
+          },
+        });
       }
-    };
-    createTags(tags);
+    } catch (error) {
+      c.status(500);
+      return c.text("Error creating tag!");
+    }
 
     const uniqueName = `${inputData.image.name}${Date.now()}${Math.round(
       Math.random() * 1e9
@@ -82,17 +79,29 @@ router.post("/", jwtVerify, async (c) => {
     } else if (contentLength > 200) {
       readTime = Math.round(contentLength / 200);
     }
+    const userDetails = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        name: true,
+        avatar: true,
+      },
+    });
 
-    console.log(userId);
-
+    if (!userDetails) {
+      throw new Error("Something went wrong");
+    }
     const createdPost = await prisma.post.create({
       data: {
         title: inputData.title,
         content: inputData.content,
         authorId: userId,
-        readTime,
+        authorAvatar: userDetails.avatar || "",
+        authorName: userDetails.name,
         previewImage: imageUrl,
-        tags: [...tags],
+        readTime,
+        tag: inputData.tag,
       },
     });
 
@@ -104,6 +113,34 @@ router.post("/", jwtVerify, async (c) => {
   } catch (error) {
     return c.json({ message: error }, 500);
   }
+});
+
+// single post
+router.get("/get/:postId", async (c) => {});
+
+// all posts
+router.get("/all", async (c) => {});
+
+// user posts
+router.get("/:userId/:page", async (c) => {
+  const prisma = c.get("prisma");
+  const { userId, page } = c.req.param();
+  const pageSize = 5;
+  console.log(userId);
+  console.log(page);
+
+  const userAllPosts = await prisma.post.findMany({
+    where: {
+      authorId: userId,
+    },
+    skip: (+page - 1) * pageSize,
+    take: pageSize,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return c.json(userAllPosts);
 });
 
 export default router;

@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { Ellipsis } from "lucide-react";
 
 import {
@@ -7,21 +7,41 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "@/api";
+import Loader from "@/components/Loader";
+import { UserType } from "@/lib/types";
+import { useEffect } from "react";
+import { setCurrentProfile } from "@/redux/profileSlice";
 
 const ProfileLayout = () => {
   const { pathname } = useLocation();
+  const { userId } = useParams();
+  const dispatch = useAppDispatch();
+
+  const { data: userData, isPending } = useQuery({
+    queryKey: ["getUser", userId],
+    queryFn: () => getUser(userId),
+  });
+
+  useEffect(() => {
+    if (userData) {
+      dispatch(setCurrentProfile(userData));
+    }
+  }, [dispatch, userData]);
 
   const navigate = useNavigate();
-  const { name } = useAppSelector((state) => state.auth);
+  // const { name } = useAppSelector((state) => state.auth);
 
-  const nameFirstLetter = name?.slice(0, 1).toUpperCase();
-  const nameRestLetters = name?.slice(1);
+  const nameFirstLetter = userData?.name?.slice(0, 1).toUpperCase();
+  const nameRestLetters = userData?.name?.slice(1);
   const adminName =
     nameFirstLetter && nameRestLetters
       ? `${nameFirstLetter}${nameRestLetters}`
-      : "There is no name";
+      : "";
 
+  if (isPending) <Loader />;
   return (
     <div>
       <div className='flex flex-col justify-between h-32 my-16'>

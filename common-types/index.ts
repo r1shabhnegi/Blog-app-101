@@ -54,7 +54,7 @@ export type EditUserInfoType = z.infer<typeof EditUserInfoInput>;
 export const PublishPostInput = z.object({
   title: z.string(),
   content: z.string(),
-  tags: z.string(),
+  tag: z.string(),
   image: z.any(),
 });
 

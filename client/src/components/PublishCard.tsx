@@ -3,8 +3,11 @@ import { Image, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { useDropzone } from "react-dropzone";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "@/api";
+import imageCompression from "browser-image-compression";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "./ui/use-toast";
 const PublishCard = ({
   cancel,
   titleValue,
@@ -14,21 +17,20 @@ const PublishCard = ({
   titleValue: string;
   editorValue: string;
 }) => {
-  //   const [isAvatarRemoved, SetIsAvatarRemoved] = useState<"false" | "true">(
-  //     "false"
-  //   );
-  const [tags, setTags] = useState("");
+  const [tag, setTag] = useState("");
   const [prevImg, setPrevImg] = useState<string>("");
   const [prevImgFile, setPrevImgFile] = useState<File | string>("");
-  const { name } = useAppSelector((state) => state.auth);
   const [err, setErr] = useState<string | undefined>(undefined);
+  const { name, userId } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClint = useQueryClient();
   const nameFirstLetter = name?.slice(0, 1).toUpperCase();
-  console.log(nameFirstLetter);
   const nameRestLetters = name?.slice(1);
   const adminName =
     nameFirstLetter && nameRestLetters
       ? `${nameFirstLetter}${nameRestLetters}`
-      : "There is no name";
+      : "";
 
   const onDrop = (acceptedFiles: File[]) => {
     const imgUrl = URL.createObjectURL(acceptedFiles[0]);
@@ -41,23 +43,44 @@ const PublishCard = ({
 
   const { mutateAsync: publishMutate } = useMutation({
     mutationFn: createPost,
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: () => {
+      queryClint.invalidateQueries({ queryKey: ["userPosts"] });
+      toast({
+        title: "Post published successfully!",
+        className: "bg-green-400",
+      });
+      navigate(`/profile/${userId}`);
     },
   });
 
   const onSubmit = async () => {
-    if (prevImgFile === "" || tags === "") {
+    if (prevImgFile === "" || tag === "") {
       setErr("Please add preview image or at least one tag");
       return;
     }
+    const options = {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+    try {
+      let image: string | File = "";
 
-    const formData = new FormData();
-    formData.append("title", titleValue);
-    formData.append("content", editorValue);
-    formData.append("tags", tags);
-    formData.append("image", prevImgFile);
-    await publishMutate(formData);
+      if (prevImgFile instanceof File) {
+        image = await imageCompression(prevImgFile, options);
+      } else {
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("title", titleValue);
+      formData.append("content", editorValue);
+      formData.append("tag", tag);
+      formData.append("image", image);
+      await publishMutate(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -98,14 +121,13 @@ const PublishCard = ({
                 Publishing to: <span className='font-bold'>{adminName}</span>
               </h2>
               <p className='mt-4 text-[14.5px] font-medium text-gray-500'>
-                Add or change topics (up to 5) so readers know what your story
-                is about, write next topic with comma.
+                Add a topic, so readers know what your story is about.
               </p>
               <Input
                 className='h-16 mt-10 text-lg border bg-gray-50 focus-visible:ring-gray-400'
-                value={tags}
+                value={tag}
                 onChange={(e) => {
-                  setTags(e.target.value);
+                  setTag(e.target.value);
                   setErr(undefined);
                 }}
               />
