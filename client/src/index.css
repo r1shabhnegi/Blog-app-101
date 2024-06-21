@@ -33,3 +33,7 @@ input:-webkit-autofill:active {
 .tiptap p {
   color: #565555;
 }
+
+.htmlContentCard img {
+  display: none;
+}

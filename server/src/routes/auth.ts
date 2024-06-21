@@ -275,7 +275,6 @@ router.get("/", async (c) => {
 });
 
 //logout
-
 router.post("/logout", async (c) => {
   const prisma = c.get("prisma");
 

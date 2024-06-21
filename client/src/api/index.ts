@@ -117,11 +117,13 @@ export const getUserPosts = async ({
   return response.data;
 };
 
-export const deleteUser = async () => {
+export const deleteUser = async ({ password }: { password: string }) => {
   const response = await apiClient.query({
     url: "/user/delete",
     method: "POST",
+    data: { password },
   });
+  console.log({ password });
 
   if (response.error) {
     throw new Error(response.error.data);

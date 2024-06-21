@@ -14,6 +14,7 @@ import Loader from "@/components/Loader";
 import { UserType } from "@/lib/types";
 import { useEffect } from "react";
 import { setCurrentProfile } from "@/redux/profileSlice";
+import Spinner from "@/components/Spinner";
 
 const ProfileLayout = () => {
   const { pathname } = useLocation();
@@ -41,7 +42,7 @@ const ProfileLayout = () => {
       ? `${nameFirstLetter}${nameRestLetters}`
       : "";
 
-  if (isPending) <Loader />;
+  if (isPending) return <Spinner />;
   return (
     <div>
       <div className='flex flex-col justify-between h-32 my-16'>
@@ -82,7 +83,7 @@ const ProfileLayout = () => {
                 ? "border-b-[0.01rem] border-gray-600"
                 : ""
             }`}
-            onClick={() => navigate(`/profile/${1}`)}>
+            onClick={() => navigate(`/profile/${userId}`)}>
             Home
           </span>
           <span
@@ -91,7 +92,7 @@ const ProfileLayout = () => {
                 ? "border-b-[0.01rem] border-gray-600"
                 : ""
             }`}
-            onClick={() => navigate(`/profile/lists/${1}`)}>
+            onClick={() => navigate(`/profile/lists/${userId}`)}>
             Lists
           </span>
           <span
@@ -100,7 +101,7 @@ const ProfileLayout = () => {
                 ? "border-b-[0.01rem] border-gray-600"
                 : ""
             }`}
-            onClick={() => navigate(`/profile/about/${1}`)}>
+            onClick={() => navigate(`/profile/about/${userId}`)}>
             About
           </span>
         </div>

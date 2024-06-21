@@ -241,13 +241,13 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
           <div className='flex items-center justify-end gap-6'>
             <button
               type='button'
-              className='px-4 py-1.5 font-medium text-green-700 border-2 border-green-700 rounded-full'
+              className='px-4 py-1.5 text-sm h-10 font-medium text-green-700 border-2 border-green-700 rounded-full'
               onClick={cancelBtn}>
               Cancel
             </button>
             <button
               type='submit'
-              className='px-4 py-1.5 font-medium text-white bg-green-700 border-2 border-green-700 rounded-full '>
+              className='px-4 py-1.5 text-sm h-10  font-medium text-white bg-green-700 border-2 border-green-700 rounded-full '>
               Save
             </button>
           </div>

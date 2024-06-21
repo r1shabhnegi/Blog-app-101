@@ -27,4 +27,5 @@ export type PostType = {
   authorAvatar: string;
   readTime: number;
   createdAt: string;
+  tag: string;
 };

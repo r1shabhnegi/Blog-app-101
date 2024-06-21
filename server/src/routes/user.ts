@@ -161,7 +161,7 @@ router.post("/delete", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { password } = await c.req.json();
-
+  console.log(password);
   try {
     const foundUser = await prisma.user.findUnique({
       where: {
@@ -178,24 +178,30 @@ router.post("/delete", jwtVerify, async (c) => {
     }
 
     const isMatch = bcrypt.compareSync(password, foundUser.password);
-
+    console.log(isMatch);
     if (!isMatch) {
       c.status(403);
       return c.text("Wrong Password!");
     }
 
-    const deletedUser = await prisma.user.delete({
+    const deleteUserPosts = await prisma.post.deleteMany({
       where: {
-        id: userId,
+        authorId: userId,
       },
     });
 
-    console.log(deletedUser);
+    if (deleteUserPosts) {
+      const deletedUser = await prisma.user.delete({
+        where: {
+          id: userId,
+        },
+      });
+    }
 
     return c.json({ message: "Account deleted successfully!" }, 200);
   } catch (error) {
     c.status(500);
-    return c.text("something went wrong");
+    return c.text(`${error || "something went wrong"}`);
   }
 });
 

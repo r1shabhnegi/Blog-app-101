@@ -33,8 +33,6 @@ router.post("/", jwtVerify, async (c) => {
       return c.json({ message: error.message }, 403);
     }
 
-    // const tags = inputData.tags.split(",");
-
     try {
       const foundTag = await prisma.tag.findUnique({
         where: {
@@ -70,15 +68,13 @@ router.post("/", jwtVerify, async (c) => {
       return c.json({ message: "Error uploading image" }, 500);
     }
 
+    // c.env.BLOG_APP_UPLOADS.delete()
+
     const imageUrl = `${c.env.R2_URL}/${imageFile?.key}`;
 
     const contentLength = inputData.content.split(" ").length;
-    let readTime = 0;
-    if (contentLength < 200) {
-      readTime = 1;
-    } else if (contentLength > 200) {
-      readTime = Math.round(contentLength / 200);
-    }
+    const readTime = Math.max(1, Math.round(contentLength / 200));
+
     const userDetails = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -88,16 +84,18 @@ router.post("/", jwtVerify, async (c) => {
         avatar: true,
       },
     });
-
+    console.log(userDetails);
     if (!userDetails) {
       throw new Error("Something went wrong");
     }
+    // console.log(inputData.tag);
+
     const createdPost = await prisma.post.create({
       data: {
         title: inputData.title,
         content: inputData.content,
         authorId: userId,
-        authorAvatar: userDetails.avatar || "",
+        authorAvatar: userDetails.avatar,
         authorName: userDetails.name,
         previewImage: imageUrl,
         readTime,
@@ -105,7 +103,7 @@ router.post("/", jwtVerify, async (c) => {
       },
     });
 
-    console.log(createdPost);
+    // console.log(createdPost);
     if (!createdPost) {
       return c.json({ message: "Error creating post" }, 500);
     }

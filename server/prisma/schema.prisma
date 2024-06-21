@@ -46,15 +46,15 @@ model Post {
   content String
   authorId String
   authorName String
-  authorAvatar String
+  authorAvatar String?
   previewImage String
-  author User @relation(fields: [authorId], references: [id])
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   claps Int @default(0)
   createdAt DateTime @default(now())
   readTime Int @default(0)
   readBy User[] @relation("readingHistory")
   comments Comment[]
-  tag String
+  tag String @default("")
 }
 
 model Comment {
