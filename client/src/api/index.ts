@@ -3,10 +3,8 @@ import {
   signupType,
   SigninType,
   EditUserInfoType,
-  PublishPostType,
 } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
-import { UserType } from "@/lib/types";
 
 export const serverStatus = async () => {
   const response = await axios.get(import.meta.env.VITE_BACKEND_URL);
@@ -124,6 +122,44 @@ export const deleteUser = async ({ password }: { password: string }) => {
     data: { password },
   });
   console.log({ password });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const deletePost = async (postId: string) => {
+  const response = await apiClient.query({
+    url: "/post",
+    method: "DELETE",
+    data: { postId },
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const bookmark = async (postId: string) => {
+  const response = await apiClient.query({
+    url: "/bookmark",
+    method: "POST",
+    data: { postId },
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const isBookmarked = async (postId: string) => {
+  const response = await apiClient.query({
+    url: `/bookmark/${postId}`,
+    method: "GET",
+  });
 
   if (response.error) {
     throw new Error(response.error.data);

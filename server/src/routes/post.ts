@@ -141,4 +141,28 @@ router.get("/:userId/:page", async (c) => {
   return c.json(userAllPosts);
 });
 
+router.delete("/", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+
+  const { postId } = await c.req.json();
+  console.log(postId);
+  if (!postId) {
+    c.status(403);
+    return c.text("PostId required");
+  }
+
+  const deletedPost = await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+
+  if (!deletedPost) {
+    c.status(400);
+    return c.text("Error deleting post");
+  }
+
+  return c.json({ message: "Post deleted successfully" }, 200);
+});
+
 export default router;

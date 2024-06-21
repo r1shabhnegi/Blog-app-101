@@ -59,7 +59,9 @@ const DeleteAcCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
           />
         </label>
         <div className='flex justify-end gap-3'>
-          <button className='px-4 py-1.5 h-10  font-medium text-sm text-red-700 border-2 border-red-700 rounded-full'>
+          <button
+            className='px-4 py-1.5 h-10  font-medium text-sm text-red-700 border-2 border-red-700 rounded-full'
+            onClick={cancelBtn}>
             Cancel
           </button>
           <button

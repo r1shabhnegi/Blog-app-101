@@ -3,7 +3,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import profileDemo from "@/assets/profileImg.png";
 import { useNavigate } from "react-router-dom";
 import { multiFormatDateString } from "@/lib/checkData";
-import { Bookmark, Dot, Ellipsis } from "lucide-react";
+import {
+  Bookmark,
+  BookmarkCheck,
+  BookmarkCheckIcon,
+  Dot,
+  Ellipsis,
+} from "lucide-react";
 import { useAppSelector } from "@/redux/hook";
 import {
   DropdownMenu,
@@ -11,11 +17,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { bookmark, deletePost, isBookmarked } from "@/api";
+import { useToast } from "./ui/use-toast";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
   const { userId } = useAppSelector((state) => state.auth);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const isMod: boolean = postData?.authorId === userId ? true : false;
-  console.log(isMod);
+
+  const { data: isBookmark } = useQuery({
+    queryKey: ["check-bookmark", postData.id],
+    queryFn: () => isBookmarked(postData.id),
+  });
+  const { mutateAsync: deletePostAsync } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      toast({ title: "Post deleted", className: "bg-green-400" });
+      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+    },
+  });
+  const { mutateAsync: BookmarkMutate } = useMutation({
+    mutationFn: bookmark,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["check-bookmark"] });
+      // toast({ title: "Post deleted", className: "bg-green-400" });
+      // queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+    },
+  });
 
   const authorName = postData.authorName
     ? `${postData.authorName
@@ -25,8 +55,12 @@ const PostCard = ({ postData }: { postData: PostType }) => {
 
   const createdAt = multiFormatDateString(postData.createdAt);
 
-  // const handleDeletePost;
-
+  const handleDeletePost = async () => {
+    await deletePostAsync(postData.id);
+  };
+  const handleBookmark = async () => {
+    await BookmarkMutate(postData.id);
+  };
   return (
     <div className='flex flex-col items-start w-full py-2 border-b border-gray-300'>
       <div className='flex items-center justify-center gap-1 mb-1'>
@@ -82,7 +116,15 @@ const PostCard = ({ postData }: { postData: PostType }) => {
         </div>
 
         <div className='mr-[9.5rem] flex gap-5'>
-          <Bookmark className='text-gray-500 size-5' />
+          <button
+            className=''
+            onClick={handleBookmark}>
+            {isBookmark ? (
+              <BookmarkCheck className='text-gray-500 size-5' />
+            ) : (
+              <Bookmark className='text-gray-500 size-5' />
+            )}
+          </button>
           <DropdownMenu>
             <DropdownMenuTrigger
               asChild

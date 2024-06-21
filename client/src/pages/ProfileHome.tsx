@@ -24,9 +24,9 @@ const ProfileHome = () => {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    setPage(1);
-    setPosts([]);
-    setHasMore(true);
+    // setPage(1);
+    // setPosts([]);
+    // setHasMore(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -46,8 +46,8 @@ const ProfileHome = () => {
   }, [userPosts]);
 
   const fetchMorePosts = () => {
+    setPage((prev) => prev + 1);
     if (+numberOfPosts > posts.length) {
-      setPage((prev) => prev + 1);
       refetch();
     } else {
       setHasMore(false);

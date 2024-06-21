@@ -1,25 +1,18 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { Ellipsis } from "lucide-react";
+import { useAppDispatch } from "@/redux/hook";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/api";
-import Loader from "@/components/Loader";
-import { UserType } from "@/lib/types";
 import { useEffect } from "react";
 import { setCurrentProfile } from "@/redux/profileSlice";
 import Spinner from "@/components/Spinner";
+import ProfileDropDown from "@/components/ProfileDropDown";
 
 const ProfileLayout = () => {
   const { pathname } = useLocation();
   const { userId } = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const { data: userData, isPending } = useQuery({
     queryKey: ["getUser", userId],
@@ -32,7 +25,6 @@ const ProfileLayout = () => {
     }
   }, [dispatch, userData]);
 
-  const navigate = useNavigate();
   // const { name } = useAppSelector((state) => state.auth);
 
   const nameFirstLetter = userData?.name?.slice(0, 1).toUpperCase();
@@ -50,28 +42,7 @@ const ProfileLayout = () => {
           <h1 className='text-5xl font-semibold tracking-tight text-gray-800 '>
             {adminName}
           </h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              asChild
-              className='cursor-pointer'>
-              <Ellipsis className='text-gray-700' />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='px-4 w-44'>
-              <DropdownMenuItem className='my-2.5 text-gray-700 font-medium cursor-pointer '>
-                <span>Copy link to profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className='my-2.5 text-gray-700 font-medium cursor-pointer '
-                onClick={() => navigate("/reading-history")}>
-                <span>Reading history</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className='my-2.5 text-gray-700 font-medium cursor-pointer '
-                onClick={() => navigate("/settings")}>
-                <span>Settings</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ProfileDropDown />
         </div>
 
         <div className='flex gap-7 border-b-[0.01rem] border-gray-200'>
