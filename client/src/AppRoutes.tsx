@@ -11,6 +11,8 @@ import ReadingHistory from "./pages/ReadingHistory";
 import Settings from "./pages/Settings";
 import PublishLayout from "./layout/PublishLayout";
 import Publish from "./pages/Publish";
+import PostDetail from "./pages/PostDetail";
+import PostDetailLayout from "./layout/PostDetailLayout";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -41,6 +43,12 @@ const AppRoutes = () => {
         <Route
           path='/settings'
           element={<Settings />}
+        />
+      </Route>
+      <Route element={<PostDetailLayout />}>
+        <Route
+          path='/post/:postId'
+          element={<PostDetail />}
         />
       </Route>
       <Route element={<PublishLayout />}>

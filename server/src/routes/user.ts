@@ -184,6 +184,12 @@ router.post("/delete", jwtVerify, async (c) => {
       return c.text("Wrong Password!");
     }
 
+    const deleteSavedPosts = await prisma.savedPost.deleteMany({
+      where: {
+        userId,
+      },
+    });
+
     const deleteUserPosts = await prisma.post.deleteMany({
       where: {
         authorId: userId,
@@ -201,6 +207,33 @@ router.post("/delete", jwtVerify, async (c) => {
     return c.json({ message: "Account deleted successfully!" }, 200);
   } catch (error) {
     c.status(500);
+    return c.text(`${error || "something went wrong"}`);
+  }
+});
+
+router.post("/reading-history", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { postId } = await c.req.json();
+  console.log(postId);
+  try {
+    const foundUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        readingHistory: {
+          push: postId,
+        },
+      },
+    });
+    console.log(foundUser);
+    if (!foundUser) {
+      return c.text(`something went wrong`);
+    }
+
+    return c.json({ message: "Reading history updated" });
+  } catch (error) {
     return c.text(`${error || "something went wrong"}`);
   }
 });

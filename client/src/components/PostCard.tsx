@@ -3,23 +3,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import profileDemo from "@/assets/profileImg.png";
 import { useNavigate } from "react-router-dom";
 import { multiFormatDateString } from "@/lib/checkData";
-import {
-  Bookmark,
-  BookmarkCheck,
-  BookmarkCheckIcon,
-  Dot,
-  Ellipsis,
-} from "lucide-react";
+import { Bookmark, BookmarkCheck, Dot } from "lucide-react";
 import { useAppSelector } from "@/redux/hook";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { bookmark, deletePost, isBookmarked } from "@/api";
+import { addReadingHistory, bookmark, deletePost, isBookmarked } from "@/api";
 import { useToast } from "./ui/use-toast";
+import PostCardDropdown from "./PostCardDropdown";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
   const { userId } = useAppSelector((state) => state.auth);
@@ -28,8 +18,8 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   const isMod: boolean = postData?.authorId === userId ? true : false;
 
   const { data: isBookmark } = useQuery({
-    queryKey: ["check-bookmark", postData.id],
-    queryFn: () => isBookmarked(postData.id),
+    queryKey: ["check-bookmark", postData?.id],
+    queryFn: () => isBookmarked(postData?.id),
   });
   const { mutateAsync: deletePostAsync } = useMutation({
     mutationFn: deletePost,
@@ -42,9 +32,10 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     mutationFn: bookmark,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["check-bookmark"] });
-      // toast({ title: "Post deleted", className: "bg-green-400" });
-      // queryClient.invalidateQueries({ queryKey: ["userPosts"] });
     },
+  });
+  const { mutateAsync: readingHistoryMutate } = useMutation({
+    mutationFn: addReadingHistory,
   });
 
   const authorName = postData.authorName
@@ -61,8 +52,13 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   const handleBookmark = async () => {
     await BookmarkMutate(postData.id);
   };
+
+  const handleClickCard = async () => {
+    navigate(`/post/${postData?.id}`);
+    await readingHistoryMutate({ postId: postData.id });
+  };
   return (
-    <div className='flex flex-col items-start w-full py-2 border-b border-gray-300'>
+    <div className='flex flex-col items-start w-full my-2 mt-8 border-b border-gray-300'>
       <div className='flex items-center justify-center gap-1 mb-1'>
         <span
           className='flex items-center justify-center gap-2.5'
@@ -79,13 +75,17 @@ const PostCard = ({ postData }: { postData: PostType }) => {
               />
             </AvatarFallback>
           </Avatar>
-          <p className='text-sm font-medium text-gray-800'>{authorName}</p>
+          <p className='text-sm font-medium text-gray-800 cursor-pointer'>
+            {authorName}
+          </p>
         </span>
         <Dot className='text-gray-600 size-5' />
         <p className='text-sm font-medium text-gray-800'>{createdAt}</p>
       </div>
 
-      <div className='flex items-center justify-between w-full mb-8'>
+      <div
+        className='flex items-center justify-between w-full cursor-pointer'
+        onClick={handleClickCard}>
         <div className='flex flex-col text-wrap w-[35rem]'>
           <span className='text-xl font-bold text-gray-900 '>
             {postData.title}
@@ -104,8 +104,11 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           </div>
         ) : null}
       </div>
-      <div className='flex items-center justify-between w-full mb-8'>
-        <div className='flex gap-2'>
+
+      <div className='flex items-center justify-between w-full my-8 '>
+        <div
+          className='flex gap-2 cursor-pointer'
+          onClick={handleClickCard}>
           <p className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-900 bg-gray-200 rounded-full '>
             {postData.tag}
           </p>
@@ -125,25 +128,10 @@ const PostCard = ({ postData }: { postData: PostType }) => {
               <Bookmark className='text-gray-500 size-5' />
             )}
           </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              asChild
-              className='cursor-pointer'>
-              <Ellipsis className='text-gray-500 size-5' />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='px-2 py-2 w-44'>
-              <DropdownMenuItem className='font-medium text-gray-700 cursor-pointer '>
-                <span>Follow author</span>
-              </DropdownMenuItem>
-              {isMod ? (
-                <DropdownMenuItem
-                  className='font-medium text-gray-700 cursor-pointer'
-                  onClick={handleDeletePost}>
-                  <span>Delete post</span>
-                </DropdownMenuItem>
-              ) : null}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <PostCardDropdown
+            isMod={isMod}
+            handleDeletePost={() => handleDeletePost()}
+          />
         </div>
       </div>
     </div>

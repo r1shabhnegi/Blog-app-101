@@ -166,3 +166,16 @@ export const isBookmarked = async (postId: string) => {
   }
   return response.data;
 };
+
+export const addReadingHistory = async ({ postId }: { postId: string }) => {
+  const response = await apiClient.query({
+    url: `/user/reading-history`,
+    method: "POST",
+    data: { postId },
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};

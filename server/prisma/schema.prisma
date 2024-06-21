@@ -22,7 +22,7 @@ model User {
   avatar String?
   posts Post[]
   createdAt DateTime @default(now())
-  readingHistory Post[] @relation("readingHistory")
+  readingHistory String[]
   about String? @default("")
   savedPosts SavedPost[]
   comments Comment[]
@@ -52,7 +52,6 @@ model Post {
   claps Int @default(0)
   createdAt DateTime @default(now())
   readTime Int @default(0)
-  readBy User[] @relation("readingHistory")
   comments Comment[]
   tag String @default("")
 }

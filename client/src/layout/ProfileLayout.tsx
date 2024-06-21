@@ -37,7 +37,7 @@ const ProfileLayout = () => {
   if (isPending) return <Spinner />;
   return (
     <div>
-      <div className='flex flex-col justify-between h-32 my-16'>
+      <div className='flex flex-col justify-between h-32 mt-16 mb-10'>
         <div className='flex items-center justify-between'>
           <h1 className='text-5xl font-semibold tracking-tight text-gray-800 '>
             {adminName}
