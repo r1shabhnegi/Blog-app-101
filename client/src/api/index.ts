@@ -190,3 +190,26 @@ export const getPost = async ({ postId }: { postId: string | undefined }) => {
   }
   return response.data;
 };
+
+export const allLatestPost = async (page: string) => {
+  const response = await apiClient.query({
+    url: `/post/all/${page}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const followAndUnFollow = async (userId: string) => {
+  const response = await apiClient.query({
+    url: `/follow`,
+    method: "POST",
+    data: userId,
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};

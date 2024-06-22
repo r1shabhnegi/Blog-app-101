@@ -136,7 +136,24 @@ router.get("/get/:postId", jwtVerify, async (c) => {
 });
 
 // all posts
-router.get("/all", async (c) => {});
+router.get("/all/:page", async (c) => {
+  const prisma = c.get("prisma");
+  const { page } = c.req.param();
+  const pageSize = 5;
+  try {
+    const allPosts = await prisma.post.findMany({
+      skip: (+page - 1) * pageSize,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return c.json(allPosts, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
 
 // user posts
 router.get("/:userId/:page", async (c) => {

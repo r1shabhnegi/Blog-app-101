@@ -7,6 +7,7 @@ export type UserCredentialsType = {
   avatar: undefined | string;
   token: undefined | string;
   isLoading: boolean;
+  totalPostsCount: number;
 };
 
 export type UserType = {

@@ -118,6 +118,8 @@ router.post("/", async (c) => {
       return c.json({ message: "Error updating refresh token" }, 403);
     }
 
+    const totalPostsCount = await prisma.post.count();
+
     const oneDayFromNow = new Date();
     oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
 
@@ -137,6 +139,7 @@ router.post("/", async (c) => {
         avatar: foundUser.avatar,
         bio: foundUser.bio,
         token: accessToken,
+        totalPostsCount: totalPostsCount || 0,
       },
       201
     );
@@ -255,7 +258,7 @@ router.get("/", async (c) => {
       expires: oneDayFromNow,
       partitioned: true,
     });
-
+    const totalPostsCount = await prisma.post.count();
     // Respond with new access token and user details
     return c.json(
       {
@@ -265,6 +268,7 @@ router.get("/", async (c) => {
         avatar: foundUser.avatar,
         bio: foundUser.bio,
         token: accessToken,
+        totalPostsCount: totalPostsCount || 0,
       },
       201
     );

@@ -1,10 +1,17 @@
 import { useAppSelector } from "@/redux/hook";
 
 import profileDeno from "../assets/profileImg.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProfileSidebar = () => {
   const { name, avatar, bio } = useAppSelector((state) => state.profile);
+  const { userId } = useAppSelector((state) => state.auth);
+  const { userId: userIdParam } = useParams();
+
+  console.log(userId);
+  console.log(userIdParam);
+
+  const isMod = userId === userIdParam ? true : false;
 
   const navigate = useNavigate();
 
@@ -19,8 +26,9 @@ const ProfileSidebar = () => {
       },
     });
   };
-  console.log(avatar);
   const profilePic = avatar && avatar.length > 5 ? avatar : profileDeno;
+
+  const handleFollowBtn = async () => {};
 
   return (
     <div className='flex flex-col'>
@@ -38,11 +46,23 @@ const ProfileSidebar = () => {
         <span className='mt-2'>
           <p className='text-sm font-medium text-gray-500 text-wrap'>{bio}</p>
         </span>
-        <span
-          className='mt-8 text-xs font-medium text-green-600 cursor-pointer'
-          onClick={handleEditBtn}>
-          Edit profile
-        </span>
+        {isMod ? (
+          <span
+            className='mt-8 text-xs font-medium text-green-600 cursor-pointer'
+            onClick={handleEditBtn}>
+            Edit profile
+          </span>
+        ) : null}
+
+        {!isMod ? (
+          <span>
+            <button
+              className='px-3.5 py-1.5 my-5 text-white bg-green-700 rounded-full'
+              onClick={handleFollowBtn}>
+              Follow
+            </button>
+          </span>
+        ) : null}
       </span>
     </div>
   );

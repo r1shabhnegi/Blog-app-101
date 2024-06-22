@@ -10,6 +10,7 @@ const initialState: UserCredentialsType = {
   avatar: undefined,
   token: undefined,
   isLoading: true,
+  totalPostsCount: 0,
 };
 
 const authSlice = createSlice({
@@ -17,7 +18,8 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUserCredentials: (state, { payload }) => {
-      const { userId, name, email, avatar, token, bio } = payload;
+      const { userId, name, email, avatar, token, bio, totalPostsCount } =
+        payload;
       state.isAuth = !!token && !!userId;
       state.userId = userId;
       state.name = name;
@@ -25,6 +27,7 @@ const authSlice = createSlice({
       state.avatar = avatar;
       state.token = token;
       state.bio = bio;
+      state.totalPostsCount = totalPostsCount;
     },
     setLogout: (state) => {
       state.isAuth = false;

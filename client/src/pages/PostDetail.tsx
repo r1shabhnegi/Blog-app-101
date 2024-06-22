@@ -7,13 +7,14 @@ import { multiFormatDateString } from "@/lib/checkData";
 import { Bookmark, BookmarkCheck, Dot, HandHeart, Link } from "lucide-react";
 import Comments from "@/components/Comments";
 import { useEffect } from "react";
+import Spinner from "@/components/Spinner";
 
 const PostDetail = () => {
   const { postId } = useParams();
   const queryClient = useQueryClient();
   console.log(postId);
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["post", postId],
     queryFn: () => getPost({ postId }),
   });
@@ -41,6 +42,8 @@ const PostDetail = () => {
   const handleBookmark = async () => {
     await BookmarkMutate(data?.id);
   };
+
+  if (isPending) return <Spinner />;
 
   return (
     <div className='max-w-[45rem] mx-auto w-full'>
@@ -103,8 +106,27 @@ const PostDetail = () => {
         </div>
 
         <div
-          className='py-10 htmlContentDetail'
+          className='pt-10 htmlContentDetail'
           dangerouslySetInnerHTML={{ __html: data?.content }}></div>
+      </div>
+
+      <div className='flex items-center justify-between border-b'>
+        <span className='flex items-center gap-2 py-2 '>
+          <HandHeart className='text-gray-500 cursor-pointer size-7' />
+          <Comments />
+        </span>
+        <span className='flex items-center gap-6'>
+          <button
+            className=''
+            onClick={handleBookmark}>
+            {isBookmark ? (
+              <BookmarkCheck className='text-gray-500 size-6' />
+            ) : (
+              <Bookmark className='text-gray-500 size-6' />
+            )}
+          </button>
+          <Link className='text-gray-500 size-6' />
+        </span>
       </div>
     </div>
   );

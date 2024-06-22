@@ -13,14 +13,26 @@ import PublishLayout from "./layout/PublishLayout";
 import Publish from "./pages/Publish";
 import PostDetail from "./pages/PostDetail";
 import PostDetailLayout from "./layout/PostDetailLayout";
+import HomeLatest from "./pages/HomeLatest";
+import HomeLayout from "./layout/HomeLayout";
+import HomeFollowing from "./pages/HomeFollowing";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route
-        path='/'
-        index
-        element={<MainPageLayout />}
-      />
+      <Route element={<MainPageLayout />}>
+        <Route element={<HomeLayout />}>
+          <Route
+            path='/'
+            index
+            element={<HomeLatest />}
+          />
+          <Route
+            path='/feed-following'
+            index
+            element={<HomeFollowing />}
+          />
+        </Route>
+      </Route>
       <Route element={<AuthLayout />}>
         <Route element={<ProfileLayout />}>
           <Route

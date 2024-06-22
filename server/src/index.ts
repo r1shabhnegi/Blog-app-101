@@ -8,6 +8,7 @@ import commentRouter from "./routes/comment";
 import tagRouter from "./routes/tag";
 import authRouter from "./routes/auth";
 import bookmarkRouter from "./routes/bookmark";
+import followRouter from "./routes/follow";
 
 const app = new Hono();
 
@@ -22,4 +23,5 @@ app.route("/api/v1/post", postRouter);
 app.route("/api/v1/bookmark", bookmarkRouter);
 app.route("/api/v1/comment", commentRouter);
 app.route("/api/v1/tag", tagRouter);
+app.route("/api/v1/follow", followRouter);
 export default app;

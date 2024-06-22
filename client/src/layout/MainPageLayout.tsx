@@ -1,10 +1,11 @@
-import Home from "@/pages/Home";
 import Landing from "@/pages/Landing";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import NavLayout from "./NavLayout";
 import { useEffect } from "react";
 import { setLoading } from "@/redux/authSlice";
 import { Loader } from "lucide-react";
+import HomeLatest from "@/pages/HomeLatest";
+import { Outlet } from "react-router-dom";
 
 const MainPageLayout = () => {
   const dispatch = useAppDispatch();
@@ -17,9 +18,10 @@ const MainPageLayout = () => {
 
   return !isLoading ? (
     isAuth ? (
-      <NavLayout>
-        <Home />
-      </NavLayout>
+      // <NavLayout>
+      //   <HomeLatest />
+      // </NavLayout>
+      <Outlet />
     ) : (
       <Landing />
     )
