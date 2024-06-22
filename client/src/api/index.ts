@@ -179,3 +179,14 @@ export const addReadingHistory = async ({ postId }: { postId: string }) => {
   }
   return response.data;
 };
+
+export const getPost = async ({ postId }: { postId: string | undefined }) => {
+  const response = await apiClient.query({
+    url: `/post/get/${postId}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};

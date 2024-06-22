@@ -114,7 +114,26 @@ router.post("/", jwtVerify, async (c) => {
 });
 
 // single post
-router.get("/get/:postId", async (c) => {});
+router.get("/get/:postId", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const { postId } = c.req.param();
+
+  try {
+    const postDetails = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!postDetails) {
+      return c.json({ message: "Error getting post" }, 500);
+    }
+
+    return c.json(postDetails, 200);
+  } catch (error) {
+    return c.json({ message: error }, 500);
+  }
+});
 
 // all posts
 router.get("/all", async (c) => {});

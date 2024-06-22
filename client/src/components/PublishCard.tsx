@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/redux/hook";
-import { Image, X } from "lucide-react";
+import { Image, Loader, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { useDropzone } from "react-dropzone";
 import { useState } from "react";
@@ -41,7 +41,7 @@ const PublishCard = ({
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const { mutateAsync: publishMutate } = useMutation({
+  const { mutateAsync: publishMutate, isPending } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
       queryClint.invalidateQueries({ queryKey: ["userPosts"] });
@@ -138,11 +138,12 @@ const PublishCard = ({
               )}
               <button
                 type='button'
+                disabled={isPending}
                 className={`${
                   !err && "mt-10"
                 } bg-green-600 py-1.5 px-4 font-medium rounded-full text-white`}
                 onClick={onSubmit}>
-                Publish
+                {isPending ? <Loader className='animate-spin' /> : "Publish"}
               </button>
             </div>
           </div>

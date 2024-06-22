@@ -114,7 +114,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           </p>
 
           <p className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-600'>
-            {postData.readTime} min
+            {postData.readTime} min read
           </p>
         </div>
 

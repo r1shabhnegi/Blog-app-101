@@ -23,13 +23,6 @@ const ProfileHome = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    // setPage(1);
-    // setPosts([]);
-    // setHasMore(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
   const {
     data: userPosts,
     refetch,
@@ -37,7 +30,19 @@ const ProfileHome = () => {
   } = useQuery({
     queryKey: ["userPosts", userId, page],
     queryFn: () => getUserPosts({ userId, page }),
+    staleTime: 1000,
+
+    // enabled: false,
   });
+
+  useEffect(() => {
+    // setPage(1);
+    // setPosts([]);
+    // setHasMore(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    // const res = refetch();
+    // console.log(res);
+  }, []);
 
   useMemo(() => {
     if (userPosts) {
@@ -53,8 +58,6 @@ const ProfileHome = () => {
       setHasMore(false);
     }
   };
-
-  // if (isPending) return <Spinner />;
 
   return isPending ? (
     <Spinner />
