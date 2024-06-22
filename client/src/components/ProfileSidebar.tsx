@@ -2,18 +2,29 @@ import { useAppSelector } from "@/redux/hook";
 
 import profileDeno from "../assets/profileImg.png";
 import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { checkFollow, followAndUnFollow } from "@/api";
 
 const ProfileSidebar = () => {
   const { name, avatar, bio } = useAppSelector((state) => state.profile);
   const { userId } = useAppSelector((state) => state.auth);
   const { userId: userIdParam } = useParams();
-
-  console.log(userId);
-  console.log(userIdParam);
-
+  const clientQuery = useQueryClient();
+  const navigate = useNavigate();
   const isMod = userId === userIdParam ? true : false;
 
-  const navigate = useNavigate();
+  const { data: followingStatus } = useQuery({
+    queryKey: ["checkFollow", userIdParam],
+    queryFn: () => checkFollow(userIdParam),
+    enabled: !isMod,
+  });
+
+  const { mutateAsync: followUnFollowMutate } = useMutation({
+    mutationFn: followAndUnFollow,
+    onSuccess: () => {
+      clientQuery.invalidateQueries({ queryKey: ["checkFollow"] });
+    },
+  });
 
   const adminName = name
     ? `${name.charAt(0).toUpperCase()}${name.slice(1)}`
@@ -28,7 +39,9 @@ const ProfileSidebar = () => {
   };
   const profilePic = avatar && avatar.length > 5 ? avatar : profileDeno;
 
-  const handleFollowBtn = async () => {};
+  const handleFollowBtn = async () => {
+    await followUnFollowMutate(userIdParam);
+  };
 
   return (
     <div className='flex flex-col'>
@@ -57,9 +70,13 @@ const ProfileSidebar = () => {
         {!isMod ? (
           <span>
             <button
-              className='px-3.5 py-1.5 my-5 text-white bg-green-700 rounded-full'
+              className={`px-3.5 py-1.5 my-5  ${
+                followingStatus
+                  ? "text-green-700 border border-green-700"
+                  : "text-white bg-green-700"
+              }  rounded-full`}
               onClick={handleFollowBtn}>
-              Follow
+              {followingStatus ? "Following" : "Follow"}
             </button>
           </span>
         ) : null}

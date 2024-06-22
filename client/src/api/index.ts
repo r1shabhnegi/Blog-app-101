@@ -202,11 +202,22 @@ export const allLatestPost = async (page: string) => {
   return response.data;
 };
 
-export const followAndUnFollow = async (userId: string) => {
+export const followAndUnFollow = async (userId: string | undefined) => {
   const response = await apiClient.query({
     url: `/follow`,
     method: "POST",
-    data: userId,
+    data: { userId },
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const checkFollow = async (userIdParam: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/follow/${userIdParam}`,
+    method: "GET",
   });
   if (response.error) {
     throw new Error(response.error.data);
