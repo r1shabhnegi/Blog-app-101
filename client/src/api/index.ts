@@ -5,6 +5,12 @@ import {
   EditUserInfoType,
 } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
+import {
+  FiveFollowingType,
+  GetFollowersType,
+  PostType,
+  UserType,
+} from "@/lib/types";
 
 export const serverStatus = async () => {
   const response = await axios.get(import.meta.env.VITE_BACKEND_URL);
@@ -83,7 +89,6 @@ export const createPost = async (data: FormData) => {
 };
 
 export const getUser = async (userId: string | undefined) => {
-  console.log(userId);
   const response = await apiClient.query({
     url: `/user/${userId}`,
     method: "GET",
@@ -93,7 +98,7 @@ export const getUser = async (userId: string | undefined) => {
     throw new Error(response?.error?.data);
   }
 
-  return response.data;
+  return response.data as UserType;
 };
 
 export const getUserPosts = async ({
@@ -112,7 +117,7 @@ export const getUserPosts = async ({
     throw new Error(response.error.data);
   }
 
-  return response.data;
+  return response.data as PostType[];
 };
 
 export const deleteUser = async ({ password }: { password: string }) => {
@@ -121,7 +126,6 @@ export const deleteUser = async ({ password }: { password: string }) => {
     method: "POST",
     data: { password },
   });
-  console.log({ password });
 
   if (response.error) {
     throw new Error(response.error.data);
@@ -155,7 +159,7 @@ export const bookmark = async (postId: string) => {
   return response.data;
 };
 
-export const isBookmarked = async (postId: string) => {
+export const isBookmarked = async (postId: string | undefined) => {
   const response = await apiClient.query({
     url: `/bookmark/${postId}`,
     method: "GET",
@@ -180,7 +184,7 @@ export const addReadingHistory = async ({ postId }: { postId: string }) => {
   return response.data;
 };
 
-export const getPost = async ({ postId }: { postId: string | undefined }) => {
+export const getPost = async (postId: string | undefined) => {
   const response = await apiClient.query({
     url: `/post/get/${postId}`,
     method: "GET",
@@ -188,7 +192,7 @@ export const getPost = async ({ postId }: { postId: string | undefined }) => {
   if (response.error) {
     throw new Error(response.error.data);
   }
-  return response.data;
+  return response.data as PostType;
 };
 
 export const allLatestPost = async (page: string) => {
@@ -199,7 +203,7 @@ export const allLatestPost = async (page: string) => {
   if (response.error) {
     throw new Error(response.error.data);
   }
-  return response.data;
+  return response.data as PostType[];
 };
 
 export const followAndUnFollow = async (userId: string | undefined) => {
@@ -223,4 +227,65 @@ export const checkFollow = async (userIdParam: string | undefined) => {
     throw new Error(response.error.data);
   }
   return response.data;
+};
+
+export const followerCount = async (userId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/follow/followers-count/${userId}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as { followerCount: number };
+};
+
+export const fiveFollowing = async (userId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/follow/get/five-following/${userId}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as FiveFollowingType[];
+};
+
+export const getHistoryPost = async (page: number) => {
+  const response = await apiClient.query({
+    url: `/post/reading-history/${page}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as PostType[];
+};
+
+export const countHistoryPost = async () => {
+  const response = await apiClient.query({
+    url: `/user/get/countReadingHistory`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as { count: number };
+};
+
+export const getFollowers = async ({
+  userId,
+  page,
+}: {
+  userId: string | undefined;
+  page: number | undefined;
+}) => {
+  const response = await apiClient.query({
+    url: `/follow/followers/${userId}/${page}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as GetFollowersType[];
 };

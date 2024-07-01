@@ -16,6 +16,7 @@ import PostDetailLayout from "./layout/PostDetailLayout";
 import HomeLatest from "./pages/HomeLatest";
 import HomeLayout from "./layout/HomeLayout";
 import HomeFollowing from "./pages/HomeFollowing";
+import Followers from "./pages/Followers";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -55,6 +56,10 @@ const AppRoutes = () => {
         <Route
           path='/settings'
           element={<Settings />}
+        />
+        <Route
+          path='/followers/:userId'
+          element={<Followers />}
         />
       </Route>
       <Route element={<PostDetailLayout />}>

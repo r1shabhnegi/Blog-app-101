@@ -84,11 +84,9 @@ router.post("/", jwtVerify, async (c) => {
         avatar: true,
       },
     });
-    console.log(userDetails);
     if (!userDetails) {
       throw new Error("Something went wrong");
     }
-    // console.log(inputData.tag);
 
     const createdPost = await prisma.post.create({
       data: {
@@ -103,7 +101,6 @@ router.post("/", jwtVerify, async (c) => {
       },
     });
 
-    // console.log(createdPost);
     if (!createdPost) {
       return c.json({ message: "Error creating post" }, 500);
     }
@@ -160,8 +157,6 @@ router.get("/:userId/:page", async (c) => {
   const prisma = c.get("prisma");
   const { userId, page } = c.req.param();
   const pageSize = 5;
-  console.log(userId);
-  console.log(page);
 
   const userAllPosts = await prisma.post.findMany({
     where: {
@@ -181,7 +176,6 @@ router.delete("/", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
 
   const { postId } = await c.req.json();
-  console.log(postId);
   if (!postId) {
     c.status(403);
     return c.text("PostId required");
@@ -200,5 +194,57 @@ router.delete("/", jwtVerify, async (c) => {
 
   return c.json({ message: "Post deleted successfully" }, 200);
 });
+
+router.get("/reading-history/:page", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { page } = c.req.param();
+
+  // const pageSize = 5;
+
+  try {
+    const getHistory = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        readingHistory: true,
+      },
+    });
+
+    const getHistoryPost = async (
+      posts: {
+        readingHistory: string[];
+      } | null
+    ) => {
+      let postsData: any[] = [];
+      if (posts) {
+        for (const postId of posts.readingHistory) {
+          try {
+            const post = await prisma.post.findUnique({
+              where: {
+                id: postId,
+              },
+            });
+
+            if (post) postsData.push(post);
+            console.log(postsData);
+          } catch (error) {
+            return c.text(`${error || "Something went wrong"}`);
+          }
+        }
+      }
+      return postsData;
+    };
+
+    const postsArr = await getHistoryPost(getHistory);
+
+    return c.json(postsArr, 200);
+  } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+router.get("/followingUserPosts");
 
 export default router;

@@ -8,6 +8,7 @@ const profileSlice = createSlice({
     avatar: "",
     bio: "",
     numberOfPosts: "",
+    totalFollowers: 0,
   },
   reducers: {
     setCurrentProfile: (state, { payload }) => {
@@ -18,8 +19,12 @@ const profileSlice = createSlice({
       state.bio = bio;
       state.numberOfPosts = numberOfPosts;
     },
+
+    setFollowerCount: (state, { payload }) => {
+      state.totalFollowers = payload;
+    },
   },
 });
 
-export const { setCurrentProfile } = profileSlice.actions;
+export const { setCurrentProfile, setFollowerCount } = profileSlice.actions;
 export default profileSlice.reducer;

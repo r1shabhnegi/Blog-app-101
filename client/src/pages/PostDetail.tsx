@@ -16,7 +16,7 @@ const PostDetail = () => {
 
   const { data, isPending } = useQuery({
     queryKey: ["post", postId],
-    queryFn: () => getPost({ postId }),
+    queryFn: () => getPost(postId),
   });
 
   const { data: isBookmark } = useQuery({

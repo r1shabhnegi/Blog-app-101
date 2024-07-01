@@ -1,20 +1,12 @@
 import { getUserPosts } from "@/api";
 import PostCard from "@/components/PostCard";
 import Spinner from "@/components/Spinner";
+import { PostType } from "@/lib/types";
 import { useAppSelector } from "@/redux/hook";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";
-
-type PostType = {
-  id: string;
-  title: string;
-  content: string;
-  authorId: string;
-  previewImage: string;
-  readTime: number;
-};
 
 const ProfileHome = () => {
   const { userId } = useParams();
@@ -30,18 +22,14 @@ const ProfileHome = () => {
   } = useQuery({
     queryKey: ["userPosts", userId, page],
     queryFn: () => getUserPosts({ userId, page }),
-    staleTime: 1000,
-
-    // enabled: false,
+    gcTime: 0,
   });
 
   useEffect(() => {
-    // setPage(1);
-    // setPosts([]);
-    // setHasMore(true);
+    setPage(1);
+    setPosts([]);
+    setHasMore(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    // const res = refetch();
-    // console.log(res);
   }, []);
 
   useMemo(() => {
@@ -71,8 +59,8 @@ const ProfileHome = () => {
         next={fetchMorePosts}>
         {posts.map((post: PostType) => (
           <PostCard
-            key={post.id}
             postData={post}
+            key={post.id}
           />
         ))}
       </InfiniteScroll>

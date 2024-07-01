@@ -15,14 +15,13 @@ const HomeLatest = () => {
   const { data, isPending, refetch } = useQuery({
     queryKey: ["latestPosts", page],
     queryFn: () => allLatestPost(`${page}`),
+    gcTime: 0,
   });
   useEffect(() => {
-    // setPage(1);
-    // setPosts([]);
-    // setHasMore(true);
+    setPage(1);
+    setPosts([]);
+    setHasMore(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    // const res = refetch();
-    // console.log(res);
   }, []);
 
   useMemo(() => {

@@ -12,6 +12,7 @@ import { useToast } from "./ui/use-toast";
 import PostCardDropdown from "./PostCardDropdown";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
+
   const { userId } = useAppSelector((state) => state.auth);
   const { toast } = useToast();
   const queryClient = useQueryClient();

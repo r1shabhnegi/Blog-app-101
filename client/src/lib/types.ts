@@ -31,3 +31,16 @@ export type PostType = {
   createdAt: string;
   tag: string;
 };
+
+export type FiveFollowingType = {
+  id: string;
+  name: string;
+  avatar: string;
+};
+
+export type GetFollowersType = {
+  id: string;
+  name: string;
+  avatar: string;
+  bio: string;
+};

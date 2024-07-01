@@ -211,12 +211,56 @@ router.post("/delete", jwtVerify, async (c) => {
   }
 });
 
+router.get("/get/countReadingHistory", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  // console.log(userId);
+  console.log(userId);
+  try {
+    const readingHistoryPosts = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        readingHistory: true,
+      },
+    });
+
+    const count = readingHistoryPosts?.readingHistory.length;
+    console.log(count);
+    return c.json({ count }, 200);
+  } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
 router.post("/reading-history", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { postId } = await c.req.json();
-  console.log(postId);
   try {
+    const count = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        readingHistory: true,
+      },
+    });
+
+    if (count && +count?.readingHistory.length >= 50) {
+      const newArr = count?.readingHistory.slice(0, 39);
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          readingHistory: newArr,
+        },
+      });
+    }
+
     const foundUser = await prisma.user.update({
       where: {
         id: userId,
@@ -227,7 +271,7 @@ router.post("/reading-history", jwtVerify, async (c) => {
         },
       },
     });
-    console.log(foundUser);
+
     if (!foundUser) {
       return c.text(`something went wrong`);
     }
@@ -237,5 +281,31 @@ router.post("/reading-history", jwtVerify, async (c) => {
     return c.text(`${error || "something went wrong"}`);
   }
 });
+
+// router.get("/reading-history/:page", jwtVerify, async (c) => {
+//   const prisma = c.get("prisma");
+//   const userId = c.get("userId");
+//   const { page } = c.req.param();
+
+//   const pageSize = 5;
+
+//   try {
+//     const getHistory = await prisma.user.findMany({
+//       where: {
+//         id: userId,
+//       },
+//       select: {
+//         readingHistory: true,
+//       },
+//       skip: (+page - 1) * pageSize,
+//       take: pageSize,
+//     });
+
+//     console.log(getHistory);
+//     return c.json(getHistory, 200);
+//   } catch (error) {
+//     return c.text(`${error || "Something went wrong"}`);
+//   }
+// });
 
 export default router;
