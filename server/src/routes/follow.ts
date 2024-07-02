@@ -195,9 +195,67 @@ router.get("/followers/:userId/:page", jwtVerify, async (c) => {
       }
     };
 
-    // Example usage:
     const usersData = await getFollowersData(followers);
-    console.log("Users data:", usersData);
+    // console.log("Users data:", usersData);
+
+    return c.json(usersData, 200);
+  } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+router.get("/followings/:userId", async (c) => {
+  const prisma = c.get("prisma");
+  const { userId } = c.req.param();
+
+  console.log("sdsdsdsd");
+
+  try {
+    const followings = await prisma.follows.findMany({
+      where: {
+        followerId: userId,
+      },
+      select: {
+        followingId: true,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+
+    const getFollowingsData = async (users: { followingId: string }[]) => {
+      try {
+        const usersArr: any[] = [];
+        for (const { followingId } of users) {
+          const userData = await prisma.user.findUnique({
+            where: {
+              id: followingId,
+            },
+            select: {
+              id: true,
+              avatar: true,
+              name: true,
+              bio: true,
+            },
+          });
+
+          if (userData) {
+            usersArr.push(userData);
+          } else {
+            console.log(`User not found for follower with ID ${followingId}`);
+          }
+        }
+
+        return usersArr;
+      } catch (error) {
+        console.error(
+          `Error fetching user data: ${error || "Something went wrong"}`
+        );
+        throw error; // Rethrow the error or handle it further
+      }
+    };
+
+    const usersData = await getFollowingsData(followings);
 
     return c.json(usersData, 200);
   } catch (error) {

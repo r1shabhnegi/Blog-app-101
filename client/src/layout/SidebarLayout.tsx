@@ -6,8 +6,11 @@ const SidebarLayout = () => {
   return (
     <div className='border-l-[0.01rem] border-gray-200 w-[21rem] h-96'>
       <div className='pl-10 pr-4 mt-10'>
-        {pathname.startsWith("/profile") ? <ProfileSidebar /> : null}
-        {pathname.startsWith("/followers") ? <ProfileSidebar /> : null}
+        {pathname.startsWith("/profile") ||
+        pathname.startsWith("/reading-history") ||
+        pathname.startsWith("/followers") ? (
+          <ProfileSidebar />
+        ) : null}
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
-import { checkFollow, followAndUnFollow, getFollowers } from "@/api";
+import { getFollowers } from "@/api";
 import Spinner from "@/components/Spinner";
 import { GetFollowersType } from "@/lib/types";
 import { useAppSelector } from "@/redux/hook";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";

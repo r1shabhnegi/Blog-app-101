@@ -3,6 +3,7 @@ export type UserCredentialsType = {
   userId: undefined | string;
   name: undefined | string;
   bio: undefined | string;
+  about: string | undefined;
   email: undefined | string;
   avatar: undefined | string;
   token: undefined | string;

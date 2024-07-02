@@ -249,14 +249,16 @@ router.post("/reading-history", jwtVerify, async (c) => {
     });
 
     if (count && +count?.readingHistory.length >= 50) {
-      const newArr = count?.readingHistory.slice(0, 39);
+      const newArr = count?.readingHistory.slice(11, 50);
+
+      const newFilteredArr = newArr.filter((id) => id !== postId);
 
       await prisma.user.update({
         where: {
           id: userId,
         },
         data: {
-          readingHistory: newArr,
+          readingHistory: newFilteredArr,
         },
       });
     }
@@ -307,5 +309,50 @@ router.post("/reading-history", jwtVerify, async (c) => {
 //     return c.text(`${error || "Something went wrong"}`);
 //   }
 // });
+
+router.get("/get/about", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  console.log("userId-", userId);
+  try {
+    const about = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        about: true,
+      },
+    });
+    console.log(about);
+    return c.json(about, 200);
+  } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+router.post("/about", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { about } = await c.req.json();
+
+  try {
+    const aboutAdded = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        about,
+      },
+    });
+
+    if (!aboutAdded) {
+      return c.text("something went wrong adding user about", 500);
+    }
+
+    return c.json({ message: "done" }, 200);
+  } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
 
 export default router;

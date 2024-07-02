@@ -195,10 +195,9 @@ router.delete("/", jwtVerify, async (c) => {
   return c.json({ message: "Post deleted successfully" }, 200);
 });
 
-router.get("/reading-history/:page", jwtVerify, async (c) => {
+router.get("/reading-history", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
-  const { page } = c.req.param();
 
   // const pageSize = 5;
 
@@ -212,34 +211,23 @@ router.get("/reading-history/:page", jwtVerify, async (c) => {
       },
     });
 
-    const getHistoryPost = async (
-      posts: {
-        readingHistory: string[];
-      } | null
-    ) => {
-      let postsData: any[] = [];
-      if (posts) {
-        for (const postId of posts.readingHistory) {
-          try {
-            const post = await prisma.post.findUnique({
-              where: {
-                id: postId,
-              },
-            });
+    if (!getHistory) {
+      throw new Error("Error getting post Ids");
+    }
 
-            if (post) postsData.push(post);
-            console.log(postsData);
-          } catch (error) {
-            return c.text(`${error || "Something went wrong"}`);
-          }
-        }
-      }
-      return postsData;
-    };
+    const postsDetailsArray = [];
 
-    const postsArr = await getHistoryPost(getHistory);
+    for (const postId of getHistory?.readingHistory) {
+      const postDetail = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
 
-    return c.json(postsArr, 200);
+      if (postDetail) postsDetailsArray.push(postDetail);
+    }
+
+    return c.json(postsDetailsArray, 200);
   } catch (error) {
     return c.text(`${error || "Something went wrong"}`);
   }

@@ -23,7 +23,7 @@ model User {
   posts Post[]
   createdAt DateTime @default(now())
   readingHistory String[]
-  about String? @default("")
+  about String?
   savedPosts SavedPost[]
   comments Comment[]
   follower Follows[] @relation("follower")

@@ -57,7 +57,7 @@ const ProfileLayout = () => {
             onClick={() => navigate(`/profile/${userId}`)}>
             Home
           </span>
-          <span
+          {/* <span
             className={`text-sm font-medium pb-4 cursor-pointer  text-gray-600 ${
               pathname.startsWith("/profile/lists")
                 ? "border-b-[0.01rem] border-gray-600"
@@ -65,7 +65,7 @@ const ProfileLayout = () => {
             }`}
             onClick={() => navigate(`/profile/lists/${userId}`)}>
             Lists
-          </span>
+          </span> */}
           <span
             className={`text-sm font-medium pb-4 cursor-pointer  text-gray-600 ${
               pathname.startsWith("/profile/about")

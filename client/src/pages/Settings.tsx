@@ -1,12 +1,15 @@
 import DeleteAcCard from "@/components/DeleteAcCard";
 import EditUserInfoCard from "@/components/EditUserInfoCard";
+import { useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Settings = () => {
   const [isEditUserInfoCard, setIsEditUserInfoCard] = useState<boolean>(false);
   const [isDeleteAcCard, setIsDeleteAcCard] = useState<boolean>(false);
 
+  const { userId } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
   const { state } = useLocation();
   const isOpenEditCard = state?.isOpenEditCard;
 
@@ -36,7 +39,9 @@ const Settings = () => {
           <p className='text-gray-800 '>Change password</p>
           <p className='text-gray-400'>Create new password with old password</p>
         </span>
-        <span className='text-[13.5px] flex flex-col gap-2  text-sm font-medium  cursor-pointer '>
+        <span
+          className='text-[13.5px] flex flex-col gap-2  text-sm font-medium  cursor-pointer'
+          onClick={() => navigate(`/reading-history/${userId}`)}>
           <p className='text-gray-800'>Reading history</p>
           <p className='text-gray-400'>Look and delete reading history</p>
         </span>

@@ -251,9 +251,9 @@ export const fiveFollowing = async (userId: string | undefined) => {
   return response.data as FiveFollowingType[];
 };
 
-export const getHistoryPost = async (page: number) => {
+export const getHistoryPost = async () => {
   const response = await apiClient.query({
-    url: `/post/reading-history/${page}`,
+    url: `/post/reading-history`,
     method: "GET",
   });
   if (response.error) {
@@ -288,4 +288,38 @@ export const getFollowers = async ({
     throw new Error(response.error.data);
   }
   return response.data as GetFollowersType[];
+};
+
+export const getAbout = async () => {
+  const response = await apiClient.query({
+    url: `/user/get/about`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as { about: string } | undefined;
+};
+
+export const addAbout = async (about: string) => {
+  const response = await apiClient.query({
+    url: `/user/about`,
+    method: "POST",
+    data: { about },
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const getFollowings = async (userId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/follow/followings/${userId}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
 };

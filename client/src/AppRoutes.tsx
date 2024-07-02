@@ -17,6 +17,7 @@ import HomeLatest from "./pages/HomeLatest";
 import HomeLayout from "./layout/HomeLayout";
 import HomeFollowing from "./pages/HomeFollowing";
 import Followers from "./pages/Followers";
+import Followings from "./pages/Followings";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -50,7 +51,7 @@ const AppRoutes = () => {
           />
         </Route>
         <Route
-          path='/reading-history'
+          path='/reading-history/:userId'
           element={<ReadingHistory />}
         />
         <Route
@@ -60,6 +61,10 @@ const AppRoutes = () => {
         <Route
           path='/followers/:userId'
           element={<Followers />}
+        />
+        <Route
+          path='/followings/:userId'
+          element={<Followings />}
         />
       </Route>
       <Route element={<PostDetailLayout />}>

@@ -73,6 +73,10 @@ const ProfileSidebar = () => {
     await followUnFollowMutate(userIdParam);
   };
 
+  // const handleShowFollowing = async () => {
+
+  // };
+
   return (
     <div className='flex flex-col'>
       <span className='flex flex-col justify-center w-24'>
@@ -99,9 +103,7 @@ const ProfileSidebar = () => {
           onClick={handleEditBtn}>
           Edit profile
         </span>
-      ) : null}
-
-      {!isMod ? (
+      ) : (
         <span>
           <button
             className={`px-3.5 py-1.5 my-5  ${
@@ -113,7 +115,11 @@ const ProfileSidebar = () => {
             {followingStatus ? "Following" : "Follow"}
           </button>
         </span>
-      ) : null}
+      )}
+
+      {/* {!isMod ? (
+       
+      ) : null} */}
 
       <span className='flex flex-col gap-4 mt-6'>
         <p className='font-medium text-gray-700'>Following</p>
@@ -150,7 +156,9 @@ const ProfileSidebar = () => {
         </span>
         <span>
           {fiveFollowingData && fiveFollowingData?.length >= 5 ? (
-            <p className='text-xs font-medium text-gray-500 cursor-pointer hover:underline'>
+            <p
+              onClick={() => navigate(`/followings/${userIdParam}`)}
+              className='text-xs font-medium text-gray-500 cursor-pointer hover:underline'>
               Show all
             </p>
           ) : null}

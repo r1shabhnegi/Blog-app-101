@@ -6,6 +6,7 @@ const initialState: UserCredentialsType = {
   userId: undefined,
   name: undefined,
   bio: undefined,
+  about: undefined,
   email: undefined,
   avatar: undefined,
   token: undefined,

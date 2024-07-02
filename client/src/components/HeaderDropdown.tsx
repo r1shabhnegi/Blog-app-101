@@ -78,7 +78,7 @@ const HeaderDropdown = () => {
 
           <DropdownMenuItem
             className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
-            onClick={() => navigate("/reading-history")}>
+            onClick={() => navigate(`/reading-history/${userId}`)}>
             <History className='mr-2 size-5' />
             <span>Reading history</span>
           </DropdownMenuItem>

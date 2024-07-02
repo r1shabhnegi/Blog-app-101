@@ -140,6 +140,7 @@ router.post("/", async (c) => {
         bio: foundUser.bio,
         token: accessToken,
         totalPostsCount: totalPostsCount || 0,
+        about: foundUser.about
       },
       201
     );
@@ -269,6 +270,7 @@ router.get("/", async (c) => {
         bio: foundUser.bio,
         token: accessToken,
         totalPostsCount: totalPostsCount || 0,
+        about: foundUser.about,
       },
       201
     );
