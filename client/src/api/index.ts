@@ -323,3 +323,34 @@ export const getFollowings = async (userId: string | undefined) => {
   }
   return response.data;
 };
+
+export const getTag = async ({
+  name,
+  page,
+}: {
+  name: string | undefined;
+  page: number;
+}) => {
+  const response = await apiClient.query({
+    url: `/tag/get/${name}/${page}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as { countTagPosts: number; posts: PostType[] };
+};
+
+export const tagNames = async () => {
+  const response = await apiClient.query({
+    url: `/tag/names`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as {
+    id: string;
+    name: string;
+  }[];
+};

@@ -15,13 +15,26 @@ const router = new Hono<{
   };
 }>();
 
-router.get("/:name/:page", jwtVerify, async (c) => {
+router.get("/names", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
-  //   const userId = c.get("userId");
+  try {
+    const tagNames = await prisma.tag.findMany({
+      orderBy: {
+        id: "asc",
+      },
+      take: 10,
+    });
+    console.log(tagNames);
+    return c.json(tagNames);
+  } catch (error) {}
+});
+
+router.get("/get/:name/:page", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
   const { name, page } = c.req.param();
 
   const pageSize = 10;
-
+  console.log(page, name);
   try {
     const countTagPosts = await prisma.post.count({
       where: {

@@ -107,14 +107,16 @@ const PostCard = ({ postData }: { postData: PostType }) => {
       </div>
 
       <div className='flex items-center justify-between w-full my-8 '>
-        <div
-          className='flex gap-2 cursor-pointer'
-          onClick={handleClickCard}>
-          <p className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-900 bg-gray-200 rounded-full '>
+        <div className='flex gap-2 cursor-pointer'>
+          <p
+            className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-900 cursor-pointer bg-gray-200 rounded-full '
+            onClick={() => navigate(`/tag/${postData.tag}`)}>
             {postData.tag}
           </p>
 
-          <p className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-600'>
+          <p
+            className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-600'
+            onClick={handleClickCard}>
             {postData.readTime} min read
           </p>
         </div>

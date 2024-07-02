@@ -1,3 +1,4 @@
+import HomeSidebar from "@/components/HomeSidebar";
 import ProfileSidebar from "@/components/ProfileSidebar";
 import { useLocation } from "react-router-dom";
 
@@ -11,6 +12,7 @@ const SidebarLayout = () => {
         pathname.startsWith("/followers") ? (
           <ProfileSidebar />
         ) : null}
+        {pathname === "/" ? <HomeSidebar /> : null}
       </div>
     </div>
   );

@@ -12,12 +12,13 @@ import Settings from "./pages/Settings";
 import PublishLayout from "./layout/PublishLayout";
 import Publish from "./pages/Publish";
 import PostDetail from "./pages/PostDetail";
-import PostDetailLayout from "./layout/PostDetailLayout";
 import HomeLatest from "./pages/HomeLatest";
 import HomeLayout from "./layout/HomeLayout";
 import HomeFollowing from "./pages/HomeFollowing";
 import Followers from "./pages/Followers";
 import Followings from "./pages/Followings";
+import NoSidebarLayout from "./layout/NoSidebarLayout";
+import Tag from "./pages/Tag";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -67,10 +68,15 @@ const AppRoutes = () => {
           element={<Followings />}
         />
       </Route>
-      <Route element={<PostDetailLayout />}>
+
+      <Route element={<NoSidebarLayout />}>
         <Route
           path='/post/:postId'
           element={<PostDetail />}
+        />
+        <Route
+          path='/tag/:name'
+          element={<Tag />}
         />
       </Route>
       <Route element={<PublishLayout />}>

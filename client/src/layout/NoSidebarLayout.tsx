@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Header from "@/components/Header";
 
-const PostDetailLayout = () => {
+const NoSidebarLayout = () => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((state) => state.auth);
   const { isAuth } = useAppSelector((state) => state.auth);
@@ -26,4 +26,4 @@ const PostDetailLayout = () => {
     <Loader />
   );
 };
-export default PostDetailLayout;
+export default NoSidebarLayout;

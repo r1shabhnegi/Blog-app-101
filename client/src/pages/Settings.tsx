@@ -45,10 +45,10 @@ const Settings = () => {
           <p className='text-gray-800'>Reading history</p>
           <p className='text-gray-400'>Look and delete reading history</p>
         </span>
-        <span className='text-[13.5px] flex flex-col gap-2  text-sm font-medium text-gray-800 cursor-pointer '>
+        {/* <span className='text-[13.5px] flex flex-col gap-2  text-sm font-medium text-gray-800 cursor-pointer '>
           <p className='text-gray-800'>Add cover</p>
           <p className='text-gray-400'>Add cover photo to your profile page</p>
-        </span>
+        </span> */}
         <span
           className='text-sm text-[13.5px] flex flex-col gap-2 font-medium cursor-pointer'
           onClick={() => setIsDeleteAcCard(!isDeleteAcCard)}>

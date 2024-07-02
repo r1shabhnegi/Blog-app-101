@@ -1,6 +1,6 @@
 import { bookmark, getPost, isBookmarked } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { multiFormatDateString } from "@/lib/checkData";
@@ -13,7 +13,7 @@ const PostDetail = () => {
   const { postId } = useParams();
   const queryClient = useQueryClient();
   console.log(postId);
-
+  const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ["post", postId],
     queryFn: () => getPost(postId),
@@ -72,7 +72,9 @@ const PostDetail = () => {
               <Dot className='text-gray-600 size-5' />
               <p className='text-sm font-medium text-gray-600'>{createdAt}</p>
               <Dot className='text-gray-600 size-5' />
-              <p className='px-2 text-sm pb-0.5 font-medium text-gray-600 bg-gray-200 rounded-full'>
+              <p
+                className='px-2 text-sm pb-0.5 font-medium text-gray-600 bg-gray-200 rounded-full cursor-pointer'
+                onClick={() => navigate(`/tag/${data?.tag}`)}>
                 {data?.tag}
               </p>
             </span>
