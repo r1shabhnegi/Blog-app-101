@@ -10,7 +10,6 @@ const Followings = () => {
     queryFn: () => getFollowings(userId),
   });
 
-  console.log(data);
   return <div>Followings</div>;
 };
 export default Followings;

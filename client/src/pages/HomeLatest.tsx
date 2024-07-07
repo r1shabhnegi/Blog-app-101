@@ -15,12 +15,8 @@ const HomeLatest = () => {
   const { data, isPending, refetch } = useQuery({
     queryKey: ["latestPosts", page],
     queryFn: () => allLatestPost(`${page}`),
-    gcTime: 0,
   });
   useEffect(() => {
-    setPage(1);
-    setPosts([]);
-    setHasMore(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -39,26 +35,23 @@ const HomeLatest = () => {
     }
   };
 
-  return isPending ? (
-    <Spinner />
-  ) : totalPostsCount !== 0 ? (
-    <div>
-      <InfiniteScroll
-        className='flex flex-col items-center justify-center'
-        dataLength={posts.length}
-        hasMore={hasMore}
-        loader={<Spinner />}
-        next={fetchMorePosts}>
-        {posts.map((post: PostType) => (
-          <PostCard
-            key={post.id}
-            postData={post}
-          />
-        ))}
-      </InfiniteScroll>
-    </div>
-  ) : (
-    <p className='text-2xl font-semibold text-gray-500'>No posts</p>
+  if (totalPostsCount == 0)
+    return <p className='text-2xl font-semibold text-gray-500'>No posts</p>;
+
+  return (
+    <InfiniteScroll
+      className='flex flex-col items-center justify-center'
+      dataLength={posts.length}
+      hasMore={hasMore}
+      loader={<Spinner />}
+      next={fetchMorePosts}>
+      {posts.map((post: PostType) => (
+        <PostCard
+          key={post.id}
+          postData={post}
+        />
+      ))}
+    </InfiniteScroll>
   );
 };
 export default HomeLatest;

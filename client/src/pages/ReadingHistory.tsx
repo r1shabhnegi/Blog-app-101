@@ -9,7 +9,7 @@ const ReadingHistory = () => {
   const { data: historyPosts, isPending } = useQuery({
     queryKey: ["getHistoryPosts"],
     queryFn: getHistoryPost,
-    gcTime: 0,
+    // gcTime: 0,
   });
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
 import { useAppSelector } from "@/redux/hook";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";
 
@@ -15,24 +15,17 @@ const ProfileHome = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  const {
-    data: userPosts,
-    refetch,
-    isPending,
-  } = useQuery({
+  const { data: userPosts, refetch } = useQuery({
     queryKey: ["userPosts", userId, page],
     queryFn: () => getUserPosts({ userId, page }),
-    gcTime: 0,
+    enabled: !!userId,
   });
 
   useEffect(() => {
-    setPage(1);
-    setPosts([]);
-    setHasMore(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     if (userPosts) {
       setPosts((prevPosts) => [...prevPosts, ...userPosts]);
     }
@@ -47,26 +40,23 @@ const ProfileHome = () => {
     }
   };
 
-  return isPending ? (
-    <Spinner />
-  ) : +numberOfPosts !== 0 ? (
-    <div>
-      <InfiniteScroll
-        className='flex flex-col items-center justify-center'
-        dataLength={posts.length}
-        hasMore={hasMore}
-        loader={<Spinner />}
-        next={fetchMorePosts}>
-        {posts.map((post: PostType) => (
-          <PostCard
-            postData={post}
-            key={post.id}
-          />
-        ))}
-      </InfiniteScroll>
-    </div>
-  ) : (
-    <p className='text-2xl font-semibold text-gray-500'>No posts</p>
+  if (numberOfPosts == 0)
+    return <p className='text-2xl font-semibold text-gray-500'>No posts</p>;
+
+  return (
+    <InfiniteScroll
+      className='flex flex-col items-center justify-center'
+      dataLength={posts.length}
+      hasMore={hasMore}
+      loader={<Spinner />}
+      next={fetchMorePosts}>
+      {posts.map((post: PostType) => (
+        <PostCard
+          postData={post}
+          key={post.id}
+        />
+      ))}
+    </InfiniteScroll>
   );
 };
 export default ProfileHome;

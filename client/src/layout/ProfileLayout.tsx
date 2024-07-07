@@ -17,6 +17,7 @@ const ProfileLayout = () => {
   const { data: userData, isPending } = useQuery({
     queryKey: ["getUser", userId],
     queryFn: () => getUser(userId),
+    enabled: !!userId,
   });
 
   useEffect(() => {
@@ -24,8 +25,6 @@ const ProfileLayout = () => {
       dispatch(setCurrentProfile(userData));
     }
   }, [dispatch, userData]);
-
-  // const { name } = useAppSelector((state) => state.auth);
 
   const nameFirstLetter = userData?.name?.slice(0, 1).toUpperCase();
   const nameRestLetters = userData?.name?.slice(1);

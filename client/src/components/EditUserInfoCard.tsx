@@ -84,7 +84,6 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(avatarFile);
     const options = {
       maxSizeMB: 0.7,
       maxWidthOrHeight: 1920,
@@ -103,9 +102,7 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
       } else {
         formData.append("avatar", avatarFile);
       }
-      for (const [key, value] of formData) {
-        console.log(key, value);
-      }
+     
       return formData;
     }
     try {

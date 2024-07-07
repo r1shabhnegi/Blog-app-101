@@ -46,16 +46,7 @@ const Publish = () => {
       StarterKit,
       Image,
       Placeholder.configure({
-        // Use a placeholder:
         placeholder: "Write something …",
-        // Use different placeholders depending on the node type:
-        // placeholder: ({ node }) => {
-        //   if (node.type.name === 'heading') {
-        //     return 'What’s the title?'
-        //   }
-
-        //   return 'Can you add some further context?'
-        // },
       }),
     ],
     content: editorState,

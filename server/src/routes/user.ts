@@ -248,8 +248,8 @@ router.post("/reading-history", jwtVerify, async (c) => {
       },
     });
 
-    if (count && +count?.readingHistory.length >= 50) {
-      const newArr = count?.readingHistory.slice(11, 50);
+    if (count && +count?.readingHistory.length >= 20) {
+      const newArr = count?.readingHistory.slice(11, 20);
 
       const newFilteredArr = newArr.filter((id) => id !== postId);
 
@@ -279,6 +279,46 @@ router.post("/reading-history", jwtVerify, async (c) => {
     }
 
     return c.json({ message: "Reading history updated" });
+  } catch (error) {
+    return c.text(`${error || "something went wrong"}`);
+  }
+});
+
+router.get("/get/saved-post/:page", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { page } = c.req.param();
+  const pageSize = 5;
+  try {
+    const countSaved = await prisma.savedPost.count({
+      where: {
+        userId,
+      },
+    });
+
+    const savedPosts = await prisma.savedPost.findMany({
+      where: { userId },
+      skip: (+page - 1) * pageSize,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        postId: true,
+      },
+    });
+
+    const savedPostArr = [];
+    for (const { postId } of savedPosts) {
+      const postData = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+      if (postData) savedPostArr.push(postData);
+    }
+
+    return c.json({ countSaved, savedPosts: savedPostArr }, 200);
   } catch (error) {
     return c.text(`${error || "something went wrong"}`);
   }

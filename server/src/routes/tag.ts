@@ -23,6 +23,7 @@ router.get("/names", jwtVerify, async (c) => {
         id: "asc",
       },
       take: 10,
+      skip: 0,
     });
     console.log(tagNames);
     return c.json(tagNames);

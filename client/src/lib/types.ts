@@ -23,7 +23,7 @@ export type UserType = {
 export type PostType = {
   id: string;
   title: string;
-  content: string;
+  content: string | TrustedHTML;
   previewImage: string;
   authorId: string;
   authorName: string;

@@ -146,7 +146,7 @@ export const deletePost = async (postId: string) => {
   return response.data;
 };
 
-export const bookmark = async (postId: string) => {
+export const bookmark = async (postId: string | undefined) => {
   const response = await apiClient.query({
     url: "/bookmark",
     method: "POST",
@@ -353,4 +353,30 @@ export const tagNames = async () => {
     id: string;
     name: string;
   }[];
+};
+
+export const getSavedPosts = async (page: number) => {
+  const response = await apiClient.query({
+    url: `/user/get/saved-post/${page}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as {
+    countSaved: number;
+    savedPosts: PostType[];
+  };
+};
+
+export const postStats = async (postId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/post/get/stats/${postId}`,
+    method: "GET",
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as { totalClaps: number; totalComments: number };
 };

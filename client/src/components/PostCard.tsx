@@ -3,13 +3,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import profileDemo from "@/assets/profileImg.png";
 import { useNavigate } from "react-router-dom";
 import { multiFormatDateString } from "@/lib/checkData";
-import { Bookmark, BookmarkCheck, Dot } from "lucide-react";
+import {
+  Bookmark,
+  BookmarkCheck,
+  Dot,
+  HandHeart,
+  MessageCircle,
+} from "lucide-react";
 import { useAppSelector } from "@/redux/hook";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addReadingHistory, bookmark, deletePost, isBookmarked } from "@/api";
+import {
+  addReadingHistory,
+  bookmark,
+  deletePost,
+  isBookmarked,
+  postStats,
+} from "@/api";
 import { useToast } from "./ui/use-toast";
 import PostCardDropdown from "./PostCardDropdown";
+import Comments from "./Comments";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
 
@@ -21,6 +34,12 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   const { data: isBookmark } = useQuery({
     queryKey: ["check-bookmark", postData?.id],
     queryFn: () => isBookmarked(postData?.id),
+    enabled: !!postData?.id,
+  });
+  const { data: postStatsData } = useQuery({
+    queryKey: ["postStats", postData?.id],
+    queryFn: () => postStats(postData?.id),
+    enabled: !!postData?.id,
   });
   const { mutateAsync: deletePostAsync } = useMutation({
     mutationFn: deletePost,
@@ -59,7 +78,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     await readingHistoryMutate({ postId: postData.id });
   };
   return (
-    <div className='flex flex-col items-start w-full my-2 mt-8 border-b border-gray-300'>
+    <div className='flex flex-col  items-start w-full my-2 mt-8 border-b border-[#e8e8e8]'>
       <div className='flex items-center justify-center gap-1 mb-1'>
         <span
           className='flex items-center justify-center gap-2.5'
@@ -96,18 +115,18 @@ const PostCard = ({ postData }: { postData: PostType }) => {
             dangerouslySetInnerHTML={{ __html: postData.content }}></span>
         </div>
         {postData.previewImage && postData.previewImage !== "" ? (
-          <div className='size-28'>
+          <div className='w-40 h-28'>
             <img
               src={postData.previewImage}
               alt='Img'
-              className='object-cover w-full size-28'
+              className='object-cover w-40 h-28'
             />
           </div>
         ) : null}
       </div>
 
       <div className='flex items-center justify-between w-full my-8 '>
-        <div className='flex gap-2 cursor-pointer'>
+        <div className='flex items-center gap-2 cursor-pointer'>
           <p
             className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-900 cursor-pointer bg-gray-200 rounded-full '
             onClick={() => navigate(`/tag/${postData.tag}`)}>
@@ -119,9 +138,21 @@ const PostCard = ({ postData }: { postData: PostType }) => {
             onClick={handleClickCard}>
             {postData.readTime} min read
           </p>
+          <span
+            onClick={handleClickCard}
+            className='flex gap-4'>
+            <span className='flex items-center gap-1'>
+              <HandHeart className='text-gray-500 cursor-pointer size-5' />
+              <p className='text-gray-400'>{postStatsData?.totalClaps}</p>
+            </span>
+            <span className='flex items-center gap-1'>
+              <MessageCircle className='text-gray-500 cursor-pointer size-4' />
+              <p className='text-gray-400'>{postStatsData?.totalComments}</p>
+            </span>
+          </span>
         </div>
 
-        <div className='mr-[9.5rem] flex gap-5'>
+        <div className='mr-[12rem] flex gap-5'>
           <button
             className=''
             onClick={handleBookmark}>

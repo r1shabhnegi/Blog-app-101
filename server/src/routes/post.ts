@@ -199,8 +199,6 @@ router.get("/reading-history", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
 
-  // const pageSize = 5;
-
   try {
     const getHistory = await prisma.user.findUnique({
       where: {
@@ -231,6 +229,44 @@ router.get("/reading-history", jwtVerify, async (c) => {
   } catch (error) {
     return c.text(`${error || "Something went wrong"}`);
   }
+});
+
+router.get("/get/stats/:postId", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { postId } = c.req.param();
+  console.log(postId);
+  try {
+    const countClaps = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        claps: true,
+      },
+    });
+
+    const countComments = await prisma.comment.count({
+      where: {
+        postId,
+      },
+    });
+
+    return c.json({
+      totalClaps: countClaps?.claps,
+      totalComments: countComments,
+    });
+  } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+router.post("/likePost/:postId", async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { postId } = c.req.param();
+  try {
+  } catch (error) {}
 });
 
 router.get("/followingUserPosts");

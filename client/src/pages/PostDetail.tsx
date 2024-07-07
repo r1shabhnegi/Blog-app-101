@@ -1,4 +1,4 @@
-import { bookmark, getPost, isBookmarked } from "@/api";
+import { bookmark, getPost, isBookmarked, postStats } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
@@ -12,7 +12,6 @@ import Spinner from "@/components/Spinner";
 const PostDetail = () => {
   const { postId } = useParams();
   const queryClient = useQueryClient();
-  console.log(postId);
   const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ["post", postId],
@@ -22,7 +21,14 @@ const PostDetail = () => {
   const { data: isBookmark } = useQuery({
     queryKey: ["check-bookmark", data?.id],
     queryFn: () => isBookmarked(data?.id),
+    enabled: !!data?.id,
   });
+  const { data: postStatsData } = useQuery({
+    queryKey: ["postStats", postId],
+    queryFn: () => postStats(postId),
+    enabled: !!postId,
+  });
+
   const { mutateAsync: BookmarkMutate } = useMutation({
     mutationFn: bookmark,
     onSuccess: () => {
@@ -83,8 +89,16 @@ const PostDetail = () => {
 
         <div className='flex items-center justify-between border-b'>
           <span className='flex items-center gap-2 py-2 '>
-            <HandHeart className='text-gray-500 cursor-pointer size-7' />
-            <Comments />
+            <span className='flex gap-4'>
+              <span className='flex items-center gap-2'>
+                <HandHeart className='text-gray-500 cursor-pointer size-7' />
+                <p className='text-xl text-gray-400'>
+                  {postStatsData?.totalClaps}
+                </p>
+              </span>
+
+              <Comments totalComments={postStatsData?.totalComments || 0} />
+            </span>
           </span>
           <span className='flex items-center gap-6'>
             <button
@@ -108,14 +122,22 @@ const PostDetail = () => {
         </div>
 
         <div
-          className='pt-10 htmlContentDetail'
+          className='pt-10 tiptap-detail htmlContentDetail'
           dangerouslySetInnerHTML={{ __html: data?.content }}></div>
       </div>
 
       <div className='flex items-center justify-between border-b'>
         <span className='flex items-center gap-2 py-2 '>
-          <HandHeart className='text-gray-500 cursor-pointer size-7' />
-          <Comments />
+          <span className='flex gap-4'>
+            <span className='flex items-center gap-2'>
+              <HandHeart className='text-gray-500 cursor-pointer size-7' />
+              <p className='text-xl text-gray-400'>
+                {postStatsData?.totalClaps}
+              </p>
+            </span>
+
+            <Comments totalComments={postStatsData?.totalComments || 0} />
+          </span>
         </span>
         <span className='flex items-center gap-6'>
           <button

@@ -3,15 +3,14 @@ import { Button } from "@/components/ui/button";
 // import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MessageCircle } from "lucide-react";
-const Comments = () => {
+const Comments = ({ totalComments }: { totalComments: number }) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant='ghost'
-          className='hover:bg-white'>
+        <span className='flex items-center gap-2'>
           <MessageCircle className='text-gray-500 cursor-pointer size-6' />
-        </Button>
+          <p className='text-xl text-gray-400'>{totalComments}</p>
+        </span>
       </SheetTrigger>
       <SheetContent></SheetContent>
     </Sheet>

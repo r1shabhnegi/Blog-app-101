@@ -7,7 +7,7 @@ const profileSlice = createSlice({
     about: "",
     avatar: "",
     bio: "",
-    numberOfPosts: "",
+    numberOfPosts: 0,
     totalFollowers: 0,
   },
   reducers: {
@@ -17,7 +17,7 @@ const profileSlice = createSlice({
       state.about = about;
       state.avatar = avatar;
       state.bio = bio;
-      state.numberOfPosts = numberOfPosts;
+      state.numberOfPosts = +numberOfPosts;
     },
 
     setFollowerCount: (state, { payload }) => {

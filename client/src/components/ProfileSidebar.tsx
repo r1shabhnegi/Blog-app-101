@@ -67,15 +67,9 @@ const ProfileSidebar = () => {
   };
   const profilePic = avatar && avatar.length > 5 ? avatar : profileDeno;
 
-  console.log(fiveFollowingData?.length);
-
   const handleFollowBtn = async () => {
     await followUnFollowMutate(userIdParam);
   };
-
-  // const handleShowFollowing = async () => {
-
-  // };
 
   return (
     <div className='flex flex-col'>

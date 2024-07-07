@@ -34,12 +34,23 @@ input:-webkit-autofill:active {
   color: #565555;
 }
 
+.tiptap p {
+  margin: 1em 0;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  background: #000;
+}
+
+.tiptap-detail pre {
+  background: #e0e0e0;
+  /* font-family: "Courier New", Courier, monospace; */
+}
+
 .htmlContentCard img {
   display: none;
 }
 
 .htmlContentDetail p h1 h2 h3 h4 h5 h6 {
-  /* font-size: ; */
   letter-spacing: 0.8px;
   line-height: 1px;
 }

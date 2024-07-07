@@ -22,9 +22,6 @@ const Tag = () => {
   });
 
   useEffect(() => {
-    setPage(1);
-    setPosts([]);
-    setHasMore(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -41,8 +38,6 @@ const Tag = () => {
     }
   }, [data]);
 
-  if (isPending) return <Spinner />;
-  console.log(data);
   const fetchMorePosts = () => {
     setPage((prev) => prev + 1);
     if (numberOfPosts > posts.length) {

@@ -6,9 +6,8 @@ const HomeSidebar = () => {
   const navigate = useNavigate();
 
   const { data } = useQuery({ queryKey: ["tagNames"], queryFn: tagNames });
-  console.log(data);
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='flex flex-col gap-10'>
       <div className='bg-[#C4E2FF]  p-5 rounded-md'>
         <p className='mb-4 font-semibold'>
           Write articles, share knowledge and learn
@@ -26,7 +25,10 @@ const HomeSidebar = () => {
         <div className='flex gap-2'>
           {data &&
             data.map((tag) => (
-              <span className='px-3 py-1 text-sm bg-gray-200 rounded-full'>
+              <span
+                key={`${tag}+${Math.round(Math.random() * 1000)}`}
+                className='px-3 py-1 text-sm bg-gray-200 rounded-full cursor-pointer'
+                onClick={() => navigate(`/tag/${tag.name}`)}>
                 {tag.name}
               </span>
             ))}

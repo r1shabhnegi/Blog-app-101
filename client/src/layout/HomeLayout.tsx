@@ -7,7 +7,7 @@ const HomeLayout = () => {
   return (
     <div>
       <NavLayout>
-        <div className='flex gap-8 pt-10 border-b'>
+        <div className='flex gap-8 pt-10 border-b border-[#e8e8e8]'>
           <span
             className={`text-sm  pb-4 cursor-pointer text-gray-600 ${
               pathname === "/"
