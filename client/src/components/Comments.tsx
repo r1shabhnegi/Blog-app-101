@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MessageCircle } from "lucide-react";
 const Comments = ({ totalComments }: { totalComments: number }) => {
@@ -12,7 +9,9 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
           <p className='text-xl text-gray-400'>{totalComments}</p>
         </span>
       </SheetTrigger>
-      <SheetContent></SheetContent>
+      <SheetContent className='p-5 bg-red-50 '>
+        <div></div>
+      </SheetContent>
     </Sheet>
   );
 };

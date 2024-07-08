@@ -12,7 +12,7 @@ const Header = () => {
           className='flex items-center gap-1 cursor-pointer'
           onClick={() => navigate("/")}>
           <Newspaper className='-mt-1 text-green-600 size-6' />
-          <h1 className='text-xl font-bold tracking-tighter text-gray-700 font-logo'>
+          <h1 className='text-xl font-bold tracking-tighter text-gray-700 font-lgo'>
             Readpool.AI
           </h1>
         </span>

@@ -15,30 +15,6 @@ const Publish = () => {
   const [editorState, setEditorState] = useState("");
   const [isPublish, setIsPublish] = useState(false);
   const [titleValue, setTitleValue] = useState("");
-  console.log(editorState);
-
-  // const { complete, completion } = useCompletion({
-  //   api: `${import.meta.env.VITE_BACKEND_URL}/api/v1/ai-auto`,
-  // });
-  // const { mutateAsync: aiAutoMutate } = useMutation({
-  //   mutationFn: aiAuto,
-  //   onSuccess: (response) => {
-  //     console.log(response);
-  //   },
-  // });
-
-  // const customText = Text.extend({
-  //   addKeyboardShortcuts() {
-  //     return {
-  //       "shift-a": () => {
-  //         const prompt = this.editor.getText().split(" ").slice(-30).join(" ");
-
-  //         // aiAutoMutate({ prompt });
-  //         return true;
-  //       },
-  //     };
-  //   },
-  // });
 
   const editor = useEditor({
     autofocus: true,
@@ -60,16 +36,6 @@ const Publish = () => {
       },
     },
   });
-  // const lastCompletion = useRef("");
-
-  // useEffect(() => {
-  //   if (!editor || !completion) return;
-  //   const diff = completion.slice(lastCompletion.current.length);
-  //   lastCompletion.current = completion;
-
-  //   // console.log(token);
-  //   editor?.commands.insertContent(diff);
-  // }, [completion, editor]);
 
   const addImage = useCallback(() => {
     const url = window.prompt("URL");

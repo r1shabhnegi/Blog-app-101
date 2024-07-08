@@ -380,3 +380,15 @@ export const postStats = async (postId: string | undefined) => {
   }
   return response.data as { totalClaps: number; totalComments: number };
 };
+
+export const likePost = async (postId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/post/likePost/${postId}`,
+    method: "POST",
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};

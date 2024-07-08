@@ -78,7 +78,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     await readingHistoryMutate({ postId: postData.id });
   };
   return (
-    <div className='flex flex-col  items-start w-full my-2 mt-8 border-b border-[#e8e8e8]'>
+    <div className='flex flex-col gap-2 items-start w-full my-2 mt-8 border-b border-[#e8e8e8]'>
       <div className='flex items-center justify-center gap-1 mb-1'>
         <span
           className='flex items-center justify-center gap-2.5'
@@ -106,12 +106,12 @@ const PostCard = ({ postData }: { postData: PostType }) => {
       <div
         className='flex items-center justify-between w-full cursor-pointer'
         onClick={handleClickCard}>
-        <div className='flex flex-col text-wrap w-[35rem]'>
+        <div className='flex flex-col w-full gap-2 text-wrap max-w-[31rem]'>
           <span className='text-xl font-bold text-gray-900 '>
             {postData.title}
           </span>
           <span
-            className='text-gray-900 line-clamp-3 htmlContentCard'
+            className='font-medium text-gray-500 line-clamp-2 htmlContentCard post-card-content'
             dangerouslySetInnerHTML={{ __html: postData.content }}></span>
         </div>
         {postData.previewImage && postData.previewImage !== "" ? (

@@ -227,6 +227,7 @@ router.get("/reading-history", jwtVerify, async (c) => {
 
     return c.json(postsDetailsArray, 200);
   } catch (error) {
+    c.status(500);
     return c.text(`${error || "Something went wrong"}`);
   }
 });
@@ -257,6 +258,7 @@ router.get("/get/stats/:postId", jwtVerify, async (c) => {
       totalComments: countComments,
     });
   } catch (error) {
+    c.status(500);
     return c.text(`${error || "Something went wrong"}`);
   }
 });
@@ -266,7 +268,31 @@ router.post("/likePost/:postId", async (c) => {
   const userId = c.get("userId");
   const { postId } = c.req.param();
   try {
-  } catch (error) {}
+    const foundPost = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        claps: true,
+      },
+    });
+
+    if (foundPost) {
+      const likedPost = await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          claps: foundPost?.claps + 1,
+        },
+      });
+    }
+
+    return c.json({ message: "done" }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
 });
 
 router.get("/followingUserPosts");

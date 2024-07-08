@@ -1,4 +1,4 @@
-import { bookmark, getPost, isBookmarked, postStats } from "@/api";
+import { bookmark, getPost, isBookmarked, likePost, postStats } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
@@ -49,6 +49,17 @@ const PostDetail = () => {
     await BookmarkMutate(data?.id);
   };
 
+  const { mutateAsync: likePostMutate } = useMutation({
+    mutationFn: likePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["postStats"] });
+    },
+  });
+
+  const handleLikedBtn = async () => {
+    await likePostMutate(postId);
+  };
+
   if (isPending) return <Spinner />;
 
   return (
@@ -90,7 +101,9 @@ const PostDetail = () => {
         <div className='flex items-center justify-between border-b'>
           <span className='flex items-center gap-2 py-2 '>
             <span className='flex gap-4'>
-              <span className='flex items-center gap-2'>
+              <span
+                className='flex items-center gap-2'
+                onClick={handleLikedBtn}>
                 <HandHeart className='text-gray-500 cursor-pointer size-7' />
                 <p className='text-xl text-gray-400'>
                   {postStatsData?.totalClaps}
@@ -129,7 +142,9 @@ const PostDetail = () => {
       <div className='flex items-center justify-between border-b'>
         <span className='flex items-center gap-2 py-2 '>
           <span className='flex gap-4'>
-            <span className='flex items-center gap-2'>
+            <span
+              className='flex items-center gap-2'
+              onClick={handleLikedBtn}>
               <HandHeart className='text-gray-500 cursor-pointer size-7' />
               <p className='text-xl text-gray-400'>
                 {postStatsData?.totalClaps}
