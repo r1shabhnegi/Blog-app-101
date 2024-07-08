@@ -8,36 +8,42 @@ const Header = () => {
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   return (
-    <div className='flex items-center justify-between px-6 border-b-[0.01rem] border-gray-200 py-2'>
+    <div className='flex items-center justify-between px-4 sm:px-6 border-b-[0.01rem] border-gray-200 py-2'>
       <span className='flex items-center justify-center gap-4'>
         <span
           className='flex items-center gap-1 cursor-pointer'
           onClick={() => navigate("/")}>
-          <Newspaper className='-mt-1 text-green-600 size-6' />
-          <h1 className='text-xl font-bold tracking-tighter text-gray-700 font-lgo'>
+          <Newspaper className='-mt-1 text-green-600 size-5 md:size-6' />
+          <h1 className='text-lg font-bold tracking-tighter text-gray-700 md:text-xl font-lgo'>
             Readpool.AI
           </h1>
         </span>
         <span className='flex justify-center items-center gap-2 bg-[#f6f6f6] px-3 py-0.5 rounded-full'>
           <Input
             type='text'
-            className='w-44 font-medium bg-[#F9F9F9] p-0 focus-visible:ring-0 border-0 shadow-none'
+            className='w-44 hidden md:block font-medium bg-[#F9F9F9] p-0 focus-visible:ring-0 border-0 shadow-none'
             placeholder='Search topics'
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
           <Search
-            className='text-gray-500 cursor-pointer hover:text-gray-800 size-full'
+            className='hidden text-gray-500 cursor-pointer md:block hover:text-gray-800 size-full'
             onClick={() => navigate(`/tag/${searchValue}`)}
           />
         </span>
       </span>
-      <span className='flex items-center gap-10'>
+      <span className='flex items-center gap-5 md:gap-10'>
+        <Search
+          className='text-gray-500 cursor-pointer md:hidden hover:text-gray-800 size-full'
+          onClick={() => navigate(`/tag/${searchValue}`)}
+        />
         <span
           className='flex items-center gap-2 cursor-pointer'
           onClick={() => navigate("/publish")}>
           <SquarePen className='text-gray-500 size-5' />
-          <p className='text-[14px] text-gray-600 font-medium'>Write</p>
+          <p className='text-[14px] text-gray-600 font-medium hidden md:block'>
+            Write
+          </p>
         </span>
         <HeaderDropdown />
       </span>

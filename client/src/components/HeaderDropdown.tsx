@@ -47,7 +47,7 @@ const HeaderDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className='cursor-pointer size-9'>
+        <Avatar className='cursor-pointer size-7 sm:size-8 md:size-9'>
           <AvatarImage
             src={avatar}
             alt=''

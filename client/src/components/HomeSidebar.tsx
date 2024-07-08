@@ -31,7 +31,7 @@ const HomeSidebar = () => {
 
       <div className='flex flex-col gap-4'>
         <h1 className='font-semibold text-gray-800'>Latest Topics</h1>
-        <div className='flex gap-2'>
+        <div className='flex flex-wrap gap-2'>
           {data &&
             data.map((tag) => (
               <span

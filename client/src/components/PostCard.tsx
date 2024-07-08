@@ -79,50 +79,55 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     await readingHistoryMutate({ postId: postData.id });
   };
   return (
-    <div className='flex flex-col gap-2 items-start w-full my-2 mt-8 border-b border-[#e8e8e8]'>
-      <div className='flex items-center justify-center gap-1 mb-1'>
-        <span
-          className='flex items-center justify-center gap-2.5'
-          onClick={() => navigate(`/profile/${postData?.authorId}`)}>
-          <Avatar className='cursor-pointer size-7'>
-            <AvatarImage
-              src={postData?.authorAvatar}
-              alt=''
-            />
-            <AvatarFallback>
-              <img
-                src={profileDemo}
+    <div className='flex flex-col justify-center gap-2 items-center w-full max-w-[20rem] sm:max-w-[27rem] md:max-w-[40rem] xl:max-w-full my-2 mt-8 border-b border-[#e8e8e8]'>
+      <div className='flex items-center justify-between w-full'>
+        <div className='flex items-center justify-start w-full gap-1 mb-1'>
+          <div
+            className='flex justify-center items-center gap-1.5 md:gap-2.5'
+            onClick={() => navigate(`/profile/${postData?.authorId}`)}>
+            <Avatar className='cursor-pointer size-6 md:size-7'>
+              <AvatarImage
+                src={postData?.authorAvatar}
                 alt=''
               />
-            </AvatarFallback>
-          </Avatar>
-          <p className='text-sm font-medium text-gray-800 cursor-pointer'>
-            {authorName}
-          </p>
+              <AvatarFallback>
+                <img
+                  src={profileDemo}
+                  alt=''
+                />
+              </AvatarFallback>
+            </Avatar>
+            <p className='text-xs font-medium text-gray-800 cursor-pointer sm:text-sm'>
+              {authorName}
+            </p>
+          </div>
+          <Dot className='text-gray-600 size-5' />
+          <p className='text-xs font-medium text-gray-800'>{createdAt}</p>
+        </div>
+        <span className='md:hidden'>
+          <PostCardDropdown
+            isMod={isMod}
+            handleDeletePost={() => handleDeletePost()}
+          />
         </span>
-        <Dot className='text-gray-600 size-5' />
-        <p className='text-xs font-medium text-gray-800'>{createdAt}</p>
       </div>
-
       <div
-        className='flex items-center justify-between w-full cursor-pointer'
+        className='flex flex-col justify-center w-full cursor-pointer md:justify-between md:items-center gap-7 md:flex-row md:gap-0'
         onClick={handleClickCard}>
-        <div className='flex flex-col w-full gap-2 text-wrap max-w-[31rem]'>
-          <span className='text-xl font-bold text-gray-900 '>
+        <div className='flex flex-col w-full gap-2 text-wrap  text-left max-w-[28rem] sm:max-w-[29.5rem]'>
+          <span className='font-bold text-gray-900 text-md lg:text-lg md:text-xl '>
             {postData.title}
           </span>
           <span
-            className='font-medium text-gray-500 line-clamp-2 htmlContentCard post-card-content'
+            className='text-xs font-medium text-gray-500 md:text-base line-clamp-2 htmlContentCard post-card-content'
             dangerouslySetInnerHTML={{ __html: postData.content }}></span>
         </div>
         {postData.previewImage && postData.previewImage !== "" ? (
-          <div className='w-40 h-28'>
-            <img
-              src={postData.previewImage}
-              alt='Img'
-              className='object-cover w-40 h-28'
-            />
-          </div>
+          <img
+            src={postData.previewImage}
+            alt='Img'
+            className='object-cover  h-[10rem] md:h-[9rem] w-[20rem] sm:w-[27rem]  md:w-[9rem]'
+          />
         ) : null}
       </div>
 
@@ -153,7 +158,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           </span>
         </div>
 
-        <div className='mr-[12rem] flex gap-5'>
+        <div className='md:mr-[12rem] flex gap-5'>
           <button
             className=''
             onClick={handleBookmark}>
@@ -163,10 +168,12 @@ const PostCard = ({ postData }: { postData: PostType }) => {
               <Bookmark className='text-gray-500 size-5' />
             )}
           </button>
-          <PostCardDropdown
-            isMod={isMod}
-            handleDeletePost={() => handleDeletePost()}
-          />
+          <span className='hidden md:block'>
+            <PostCardDropdown
+              isMod={isMod}
+              handleDeletePost={() => handleDeletePost()}
+            />
+          </span>
         </div>
       </div>
     </div>

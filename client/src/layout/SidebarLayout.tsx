@@ -5,9 +5,9 @@ import { useLocation } from "react-router-dom";
 const SidebarLayout = () => {
   const { pathname } = useLocation();
   return (
-    <div className='relative min-h-full border-gray-200 border-l-[0.01rem]'>
-      <div className=' sticky -top-24 w-[21rem] '>
-        <div className='pt-10 pl-10 pr-4'>
+    <div className='relative min-h-full border-gray-200 lg:border-l-[0.01rem]'>
+      <div className=' sticky -top-24 w-[21rem] hidden lg:block md:w-[18rem] xl:w-[21rem] '>
+        <div className='pt-5 pl-5 xl:pt-10 xl:pl-10'>
           {pathname.startsWith("/profile") ||
           pathname.startsWith("/reading-history") ||
           pathname.startsWith("/followers") ? (
