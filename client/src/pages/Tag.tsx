@@ -47,9 +47,16 @@ const Tag = () => {
     }
   };
 
+  // if (numberOfPosts == 0)
+  //   return (
+  //     <p className='text-2xl font-semibold text-gray-500'>
+  //       There is no posts for this topic
+  //     </p>
+  //   );
+
   return (
     <div className='bg-red-5 w-full max-w-[60rem] mx-auto'>
-      <div className='flex flex-col items-center justify-center py-20 bordr-b'>
+      <div className='flex flex-col items-center justify-center py-20'>
         <h1 className='text-5xl font-semibold text-gray-800'>{tagName}</h1>
         <h1 className='text-2xl text-gray-600'>
           {numberOfPosts}
@@ -57,19 +64,25 @@ const Tag = () => {
         </h1>
       </div>
       <div className='px-36'>
-        <InfiniteScroll
-          className='flex flex-col items-center justify-center'
-          dataLength={posts.length}
-          hasMore={hasMore}
-          loader={<Spinner />}
-          next={fetchMorePosts}>
-          {posts.map((post: PostType) => (
-            <PostCard
-              key={post.id}
-              postData={post}
-            />
-          ))}
-        </InfiniteScroll>
+        {numberOfPosts !== 0 ? (
+          <InfiniteScroll
+            className='flex flex-col items-center justify-center'
+            dataLength={posts.length}
+            hasMore={hasMore}
+            loader={<Spinner />}
+            next={fetchMorePosts}>
+            {posts.map((post: PostType) => (
+              <PostCard
+                key={post.id}
+                postData={post}
+              />
+            ))}
+          </InfiniteScroll>
+        ) : (
+          <p className='text-2xl font-semibold text-center text-gray-500'>
+            There is no posts for this topic
+          </p>
+        )}
       </div>
     </div>
   );

@@ -435,6 +435,6 @@ export const fiveSavedPost = async () => {
     throw new Error(response?.error?.data);
   }
   return response as {
-    data: { createdAt: string; readTime: string; title: string }[];
+    data: { id: string; createdAt: string; readTime: string; title: string }[];
   };
 };

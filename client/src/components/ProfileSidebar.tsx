@@ -111,12 +111,10 @@ const ProfileSidebar = () => {
         </span>
       )}
 
-      {/* {!isMod ? (
-       
-      ) : null} */}
-
       <span className='flex flex-col gap-4 mt-6'>
-        <p className='font-medium text-gray-700'>Following</p>
+        <p className='font-medium text-gray-700'>
+          {fiveFollowingData && fiveFollowingData?.length > 0 && "Following"}
+        </p>
         <span className=''>
           {fiveFollowingData?.map((followingUser) => {
             const name = followingUser.name

@@ -316,7 +316,7 @@ router.get("/get/five/posts", jwtVerify, async (c) => {
         where: {
           id: post.postId,
         },
-        select: { title: true, createdAt: true, readTime: true },
+        select: { id: true, title: true, createdAt: true, readTime: true },
       });
       if (postData) postsData.push(postData);
     }

@@ -14,11 +14,11 @@ const HomeSidebar = () => {
   console.log(fiveSavedPosts);
   const { data } = useQuery({ queryKey: ["tagNames"], queryFn: tagNames });
 
-  const { name, avatar } = useAppSelector((state) => state.auth);
+  const { name, avatar, userId } = useAppSelector((state) => state.auth);
 
-  const authorName = name
-    ? `${name.charAt(0).toUpperCase()}${name.slice(1)}`
-    : "";
+  // const authorName = name
+  //   ? `${name.charAt(0).toUpperCase()}${name.slice(1)}`
+  //   : "";
   return (
     <div className='flex flex-col gap-10'>
       <div className='bg-[#C4E2FF]  p-5 rounded-md'>
@@ -34,7 +34,7 @@ const HomeSidebar = () => {
       </div>
 
       <div className='flex flex-col gap-4'>
-        <h1 className='font-semibold text-gray-800'>Latest Tags</h1>
+        <h1 className='font-semibold text-gray-800'>Latest Topics</h1>
         <div className='flex gap-2'>
           {data &&
             data.map((tag) => (
@@ -52,10 +52,17 @@ const HomeSidebar = () => {
         <h1 className='font-semibold text-gray-800'>Recent saved posts</h1>
         <div className='flex flex-col gap-2'>
           {fiveSavedPosts?.data.map(
-            (post: { createdAt: string; readTime: string; title: string }) => (
+            (post: {
+              id: string;
+              createdAt: string;
+              readTime: string;
+              title: string;
+            }) => (
               <div className='my-2'>
                 <div className='flex gap-2 '>
-                  <Avatar className='cursor-pointer size-7'>
+                  <Avatar
+                    className='cursor-pointer size-7'
+                    onClick={() => navigate(`/profile/${userId}`)}>
                     <AvatarImage
                       src={avatar}
                       alt=''
@@ -67,12 +74,12 @@ const HomeSidebar = () => {
                       />
                     </AvatarFallback>
                   </Avatar>
-                  <span className='flex flex-col'>
-                    {/* <p className='text-[13px]'>{authorName}</p> */}
-                    <p className='text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-800'>
+                  <span
+                    className='flex flex-col'
+                    onClick={() => navigate(`/post/${post.id}`)}>
+                    <p className='text-sm font-medium text-gray-600 cursor-pointer hover:text-black'>
                       {post.title}
                     </p>
-                    {/* <p className='text-xs text-gray-600'>{ createdDate}</p> */}
                   </span>
                 </div>
               </div>

@@ -2,8 +2,10 @@ import { Newspaper, Search, SquarePen } from "lucide-react";
 import { Input } from "./ui/input";
 import { useNavigate } from "react-router-dom";
 import HeaderDropdown from "./HeaderDropdown";
+import { useState } from "react";
 
 const Header = () => {
+  const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   return (
     <div className='flex items-center justify-between px-6 border-b-[0.01rem] border-gray-200 py-2'>
@@ -17,11 +19,16 @@ const Header = () => {
           </h1>
         </span>
         <span className='flex justify-center items-center gap-2 bg-[#f6f6f6] px-3 py-0.5 rounded-full'>
-          <Search className='text-gray-500 size-5 ' />
           <Input
             type='text'
             className='w-44 font-medium bg-[#F9F9F9] p-0 focus-visible:ring-0 border-0 shadow-none'
-            placeholder='Search'
+            placeholder='Search topics'
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <Search
+            className='text-gray-500 cursor-pointer hover:text-gray-800 size-full'
+            onClick={() => navigate(`/tag/${searchValue}`)}
           />
         </span>
       </span>
