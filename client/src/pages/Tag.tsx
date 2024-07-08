@@ -16,7 +16,7 @@ const Tag = () => {
 
   const tagName = name ? `${name.charAt(0).toUpperCase()}${name.slice(1)}` : "";
 
-  const { data, isPending, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["tag", tagName, page],
     queryFn: () => getTag({ name, page }),
   });
@@ -47,23 +47,18 @@ const Tag = () => {
     }
   };
 
-  // if (numberOfPosts == 0)
-  //   return (
-  //     <p className='text-2xl font-semibold text-gray-500'>
-  //       There is no posts for this topic
-  //     </p>
-  //   );
-
   return (
     <div className='bg-red-5 w-full max-w-[60rem] mx-auto'>
-      <div className='flex flex-col items-center justify-center py-20'>
-        <h1 className='text-5xl font-semibold text-gray-800'>{tagName}</h1>
-        <h1 className='text-2xl text-gray-600'>
+      <div className='flex flex-col items-center justify-center py-12 md:py-20'>
+        <h1 className='text-4xl font-semibold text-gray-800 md:text-5xl'>
+          {tagName}
+        </h1>
+        <h1 className='text-xl text-gray-600 md:text-2xl'>
           {numberOfPosts}
           {numberOfPosts === 1 ? "Post" : "Posts"}
         </h1>
       </div>
-      <div className='px-36'>
+      <div className='lg:px-36'>
         {numberOfPosts !== 0 ? (
           <InfiniteScroll
             className='flex flex-col items-center justify-center'

@@ -62,9 +62,9 @@ const Publish = () => {
             addImage={addImage}
           />
         )}
-        <div className='w-[55rem] flex flex-col justify-center'>
+        <div className=' xl:w-[55rem] flex flex-col justify-center items-center'>
           <Input
-            className='h-28 text-6xl px-7 border-t-0 border-b-0 border-r-0 rounded-none outline-none ring-0 focus-visible:ring-0 text-[#565555] placeholder:text-[#a2a2a2]'
+            className='h-28 text-4xl md:text-5xl lg:text-6xl px-7 border-t-0 border-b-0 border-r-0 rounded-none outline-none ring-0 focus-visible:ring-0 text-[#565555] placeholder:text-[#a2a2a2]'
             placeholder='Title'
             value={titleValue}
             onChange={(e) => setTitleValue(e.target.value)}

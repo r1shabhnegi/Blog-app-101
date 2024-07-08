@@ -102,7 +102,9 @@ const PostCard = ({ postData }: { postData: PostType }) => {
             </p>
           </div>
           <Dot className='text-gray-600 size-5' />
-          <p className='text-xs font-medium text-gray-800'>{createdAt}</p>
+          <p className='text-[10px] sm:text-xs font-medium text-gray-800'>
+            {createdAt}
+          </p>
         </div>
         <span className='md:hidden'>
           <PostCardDropdown

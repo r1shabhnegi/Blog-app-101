@@ -21,7 +21,7 @@ const Header = () => {
         <span className='flex justify-center items-center gap-2 bg-[#f6f6f6] px-3 py-0.5 rounded-full'>
           <Input
             type='text'
-            className='w-44 hidden md:block font-medium bg-[#F9F9F9] p-0 focus-visible:ring-0 border-0 shadow-none'
+            className='w-44 hidden sm:block font-medium bg-[#F9F9F9] p-0 focus-visible:ring-0 border-0 shadow-none'
             placeholder='Search topics'
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -32,9 +32,9 @@ const Header = () => {
           />
         </span>
       </span>
-      <span className='flex items-center gap-5 md:gap-10'>
+      <span className='flex items-center gap-5 sm:gap-10'>
         <Search
-          className='text-gray-500 cursor-pointer md:hidden hover:text-gray-800 size-full'
+          className='text-gray-500 cursor-pointer sm:hidden hover:text-gray-800 size-full'
           onClick={() => navigate(`/tag/${searchValue}`)}
         />
         <span

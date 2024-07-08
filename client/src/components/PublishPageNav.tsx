@@ -26,7 +26,7 @@ const PublishPageNav = ({
       <span className='flex items-center gap-6'>
         <button
           className={`px-3 text-[13px] h-8 font-medium text-white bg-green-600 rounded-full  ${
-            !isPublish && "bg-opacity-60"
+            !isPublish && "bg-opacity-30"
           }`}
           onClick={setIsPublish}
           disabled={!isPublish}>
