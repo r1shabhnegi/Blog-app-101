@@ -50,7 +50,9 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   const { mutateAsync: BookmarkMutate } = useMutation({
     mutationFn: bookmark,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["check-bookmark"] });
+      queryClient.invalidateQueries({
+        queryKey: ["check-bookmark"],
+      });
     },
   });
   const { mutateAsync: readingHistoryMutate } = useMutation({

@@ -57,7 +57,9 @@ const HomeSidebar = () => {
               readTime: string;
               title: string;
             }) => (
-              <div className='my-2'>
+              <div
+                key={post.id}
+                className='my-2'>
                 <div className='flex gap-2 '>
                   <Avatar
                     className='cursor-pointer size-7'
