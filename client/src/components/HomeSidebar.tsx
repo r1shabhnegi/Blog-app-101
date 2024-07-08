@@ -11,14 +11,10 @@ const HomeSidebar = () => {
     queryKey: ["fiveSavedPosts"],
     queryFn: fiveSavedPost,
   });
-  console.log(fiveSavedPosts);
   const { data } = useQuery({ queryKey: ["tagNames"], queryFn: tagNames });
 
-  const { name, avatar, userId } = useAppSelector((state) => state.auth);
+  const { avatar, userId } = useAppSelector((state) => state.auth);
 
-  // const authorName = name
-  //   ? `${name.charAt(0).toUpperCase()}${name.slice(1)}`
-  //   : "";
   return (
     <div className='flex flex-col gap-10'>
       <div className='bg-[#C4E2FF]  p-5 rounded-md'>
@@ -49,7 +45,10 @@ const HomeSidebar = () => {
       </div>
 
       <div className='flex flex-col gap-4'>
-        <h1 className='font-semibold text-gray-800'>Recent saved posts</h1>
+        <h1 className='font-semibold text-gray-800'>
+          {" "}
+          {fiveSavedPosts?.data.length !== 0 && "Recent saved posts"}
+        </h1>
         <div className='flex flex-col gap-2'>
           {fiveSavedPosts?.data.map(
             (post: {

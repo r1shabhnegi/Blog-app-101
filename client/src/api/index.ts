@@ -196,7 +196,7 @@ export const getPost = async (postId: string | undefined) => {
   return response.data as PostType;
 };
 
-export const allLatestPost = async (page: string) => {
+export const allLatestPost = async (page: number) => {
   const response = await apiClient.query({
     url: `/post/all/${page}`,
     method: "GET",
@@ -437,4 +437,15 @@ export const fiveSavedPost = async () => {
   return response as {
     data: { id: string; createdAt: string; readTime: string; title: string }[];
   };
+};
+
+export const followingPosts = async (page: number | undefined) => {
+  const response = await apiClient.query({
+    url: `/post/followingUserPosts/get/${page}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response as { data: { posts: PostType[]; numberOfPosts: number } };
 };

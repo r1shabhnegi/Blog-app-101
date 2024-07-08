@@ -13,7 +13,9 @@ const SidebarLayout = () => {
           pathname.startsWith("/followers") ? (
             <ProfileSidebar />
           ) : null}
-          {pathname === "/" ? <HomeSidebar /> : null}
+          {pathname === "/" || pathname === "/feed-following" ? (
+            <HomeSidebar />
+          ) : null}
         </div>
       </div>
     </div>

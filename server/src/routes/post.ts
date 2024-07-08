@@ -328,6 +328,43 @@ router.get("/get/five/posts", jwtVerify, async (c) => {
   }
 });
 
-// router.get("/followingUserPosts");
+router.get("/followingUserPosts/get/:page", async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { page } = c.req.param();
+  const pageSize = 5;
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        author: {
+          following: {
+            some: { id: userId },
+          },
+        },
+      },
+      skip: (+page - 1) * pageSize,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const countFollowingPosts = await prisma.post.count({
+      where: {
+        author: {
+          following: {
+            some: { id: userId },
+          },
+        },
+      },
+    });
+
+    console.log("posts-", posts);
+    return c.json({ posts, numberOfPosts: countFollowingPosts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
 
 export default router;

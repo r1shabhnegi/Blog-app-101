@@ -4,7 +4,7 @@ import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
 import { useAppSelector } from "@/redux/hook";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const HomeLatest = () => {
@@ -14,7 +14,7 @@ const HomeLatest = () => {
   const { totalPostsCount } = useAppSelector((state) => state.auth);
   const { data, refetch } = useQuery({
     queryKey: ["latestPosts", page],
-    queryFn: () => allLatestPost(`${page}`),
+    queryFn: () => allLatestPost(page),
   });
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -45,18 +45,6 @@ const HomeLatest = () => {
       hasMore={hasMore}
       loader={<Spinner />}
       next={fetchMorePosts}>
-      {posts.map((post: PostType) => (
-        <PostCard
-          key={post.id}
-          postData={post}
-        />
-      ))}
-      {posts.map((post: PostType) => (
-        <PostCard
-          key={post.id}
-          postData={post}
-        />
-      ))}
       {posts.map((post: PostType) => (
         <PostCard
           key={post.id}

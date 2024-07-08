@@ -22,7 +22,6 @@ import {
 } from "@/api";
 import { useToast } from "./ui/use-toast";
 import PostCardDropdown from "./PostCardDropdown";
-import Comments from "./Comments";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
 
@@ -100,7 +99,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           </p>
         </span>
         <Dot className='text-gray-600 size-5' />
-        <p className='text-sm font-medium text-gray-800'>{createdAt}</p>
+        <p className='text-xs font-medium text-gray-800'>{createdAt}</p>
       </div>
 
       <div
