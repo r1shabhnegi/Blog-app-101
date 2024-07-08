@@ -55,13 +55,11 @@ model Comment {
   id String @id @default(uuid())
   content String
   createdAt DateTime @default(now())
-  autherId String
-  authorAvatar String
-  authorName String
-  author User @relation(fields: [autherId],references: [id])
+  authorId String
+  author User @relation(fields: [authorId],references: [id])
   postId String
   post Post @relation(fields: [postId],references: [id])
-  clap Int @default(0)
+  clap Int? @default(0)
 }
 
 model Follows {

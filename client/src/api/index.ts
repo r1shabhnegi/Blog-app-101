@@ -392,3 +392,36 @@ export const likePost = async (postId: string | undefined) => {
   }
   return response.data;
 };
+
+export const createComment = async (data: {
+  postId: string | undefined;
+  content: string;
+}) => {
+  const response = await apiClient.query({
+    url: `/comment`,
+    method: "POST",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data;
+};
+
+export const getComments = async (postId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/comment/${postId}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as {
+    id: string;
+    content: string;
+    createdAt: string;
+    author: string;
+    postId: string;
+    clap: number;
+  };
+};
