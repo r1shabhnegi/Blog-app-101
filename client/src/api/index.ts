@@ -6,6 +6,7 @@ import {
 } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
 import {
+  commentServerResponse,
   FiveFollowingType,
   GetFollowersType,
   PostType,
@@ -408,20 +409,32 @@ export const createComment = async (data: {
   return response.data;
 };
 
-export const getComments = async (postId: string | undefined) => {
+export const getComments = async ({
+  postId,
+  page,
+}: {
+  postId: string | undefined;
+  page: number;
+}) => {
   const response = await apiClient.query({
-    url: `/comment/${postId}`,
+    url: `/comment/${postId}/${page}`,
     method: "GET",
   });
   if (response.error) {
     throw new Error(response.error.data);
   }
-  return response.data as {
-    id: string;
-    content: string;
-    createdAt: string;
-    author: string;
-    postId: string;
-    clap: number;
+  return response.data as commentServerResponse;
+};
+
+export const fiveSavedPost = async () => {
+  const response = await apiClient.query({
+    url: "/post/get/five/posts",
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response as {
+    data: { createdAt: string; readTime: string; title: string }[];
   };
 };

@@ -12,7 +12,7 @@ const HomeLatest = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const { totalPostsCount } = useAppSelector((state) => state.auth);
-  const { data, isPending, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["latestPosts", page],
     queryFn: () => allLatestPost(`${page}`),
   });
@@ -20,7 +20,7 @@ const HomeLatest = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     if (data) {
       setPosts((prevPosts) => [...prevPosts, ...data]);
     }
@@ -45,6 +45,18 @@ const HomeLatest = () => {
       hasMore={hasMore}
       loader={<Spinner />}
       next={fetchMorePosts}>
+      {posts.map((post: PostType) => (
+        <PostCard
+          key={post.id}
+          postData={post}
+        />
+      ))}
+      {posts.map((post: PostType) => (
+        <PostCard
+          key={post.id}
+          postData={post}
+        />
+      ))}
       {posts.map((post: PostType) => (
         <PostCard
           key={post.id}

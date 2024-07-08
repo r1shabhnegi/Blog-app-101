@@ -17,24 +17,51 @@ const router = new Hono<{
   };
 }>();
 
-router.get("/:postId", jwtVerify, async (c) => {
+router.get("/:postId/:page", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
-  const { postId } = c.req.param();
+  const { postId, page } = c.req.param();
+
+  const pageSize = 10;
   try {
     const getComments = await prisma.comment.findMany({
       where: {
         postId,
       },
+      skip: (+page - 1) * pageSize,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
-    // const author = await prisma.user.findUnique({
-    //   where: {
-    //     id: getComments,
-    //   },
-    // });
+    const commentInfo = [];
+    for (const comment of getComments) {
+      const author = await prisma.user.findUnique({
+        where: {
+          id: comment.authorId,
+        },
+        select: {
+          name: true,
+          avatar: true,
+        },
+      });
 
-    return c.json(comments, 200);
+      if (author)
+        commentInfo.push({
+          ...comment,
+          authorName: author.name,
+          authorAvatar: author.avatar,
+        });
+    }
+
+    const numberOfComments = await prisma.comment.count({
+      where: {
+        postId,
+      },
+    });
+
+    return c.json({ numberOfComments, commentInfo }, 200);
   } catch (error) {
     c.status(500);
     return c.text(`${error || "something went wrong"}`);

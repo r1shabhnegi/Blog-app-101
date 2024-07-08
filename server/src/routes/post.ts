@@ -295,6 +295,39 @@ router.post("/likePost/:postId", async (c) => {
   }
 });
 
-router.get("/followingUserPosts");
+router.get("/get/five/posts", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  console.log("userId-", userId);
+  try {
+    const fivePosts = await prisma.savedPost.findMany({
+      where: {
+        userId,
+      },
+      take: 5,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const postsData = [];
+    for (const post of fivePosts) {
+      const postData = await prisma.post.findUnique({
+        where: {
+          id: post.postId,
+        },
+        select: { title: true, createdAt: true, readTime: true },
+      });
+      if (postData) postsData.push(postData);
+    }
+
+    return c.json(postsData, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+// router.get("/followingUserPosts");
 
 export default router;

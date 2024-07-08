@@ -45,3 +45,28 @@ export type GetFollowersType = {
   avatar: string;
   bio: string;
 };
+
+export type commentServerResponse = {
+  numberOfComments: number;
+  commentInfo: {
+    id: string;
+    content: string;
+    createdAt: string;
+    authorId: string;
+    postId: string;
+    clap: number | null;
+    authorName: string;
+    authorAvatar: string;
+  }[];
+};
+
+export type commentType = {
+  id: string;
+  content: string;
+  createdAt: string;
+  authorId: string;
+  postId: string;
+  clap: number | null;
+  authorName: string;
+  authorAvatar: string;
+};

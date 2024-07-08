@@ -25,7 +25,6 @@ router.get("/names", jwtVerify, async (c) => {
       take: 10,
       skip: 0,
     });
-    console.log(tagNames);
     return c.json(tagNames);
   } catch (error) {}
 });
@@ -35,7 +34,6 @@ router.get("/get/:name/:page", jwtVerify, async (c) => {
   const { name, page } = c.req.param();
 
   const pageSize = 10;
-  console.log(page, name);
   try {
     const countTagPosts = await prisma.post.count({
       where: {
