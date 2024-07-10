@@ -463,3 +463,15 @@ export const getAiSummary = async (data: {
   }
   return response as { text: string };
 };
+
+export const getAskAi = async (data: { text: string }) => {
+  const response = await apiClient.query({
+    url: `/ai/ask-ai`,
+    method: "POST",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response as { data: { text: string } };
+};

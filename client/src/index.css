@@ -71,3 +71,20 @@ input:-webkit-autofill:active {
 .htmlContentCard pre code {
   background-color: aqua;
 }
+
+.askAiTitle {
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: 16px;
+}
+
+.askAiContent {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  padding-bottom: 1rem;
+  color: #4b5563;
+  border-bottom: 1px solid #bbf7d0;
+  font-size: 15px;
+}

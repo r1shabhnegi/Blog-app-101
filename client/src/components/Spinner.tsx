@@ -1,6 +1,10 @@
 import { Loader } from "lucide-react";
 
 const Spinner = () => {
-  return <Loader className='w-full my-2 animate-spin size-10' />;
+  return (
+    // <div className='text-'>
+    <Loader className='m-0 mx-auto text-center animate-spin size-10' />
+    // </div>
+  );
 };
 export default Spinner;
