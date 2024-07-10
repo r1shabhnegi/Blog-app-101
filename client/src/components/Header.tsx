@@ -10,7 +10,7 @@ const Header = () => {
   const [askAiModal, setAskAiModal] = useState<boolean>(false);
   const navigate = useNavigate();
   return (
-    <div className='flex items-center justify-between px-4 sm:px-6 border-b-[0.01rem] border-gray-200 py-2'>
+    <div className='flex items-center justify-between  px-2 sm:px-5 border-b-[0.01rem] border-gray-200 py-2'>
       <span className='flex items-center justify-center gap-4'>
         <span
           className='flex items-center gap-1 cursor-pointer'
@@ -34,9 +34,9 @@ const Header = () => {
           />
         </span>
       </span>
-      <span className='flex items-center gap-5 sm:gap-10'>
+      <span className='flex items-center gap-3 sm:gap-10'>
         <Search
-          className='text-gray-500 cursor-pointer sm:hidden hover:text-gray-800 size-full'
+          className='text-gray-500 cursor-pointer sm:hidden hover:text-gray-800 size-5'
           onClick={() => navigate(`/tag/${searchValue}`)}
         />
         <span
@@ -48,7 +48,7 @@ const Header = () => {
           </p>
         </span>
         <button
-          className='text-[14px] font-medium bg-gradient-to-r from-pink-500 to-purple-700  rounded-full px-2.5 text-white py-1'
+          className=' text-[12px] sm:text-[14px] font-medium bg-gradient-to-r from-pink-500 to-purple-700  rounded-full  px-1.5 sm:px-2.5 text-white sm:py-1 py-0.5'
           onClick={() => setAskAiModal(!askAiModal)}>
           Ask AI
         </button>

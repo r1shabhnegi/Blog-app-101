@@ -475,3 +475,15 @@ export const getAskAi = async (data: { text: string }) => {
   }
   return response as { data: { text: string } };
 };
+
+export const extent = async (data: { text: string }) => {
+  const response = await apiClient.query({
+    url: `/ai/extend`,
+    method: "POST",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response as { data: { text: string } };
+};

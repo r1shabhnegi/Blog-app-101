@@ -13,10 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { multiFormatDateString } from "@/lib/checkData";
 import { Bookmark, BookmarkCheck, Dot, HandHeart, Link } from "lucide-react";
 import Comments from "@/components/Comments";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
+import SummaryAi from "@/components/SummaryAi";
 
 const PostDetail = () => {
+  const [summaryModal, setSummaryModal] = useState(false);
   const { postId } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -56,15 +58,6 @@ const PostDetail = () => {
     await BookmarkMutate(data?.id);
   };
 
-  const { mutateAsync: getAiSummaryMutate, data: summaryData } = useMutation({
-    mutationFn: getAiSummary,
-  });
-
-  console.log("summary", summaryData);
-
-  const handleAvatarClickForSummary = async () => {
-    await getAiSummaryMutate({ text: data?.content });
-  };
   const { mutateAsync: likePostMutate } = useMutation({
     mutationFn: likePost,
     onSuccess: () => {
@@ -83,9 +76,7 @@ const PostDetail = () => {
       <div className='my-14'>
         <div className='text-4xl font-bold'>{data?.title}</div>
         <div className='flex gap-4 py-8 border-b'>
-          <Avatar
-            className='cursor-pointer size-12'
-            onClick={handleAvatarClickForSummary}>
+          <Avatar className='cursor-pointer size-12'>
             <AvatarImage
               src={data?.authorAvatar}
               alt=''
@@ -132,6 +123,11 @@ const PostDetail = () => {
             </span>
           </span>
           <span className='flex items-center gap-6'>
+            <button
+              className=' text-[12px] sm:text-[14px] font-medium bg-gradient-to-r from-pink-500 to-purple-700  rounded-full  px-1.5 sm:px-2.5 text-white sm:py-1 py-0.5'
+              onClick={() => setSummaryModal(!summaryModal)}>
+              AI summary
+            </button>
             <button
               className=''
               onClick={handleBookmark}>
@@ -185,6 +181,12 @@ const PostDetail = () => {
           <Link className='text-gray-500 size-6' />
         </span>
       </div>
+      {summaryModal ? (
+        <SummaryAi
+          cancel={() => setSummaryModal(!summaryModal)}
+          content={data?.content}
+        />
+      ) : null}
     </div>
   );
 };

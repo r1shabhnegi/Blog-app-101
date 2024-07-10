@@ -67,4 +67,23 @@ router.post("/ask-ai", async (c) => {
   }
 });
 
+router.post("/extend", async (c) => {
+  try {
+    const { text } = await c.req.json();
+    const genAI = new GoogleGenerativeAI(c.env.GEMINI_KEY);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-pro",
+      // generationConfig,
+    });
+    const prompt = `I am providing you a paragraph, act as a world class writer and extend this paragraph according to it, paragraph - ${text}`;
+    const result = await model.generateContent(prompt);
+    const response = result.response.text();
+
+    return c.json({ text: response }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
 export default router;

@@ -2,20 +2,37 @@ import { Search, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { getAskAi } from "@/api";
+import { getAiSummary, getAskAi } from "@/api";
 import Spinner from "./Spinner";
 
-const AskAi = ({ cancel }: { cancel: () => void }) => {
-  const [askInput, setAskInput] = useState<string>("");
-  const askAiResult = useRef<HTMLDivElement>(null);
-
+const SummaryAi = ({
+  cancel,
+  content,
+}: {
+  cancel: () => void;
+  content: string | TrustedHTML | undefined;
+}) => {
+  //   const [summaryVal, setSummaryVal] = useState("");
   const {
-    mutateAsync: askAiMutate,
+    mutateAsync: getAiSummaryMutate,
     isPending,
     data,
   } = useMutation({
-    mutationFn: getAskAi,
+    mutationFn: getAiSummary,
   });
+
+  const summaryContainer = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (summaryContainer && summaryContainer.current) {
+      summaryContainer.current.innerHTML = "";
+    }
+    // summaryContainer?.current?.innerHTML = "";
+    const fetch = async () => {
+      await getAiSummaryMutate({ text: content });
+    };
+    fetch();
+  }, [content, getAiSummaryMutate]);
+
   useEffect(() => {
     if (data) {
       const text = data.data.text;
@@ -25,16 +42,13 @@ const AskAi = ({ cancel }: { cancel: () => void }) => {
 
       const resultContainer = document.createElement("div");
       const resultPara = `<div>
-    <span className='askAiContent'>${pattern}</span>
+    <span >${pattern}</span>
     </div>`;
       resultContainer.insertAdjacentHTML("afterbegin", resultPara);
-      askAiResult.current && askAiResult.current.appendChild(resultContainer);
+      summaryContainer.current &&
+        summaryContainer.current.appendChild(resultContainer);
     }
   }, [data]);
-
-  const askAiBtn = async () => {
-    await askAiMutate({ text: askInput });
-  };
 
   return (
     <div
@@ -49,33 +63,16 @@ const AskAi = ({ cancel }: { cancel: () => void }) => {
             onClick={cancel}
           />
         </div>
-        <h1 className='text-sm text-gray-600 md:text-base sm:font-medium '>
-          Ask me anything...
+        <h1 className='text-gray-600 text-md md:text-lg sm:font-medium '>
+          Here is the brief summary
         </h1>
-        <form
-          className='flex gap-2 rounded-xl'
-          onSubmit={(e) => {
-            e.preventDefault();
-            askAiBtn();
-          }}>
-          <Input
-            className='border border-gray-400 h-10 sm:h-12  text-sm sm:text-md focus-visible:ring-gray-900 focus-visible:ring-[0.02rem]'
-            value={askInput}
-            onChange={(e) => setAskInput(e.target.value)}
-            placeholder='How can I help you today?'
-          />
-          <button
-            className=''
-            onClick={askAiBtn}>
-            <Search className='text-gray-300 rounded-full size-8 sm:size-10' />
-          </button>
-        </form>
+
         {isPending && <Spinner />}
         <div
-          ref={askAiResult}
+          ref={summaryContainer}
           className='max-h-[25rem] overflow-y-auto'></div>
       </div>
     </div>
   );
 };
-export default AskAi;
+export default SummaryAi;
