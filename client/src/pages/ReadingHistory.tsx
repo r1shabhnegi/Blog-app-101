@@ -9,7 +9,6 @@ const ReadingHistory = () => {
   const { data: historyPosts, isPending } = useQuery({
     queryKey: ["getHistoryPosts"],
     queryFn: getHistoryPost,
-    // gcTime: 0,
   });
 
   useEffect(() => {
@@ -20,10 +19,12 @@ const ReadingHistory = () => {
     <Spinner />
   ) : (
     <div>
-      <div>
-        <h1 className='my-16 text-5xl font-semibold'>Reading History</h1>
+      <div className='flex flex-col items-center justify-center lg:items-start lg:justify-start'>
+        <h1 className='m-0 my-16 text-3xl font-semibold md:text-4xl lg:ml-10 xl:m-0 lg:text-5xl'>
+          Reading History
+        </h1>
       </div>
-      <div>
+      <div className='flex flex-col items-center justify-center'>
         {historyPosts?.map((postData) => (
           <PostCard
             postData={postData}

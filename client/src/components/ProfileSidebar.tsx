@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-
 import profileDeno from "../assets/profileImg.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ import { setFollowerCount } from "@/redux/profileSlice";
 
 const ProfileSidebar = () => {
   const { name, avatar, bio } = useAppSelector((state) => state.profile);
+
   const { userId } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const { userId: userIdParam } = useParams();
@@ -87,10 +87,11 @@ const ProfileSidebar = () => {
         onClick={() => navigate(`/followers/${userIdParam}`)}>
         {followerCountData?.followerCount} Followers
       </p>
-
-      <span className='mt-2'>
-        <p className='text-sm font-medium text-gray-500 text-wrap'>{bio}</p>
-      </span>
+      {bio !== "null" || bio !== null ? (
+        <span className='mt-2'>
+          <p className='text-sm font-medium text-gray-500 text-wrap'>{bio}</p>
+        </span>
+      ) : null}
       {isMod ? (
         <span
           className='mt-8 text-xs font-medium text-green-600 cursor-pointer'

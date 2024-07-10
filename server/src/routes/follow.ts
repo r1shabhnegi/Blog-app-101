@@ -191,12 +191,11 @@ router.get("/followers/:userId/:page", jwtVerify, async (c) => {
         console.error(
           `Error fetching user data: ${error || "Something went wrong"}`
         );
-        throw error; // Rethrow the error or handle it further
+        throw error;
       }
     };
 
     const usersData = await getFollowersData(followers);
-    // console.log("Users data:", usersData);
 
     return c.json(usersData, 200);
   } catch (error) {
@@ -207,8 +206,6 @@ router.get("/followers/:userId/:page", jwtVerify, async (c) => {
 router.get("/followings/:userId", async (c) => {
   const prisma = c.get("prisma");
   const { userId } = c.req.param();
-
-  console.log("sdsdsdsd");
 
   try {
     const followings = await prisma.follows.findMany({
@@ -259,6 +256,23 @@ router.get("/followings/:userId", async (c) => {
 
     return c.json(usersData, 200);
   } catch (error) {
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+router.get("/get/followingCount/:userId", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const { userId } = c.req.param();
+  try {
+    const followingCount = await prisma.follows.count({
+      where: {
+        followerId: userId,
+      },
+    });
+
+    return c.json({ followingCount }, 200);
+  } catch (error) {
+    c.status(500);
     return c.text(`${error || "Something went wrong"}`);
   }
 });

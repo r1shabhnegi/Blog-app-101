@@ -2,17 +2,14 @@ import PublishPageNav from "@/components/PublishPageNav";
 import TiptapMenubar from "@/components/TiptapMenubar";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import { Text } from "@tiptap/extension-text";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import Image from "@tiptap/extension-image";
-import { useMutation } from "@tanstack/react-query";
-import { aiAuto } from "@/api";
 import { Input } from "@/components/ui/input";
 import PublishCard from "@/components/PublishCard";
 import Placeholder from "@tiptap/extension-placeholder";
-// import { useCompletion } from "@ai-sdk/react";
+
 const Publish = () => {
-  const [editorState, setEditorState] = useState("");
+  const [editorState, setEditorState] = useState("<p>Write something...</p>");
   const [isPublish, setIsPublish] = useState(false);
   const [titleValue, setTitleValue] = useState("");
 

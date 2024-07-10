@@ -72,11 +72,13 @@ const PostDetail = () => {
   if (isPending) return <Spinner />;
 
   return (
-    <div className='max-w-[45rem] mx-auto w-full'>
+    <div className='max-w-[45rem] px-3 mx-auto w-full lg:p-0'>
       <div className='my-14'>
-        <div className='text-4xl font-bold'>{data?.title}</div>
+        <div className='text-xl font-bold sm:text-3xl md:text-4xl'>
+          {data?.title}
+        </div>
         <div className='flex gap-4 py-8 border-b'>
-          <Avatar className='cursor-pointer size-12'>
+          <Avatar className='cursor-pointer sm:size-11 size-9 md:size-12'>
             <AvatarImage
               src={data?.authorAvatar}
               alt=''
@@ -90,16 +92,20 @@ const PostDetail = () => {
           </Avatar>
 
           <span className='flex flex-col justify-center'>
-            <p className='font-semibold text-gray-700'>{authorName}</p>
+            <p className='text-sm font-semibold text-gray-700 sm:text-base'>
+              {authorName}
+            </p>
             <span className='flex'>
-              <p className='text-sm font-medium text-gray-600'>
+              <p className='text-xs font-medium text-gray-600 sm:text-sm'>
                 {data?.readTime} min read
               </p>
               <Dot className='text-gray-600 size-5' />
-              <p className='text-sm font-medium text-gray-600'>{createdAt}</p>
+              <p className='text-xs font-medium text-gray-600 sm:text-sm'>
+                {createdAt}
+              </p>
               <Dot className='text-gray-600 size-5' />
               <p
-                className='px-2 text-sm pb-0.5 font-medium text-gray-600 bg-gray-200 rounded-full cursor-pointer'
+                className='px-2 text-xs sm:text-sm flex justify-center items-center sm:pb-0.5 font-medium text-gray-600 bg-gray-200 rounded-full cursor-pointer'
                 onClick={() => navigate(`/tag/${data?.tag}`)}>
                 {data?.tag}
               </p>
@@ -113,8 +119,8 @@ const PostDetail = () => {
               <span
                 className='flex items-center gap-2'
                 onClick={handleLikedBtn}>
-                <HandHeart className='text-gray-500 cursor-pointer size-7' />
-                <p className='text-xl text-gray-400'>
+                <HandHeart className='text-gray-500 cursor-pointer size-6 sm:size-7' />
+                <p className='text-base text-gray-400 sm:text-xl'>
                   {postStatsData?.totalClaps}
                 </p>
               </span>
@@ -122,7 +128,7 @@ const PostDetail = () => {
               <Comments totalComments={postStatsData?.totalComments || 0} />
             </span>
           </span>
-          <span className='flex items-center gap-6'>
+          <span className='flex items-center gap-4 sm:gap-6'>
             <button
               className=' text-[12px] sm:text-[14px] font-medium bg-gradient-to-r from-pink-500 to-purple-700  rounded-full  px-1.5 sm:px-2.5 text-white sm:py-1 py-0.5'
               onClick={() => setSummaryModal(!summaryModal)}>
@@ -132,12 +138,12 @@ const PostDetail = () => {
               className=''
               onClick={handleBookmark}>
               {isBookmark ? (
-                <BookmarkCheck className='text-gray-500 size-6' />
+                <BookmarkCheck className='text-gray-500 size-5 sm:size-6' />
               ) : (
-                <Bookmark className='text-gray-500 size-6' />
+                <Bookmark className='text-gray-500 size-5 sm:size-6' />
               )}
             </button>
-            <Link className='text-gray-500 size-6' />
+            <Link className='text-gray-500 size-5 sm:size-6' />
           </span>
         </div>
 
@@ -145,6 +151,7 @@ const PostDetail = () => {
           <img
             src={data?.previewImage}
             alt=''
+            className='rounded-lg'
           />
         </div>
 
@@ -159,8 +166,8 @@ const PostDetail = () => {
             <span
               className='flex items-center gap-2'
               onClick={handleLikedBtn}>
-              <HandHeart className='text-gray-500 cursor-pointer size-7' />
-              <p className='text-xl text-gray-400'>
+              <HandHeart className='text-gray-500 cursor-pointer size-6 sm:size-7' />
+              <p className='text-base text-gray-400 sm:text-xl'>
                 {postStatsData?.totalClaps}
               </p>
             </span>
@@ -168,17 +175,22 @@ const PostDetail = () => {
             <Comments totalComments={postStatsData?.totalComments || 0} />
           </span>
         </span>
-        <span className='flex items-center gap-6'>
+        <span className='flex items-center gap-4 sm:gap-6'>
+          <button
+            className=' text-[12px] sm:text-[14px] font-medium bg-gradient-to-r from-pink-500 to-purple-700  rounded-full  px-1.5 sm:px-2.5 text-white sm:py-1 py-0.5'
+            onClick={() => setSummaryModal(!summaryModal)}>
+            AI summary
+          </button>
           <button
             className=''
             onClick={handleBookmark}>
             {isBookmark ? (
-              <BookmarkCheck className='text-gray-500 size-6' />
+              <BookmarkCheck className='text-gray-500 size-5 sm:size-6' />
             ) : (
-              <Bookmark className='text-gray-500 size-6' />
+              <Bookmark className='text-gray-500 size-5 sm:size-6' />
             )}
           </button>
-          <Link className='text-gray-500 size-6' />
+          <Link className='text-gray-500 size-5 sm:size-6' />
         </span>
       </div>
       {summaryModal ? (

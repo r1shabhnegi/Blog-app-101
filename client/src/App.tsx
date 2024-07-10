@@ -37,7 +37,7 @@ const App = () => {
 
   return (
     <>
-      <AppRoutes />;
+      <AppRoutes />
       <Toaster />
     </>
   );

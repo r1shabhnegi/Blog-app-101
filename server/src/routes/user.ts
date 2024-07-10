@@ -324,32 +324,6 @@ router.get("/get/saved-post/:page", jwtVerify, async (c) => {
   }
 });
 
-// router.get("/reading-history/:page", jwtVerify, async (c) => {
-//   const prisma = c.get("prisma");
-//   const userId = c.get("userId");
-//   const { page } = c.req.param();
-
-//   const pageSize = 5;
-
-//   try {
-//     const getHistory = await prisma.user.findMany({
-//       where: {
-//         id: userId,
-//       },
-//       select: {
-//         readingHistory: true,
-//       },
-//       skip: (+page - 1) * pageSize,
-//       take: pageSize,
-//     });
-
-//     console.log(getHistory);
-//     return c.json(getHistory, 200);
-//   } catch (error) {
-//     return c.text(`${error || "Something went wrong"}`);
-//   }
-// });
-
 router.get("/get/about", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -366,6 +340,7 @@ router.get("/get/about", jwtVerify, async (c) => {
     console.log(about);
     return c.json(about, 200);
   } catch (error) {
+    c.status(500);
     return c.text(`${error || "Something went wrong"}`);
   }
 });
@@ -391,6 +366,7 @@ router.post("/about", jwtVerify, async (c) => {
 
     return c.json({ message: "done" }, 200);
   } catch (error) {
+    c.status(500);
     return c.text(`${error || "Something went wrong"}`);
   }
 });

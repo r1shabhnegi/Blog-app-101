@@ -67,8 +67,8 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
     <Sheet>
       <SheetTrigger asChild>
         <span className='flex items-center gap-2'>
-          <MessageCircle className='text-gray-500 cursor-pointer size-6' />
-          <p className='text-xl text-gray-400'>{totalComments}</p>
+          <MessageCircle className='text-gray-500 cursor-pointer size-5 sm:size-6' />
+          <p className='text-base text-gray-400 sm:text-xl'>{totalComments}</p>
         </span>
       </SheetTrigger>
       <SheetContent className='p-5 overflow-auto'>

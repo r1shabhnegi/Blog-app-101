@@ -70,3 +70,12 @@ export type commentType = {
   authorName: string;
   authorAvatar: string;
 };
+
+export type ProfileType = {
+  name: string | undefined;
+  about: string | undefined;
+  avatar: string | undefined;
+  bio: string | undefined;
+  numberOfPosts: number;
+  totalFollowers: number;
+};

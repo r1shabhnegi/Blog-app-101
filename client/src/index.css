@@ -49,10 +49,18 @@ input:-webkit-autofill:active {
   gap: 2.5rem;
 }
 
+.tiptap-detail img {
+  border-radius: 0.5rem;
+}
+
 .tiptap-detail pre {
   padding: 2rem;
+
   border-radius: 10px;
   background: #efefef;
+  /* word-wrap: break-word; */
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .post-card-content em {

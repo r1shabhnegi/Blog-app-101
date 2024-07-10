@@ -128,7 +128,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           <img
             src={postData.previewImage}
             alt='Img'
-            className='object-cover  h-[10rem] md:h-[9rem] w-[20rem] sm:w-[27rem]  md:w-[9rem]'
+            className='object-cover rounded-lg h-[10rem] md:h-[9rem] w-[20rem] sm:w-[27rem]  md:w-[9rem]'
           />
         ) : null}
       </div>

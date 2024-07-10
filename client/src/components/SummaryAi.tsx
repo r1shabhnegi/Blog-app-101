@@ -63,7 +63,7 @@ const SummaryAi = ({
             onClick={cancel}
           />
         </div>
-        <h1 className='text-gray-600 text-md md:text-lg sm:font-medium '>
+        <h1 className='text-lg text-gray-600 text-md md:text-lg sm:font-medium '>
           Here is the brief summary
         </h1>
 

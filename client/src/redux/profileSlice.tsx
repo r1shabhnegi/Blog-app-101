@@ -1,15 +1,18 @@
+import { ProfileType } from "@/lib/types";
 import { createSlice } from "@reduxjs/toolkit";
+
+const initialState: ProfileType = {
+  name: undefined,
+  about: undefined,
+  avatar: undefined,
+  bio: undefined,
+  numberOfPosts: 0,
+  totalFollowers: 0,
+};
 
 const profileSlice = createSlice({
   name: "profile",
-  initialState: {
-    name: "",
-    about: "",
-    avatar: "",
-    bio: "",
-    numberOfPosts: 0,
-    totalFollowers: 0,
-  },
+  initialState,
   reducers: {
     setCurrentProfile: (state, { payload }) => {
       const { name, about, avatar, bio, numberOfPosts } = payload;

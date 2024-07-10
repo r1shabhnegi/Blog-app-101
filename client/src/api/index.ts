@@ -487,3 +487,14 @@ export const extent = async (data: { text: string }) => {
   }
   return response as { data: { text: string } };
 };
+
+export const countFollowing = async (userId: string | undefined) => {
+  const response = await apiClient.query({
+    url: `/follow/get/followingCount/${userId}`,
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response as { data: { followingCount: number } };
+};
