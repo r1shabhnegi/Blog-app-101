@@ -3,6 +3,7 @@ import { Input } from "./ui/input";
 import { useNavigate } from "react-router-dom";
 import HeaderDropdown from "./HeaderDropdown";
 import { useState } from "react";
+import AskAi from "./AskAi";
 
 const Header = () => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -53,9 +54,7 @@ const Header = () => {
         </button>
         <HeaderDropdown />
       </span>
-      {
-        askAiModal? 
-      }
+      {askAiModal ? <AskAi cancel={() => setAskAiModal(!askAiModal)} /> : null}
     </div>
   );
 };
