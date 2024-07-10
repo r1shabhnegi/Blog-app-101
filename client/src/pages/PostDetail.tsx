@@ -1,4 +1,11 @@
-import { bookmark, getPost, isBookmarked, likePost, postStats } from "@/api";
+import {
+  bookmark,
+  getAiSummary,
+  getPost,
+  isBookmarked,
+  likePost,
+  postStats,
+} from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
@@ -49,6 +56,15 @@ const PostDetail = () => {
     await BookmarkMutate(data?.id);
   };
 
+  const { mutateAsync: getAiSummaryMutate, data: summaryData } = useMutation({
+    mutationFn: getAiSummary,
+  });
+
+  console.log("summary", summaryData);
+
+  const handleAvatarClickForSummary = async () => {
+    await getAiSummaryMutate({ text: data?.content });
+  };
   const { mutateAsync: likePostMutate } = useMutation({
     mutationFn: likePost,
     onSuccess: () => {
@@ -67,7 +83,9 @@ const PostDetail = () => {
       <div className='my-14'>
         <div className='text-4xl font-bold'>{data?.title}</div>
         <div className='flex gap-4 py-8 border-b'>
-          <Avatar className='cursor-pointer size-12'>
+          <Avatar
+            className='cursor-pointer size-12'
+            onClick={handleAvatarClickForSummary}>
             <AvatarImage
               src={data?.authorAvatar}
               alt=''

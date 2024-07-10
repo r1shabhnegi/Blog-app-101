@@ -136,20 +136,24 @@ const PublishCard = ({
                 {err}
               </p>
             )}
-            <button
-              type='button'
-              disabled={isPending}
-              className={`${
-                !err && "mt-10"
-              } bg-green-600 py-1.5 px-4 font-medium rounded-full text-white`}
-              onClick={onSubmit}>
-              {isPending ? <Loader className='animate-spin' /> : "Publish"}
-            </button>
-            <button
-              className='bg-gray-400 mt-3 py-1.5 px-4 font-medium rounded-full text-white'
-              onClick={cancel}>
-              Cancel
-            </button>
+            <div className='flex items-center justify-end w-full'>
+              <button
+                type='button'
+                disabled={isPending}
+                className={`${
+                  !err && "mt-10"
+                } bg-green-600 py-1.5 px-4 font-medium rounded-full text-white`}
+                onClick={onSubmit}>
+                {isPending ? <Loader className='animate-spin' /> : "Publish"}
+              </button>
+              <button
+                className={`${
+                  !err && "mt-10"
+                } bg-gray-400 ml-3 md:hidden py-1.5 px-4 font-medium rounded-full text-white`}
+                onClick={cancel}>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>

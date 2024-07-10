@@ -449,3 +449,17 @@ export const followingPosts = async (page: number | undefined) => {
   }
   return response as { data: { posts: PostType[]; numberOfPosts: number } };
 };
+
+export const getAiSummary = async (data: {
+  text: string | TrustedHTML | undefined;
+}) => {
+  const response = await apiClient.query({
+    url: `/ai/summary`,
+    method: "POST",
+    data,
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response as { text: string };
+};

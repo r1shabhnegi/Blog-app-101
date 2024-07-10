@@ -5,7 +5,8 @@ import HeaderDropdown from "./HeaderDropdown";
 import { useState } from "react";
 
 const Header = () => {
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [askAiModal, setAskAiModal] = useState<boolean>(false);
   const navigate = useNavigate();
   return (
     <div className='flex items-center justify-between px-4 sm:px-6 border-b-[0.01rem] border-gray-200 py-2'>
@@ -14,7 +15,7 @@ const Header = () => {
           className='flex items-center gap-1 cursor-pointer'
           onClick={() => navigate("/")}>
           <Newspaper className='-mt-1 text-green-600 size-5 md:size-6' />
-          <h1 className='text-lg font-bold tracking-tighter text-gray-700 md:text-xl font-lgo'>
+          <h1 className='text-lg font-bold tracking-tighter text-gray-700 md:text-xl'>
             Readpool.AI
           </h1>
         </span>
@@ -45,8 +46,16 @@ const Header = () => {
             Write
           </p>
         </span>
+        <button
+          className='text-[14px] font-medium bg-gradient-to-r from-pink-500 to-purple-700  rounded-full px-2.5 text-white py-1'
+          onClick={() => setAskAiModal(!askAiModal)}>
+          Ask AI
+        </button>
         <HeaderDropdown />
       </span>
+      {
+        askAiModal? 
+      }
     </div>
   );
 };
