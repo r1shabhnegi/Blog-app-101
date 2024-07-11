@@ -138,7 +138,7 @@ const PostDetail = () => {
               className=''
               onClick={handleBookmark}>
               {isBookmark ? (
-                <BookmarkCheck className='text-gray-500 size-5 sm:size-6' />
+                <BookmarkCheck className='text-gray-500 fill-gray-500 size-5 sm:size-6' />
               ) : (
                 <Bookmark className='text-gray-500 size-5 sm:size-6' />
               )}
@@ -185,7 +185,7 @@ const PostDetail = () => {
             className=''
             onClick={handleBookmark}>
             {isBookmark ? (
-              <BookmarkCheck className='text-gray-500 size-5 sm:size-6' />
+              <BookmarkCheck className='text-gray-500 fill-gray-500 size-5 sm:size-6' />
             ) : (
               <Bookmark className='text-gray-500 size-5 sm:size-6' />
             )}

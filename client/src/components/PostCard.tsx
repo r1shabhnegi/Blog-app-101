@@ -165,7 +165,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
             className=''
             onClick={handleBookmark}>
             {isBookmark ? (
-              <BookmarkCheck className='text-gray-500 size-5' />
+              <BookmarkCheck className='text-gray-500 fill-gray-500 size-5' />
             ) : (
               <Bookmark className='text-gray-500 size-5' />
             )}
