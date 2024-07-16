@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 // signup
 export const signupInput = z.object({
   name: z
@@ -23,13 +23,6 @@ export const signinInput = z.object({
 export type SigninType = z.infer<typeof signinInput>;
 
 // Edit user information
-const MAX_FILE_SIZE = 1000000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  // "image/webp",
-];
 
 // const isAvatarRemovedEnum = ["true", "false"];
 

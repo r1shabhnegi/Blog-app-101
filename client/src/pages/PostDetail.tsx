@@ -1,10 +1,4 @@
-import {
-  bookmark,
-  getPost,
-  isBookmarked,
-  likePost,
-  postStats,
-} from "@/api";
+import { bookmark, getPost, isBookmarked, likePost, postStats } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
@@ -153,10 +147,11 @@ const PostDetail = () => {
             className='rounded-lg'
           />
         </div>
-
-        <div
-          className='pt-10 tiptap-detail htmlContentDetail'
-          dangerouslySetInnerHTML={{ __html: data?.content }}></div>
+        {!!data?.content && (
+          <div
+            className='pt-10 tiptap-detail htmlContentDetail'
+            dangerouslySetInnerHTML={{ __html: data?.content }}></div>
+        )}
       </div>
 
       <div className='flex items-center justify-between border-b'>
