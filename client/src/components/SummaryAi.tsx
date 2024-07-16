@@ -1,8 +1,7 @@
-import { Search, X } from "lucide-react";
-import { Input } from "./ui/input";
-import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { getAiSummary, getAskAi } from "@/api";
+import { getAiSummary } from "@/api";
 import Spinner from "./Spinner";
 
 const SummaryAi = ({
@@ -12,7 +11,6 @@ const SummaryAi = ({
   cancel: () => void;
   content: string | TrustedHTML | undefined;
 }) => {
-  //   const [summaryVal, setSummaryVal] = useState("");
   const {
     mutateAsync: getAiSummaryMutate,
     isPending,
@@ -26,7 +24,6 @@ const SummaryAi = ({
     if (summaryContainer && summaryContainer.current) {
       summaryContainer.current.innerHTML = "";
     }
-    // summaryContainer?.current?.innerHTML = "";
     const fetch = async () => {
       await getAiSummaryMutate({ text: content });
     };

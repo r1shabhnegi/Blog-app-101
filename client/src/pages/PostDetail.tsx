@@ -1,6 +1,5 @@
 import {
   bookmark,
-  getAiSummary,
   getPost,
   isBookmarked,
   likePost,

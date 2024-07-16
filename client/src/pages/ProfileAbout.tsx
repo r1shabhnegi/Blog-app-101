@@ -1,7 +1,6 @@
 import { addAbout, getAbout } from "@/api";
 import Spinner from "@/components/Spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { useAppSelector } from "@/redux/hook";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 

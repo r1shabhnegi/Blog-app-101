@@ -64,7 +64,7 @@ export const logout = async () => {
   return response.data;
 };
 
-export const editUserInfo = async (data: EditUserInfoType) => {
+export const editUserInfo = async (data: FormData) => {
   const response = await apiClient.query({
     url: "/user",
     method: "PATCH",
@@ -461,7 +461,7 @@ export const getAiSummary = async (data: {
   if (response.error) {
     throw new Error(response?.error?.data);
   }
-  return response as { text: string };
+  return response as { data: { text: string } };
 };
 
 export const getAskAi = async (data: { text: string }) => {

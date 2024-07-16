@@ -5,7 +5,7 @@ import { PostType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Tag = () => {
   const [page, setPage] = useState(1);

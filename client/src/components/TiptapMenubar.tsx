@@ -12,7 +12,6 @@ import {
   List,
   ListOrdered,
   Quote,
-  Redo,
   Strikethrough,
   Undo,
 } from "lucide-react";
@@ -51,13 +50,6 @@ const TiptapMenubar = ({
           className={`${editor.isActive("code") ? "is-active" : ""} p-1`}>
           <Code className='w-6 h-6' />
         </button>
-        {/* <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`${
-          editor.isActive("heading", { level: 1 }) ? "is-active" : ""
-          } p-1`}>
-          <Heading1 className='w-6 h-6' />
-      </button> */}
         <button
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
@@ -96,13 +88,7 @@ const TiptapMenubar = ({
           } p-1`}>
           <Heading5 className='w-6 h-6' />
         </button>
-        {/* <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-        className={`${
-          editor.isActive("heading", { level: 6 }) ? "is-active" : ""
-          } p-1`}>
-          <Heading6 className='w-6 h-6' />
-          </button> */}
+
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`${editor.isActive("bulletList") ? "is-active" : ""} p-1`}>
@@ -130,11 +116,7 @@ const TiptapMenubar = ({
           disabled={!editor.can().chain().focus().undo().run()}>
           <Undo className='w-6 h-6' />
         </button>
-        {/* <button
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().chain().focus().redo().run()}>
-          <Redo className='w-6 h-6' />
-        </button> */}
+
         <button onClick={addImage}>
           <Image className='w-6 h-6' />
         </button>

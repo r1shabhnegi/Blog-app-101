@@ -1,22 +1,18 @@
-import { VenetianMask, X } from "lucide-react";
+import { X } from "lucide-react";
 import profileDeno from "../assets/profileImg.png";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useAppSelector } from "@/redux/hook";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "./ui/input";
 import { EditUserInfoType } from "../../../common-types/index";
 import { useDropzone } from "react-dropzone";
-import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editUserInfo } from "@/api";
 import imageCompression from "browser-image-compression";
 import { useToast } from "./ui/use-toast";
 import { Textarea } from "./ui/textarea";
-// import { useNavigate } from "react-router-dom";
 const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
-  // const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
   const queryClient = useQueryClient();
-  // query.
   const { toast } = useToast();
   const {
     avatar: avatarImg,
@@ -102,7 +98,7 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
       } else {
         formData.append("avatar", avatarFile);
       }
-     
+
       return formData;
     }
     try {
