@@ -10,7 +10,13 @@ import {
 } from "@/lib/types";
 
 export const serverStatus = async () => {
-  const response = await axios.get(import.meta.env.VITE_BACKEND_URL);
+  const response = await apiClient.query({
+    url: "/server",
+    method: "GET",
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
   return response;
 };
 
