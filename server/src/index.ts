@@ -19,8 +19,8 @@ app.use(
   cors({
     credentials: true,
     origin: [
+      "https://readpool-kxqsyy11h-rishabhs-projects-600a8bfe.vercel.app",
       "http://localhost:5173",
-      "https://readpool-2dqfltslh-rishabhs-projects-600a8bfe.vercel.app",
     ],
   })
 );
