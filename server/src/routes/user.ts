@@ -4,6 +4,9 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import bcrypt from "bcryptjs";
 import { signupInput, EditUserInfoInput } from "../../../common-types/index";
 import { jwtVerify } from "../middlewares/jwtVerify";
+import Redis from "ioredis";
+import { redis } from "../middlewares/redis";
+import { createClient } from "redis";
 
 const router = new Hono<{
   Bindings: {
@@ -14,13 +17,30 @@ const router = new Hono<{
   Variables: {
     prisma: PrismaClient & ReturnType<typeof withAccelerate>;
     userId: string;
+    // redis: Redis;
   };
 }>();
 
+const client = new Redis(
+  "rediss://default:Ad3kAAIncDE2MjI2NGY3YTliOWE0MjRiOTAyZmYyOWMyNmQxMGQyZXAxNTY4MDQ@saving-kid-56804.upstash.io:6379"
+);
+
+// const client = createClient({
+//   url: "rediss://default:Ad3kAAIncDE2MjI2NGY3YTliOWE0MjRiOTAyZmYyOWMyNmQxMGQyZXAxNTY4MDQ@saving-kid-56804.upstash.io:6379",
+// });
+
 router.get("/:userId", async (c) => {
   const prisma = c.get("prisma");
+  // const redis = c.get("redis");
+  // console.log(redis);
   const { userId } = c.req.param();
+  console.log("userId", userId);
   try {
+    // const cachedUserValue = await client.get(`user:${userId}`);
+    // if (cachedUserValue) {
+    //   console.log("cached Value", cachedUserValue);
+    //   // return c.json({ message: { ...cachedUserValue } });
+    // }
     const foundUser = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -34,6 +54,11 @@ router.get("/:userId", async (c) => {
         name: true,
       },
     });
+
+    // const resp = await redisClient.set(
+    //   `user:${userId}`,
+    //   JSON.stringify(foundUser)
+    // );
 
     if (!foundUser) {
       return c.json({ message: "Error getting user" }, 500);

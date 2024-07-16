@@ -9,7 +9,8 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "hono": "^4.4.2",
-    "ioredis": "^5.4.1"
+    "ioredis": "^5.4.1",
+    "redis": "^4.6.15"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",

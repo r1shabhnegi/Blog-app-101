@@ -10,20 +10,22 @@ import authRouter from "./routes/auth";
 import bookmarkRouter from "./routes/bookmark";
 import followRouter from "./routes/follow";
 import aiRouter from "./routes/ai";
+import { redis } from "./middlewares/redis";
 
-const app = new Hono();
+const app = new Hono().basePath("/api/v1");
 
 // app.use(credentials);
 app.use(cors({ credentials: true, origin: ["http://localhost:5173"] }));
 app.use("/api/v1/*", prismaConfigMiddleware);
+// app.use("/api/v1/*", redis);
 
 app.route("/", serverRouter);
-app.route("/api/v1/auth", authRouter);
-app.route("/api/v1/user", userRouter);
-app.route("/api/v1/post", postRouter);
-app.route("/api/v1/bookmark", bookmarkRouter);
-app.route("/api/v1/comment", commentRouter);
-app.route("/api/v1/tag", tagRouter);
-app.route("/api/v1/follow", followRouter);
-app.route("/api/v1/ai", aiRouter);
-export default app;
+app.route("/auth", authRouter);
+app.route("/user", userRouter);
+app.route("/post", postRouter);
+app.route("/bookmark", bookmarkRouter);
+app.route("/comment", commentRouter);
+app.route("/tag", tagRouter);
+app.route("/follow", followRouter);
+app.route("/ai", aiRouter);
+export default app as never;

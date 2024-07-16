@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { signinInput } from "../../../common-types/index";
 import { sign, verify } from "hono/jwt";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
-import { jwtVerify } from "../middlewares/jwtVerify";
+// import { jwtVerify } from "../middlewares/jwtVerify";
 
 const router = new Hono<{
   Bindings: {
@@ -140,7 +140,7 @@ router.post("/", async (c) => {
         bio: foundUser.bio,
         token: accessToken,
         totalPostsCount: totalPostsCount || 0,
-        about: foundUser.about
+        about: foundUser.about,
       },
       201
     );
