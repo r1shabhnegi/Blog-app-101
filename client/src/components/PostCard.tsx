@@ -173,6 +173,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           </button>
           <span className='hidden md:block'>
             <PostCardDropdown
+              authorId={postData.authorId}
               isMod={isMod}
               handleDeletePost={() => handleDeletePost()}
             />
