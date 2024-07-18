@@ -45,7 +45,6 @@ const PublishCard = ({
     mutationFn: createPost,
     onSuccess: () => {
       queryClint.invalidateQueries({ queryKey: ["userPosts"] });
-      // queryClint.invalidateQueries({ queryKey: ["latestPosts"] });
       toast({
         title: "Post published successfully!",
         className: "bg-green-400",

@@ -37,7 +37,7 @@ const HomeSidebar = () => {
               <span
                 key={`${tag}+${Math.round(Math.random() * 1000)}`}
                 className='px-3 py-1 text-sm bg-gray-200 rounded-full cursor-pointer'
-                onClick={() => navigate(`/tag/${tag.name}`)}>
+                onClick={() => navigate(`/tag/${tag.name.toLowerCase()}`)}>
                 {tag.name}
               </span>
             ))}
