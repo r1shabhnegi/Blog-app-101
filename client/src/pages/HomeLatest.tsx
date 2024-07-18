@@ -1,6 +1,5 @@
 import { allLatestPost } from "@/api";
 import PostCard from "@/components/PostCard";
-import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
 import { useAppSelector } from "@/redux/hook";
 import { useQuery } from "@tanstack/react-query";
@@ -40,10 +39,10 @@ const HomeLatest = () => {
 
   return (
     <InfiniteScroll
-      className='flex flex-col items-center justify-center overflow-hidden'
+      className='flex flex-col items-center justify-center overflow-y-hidden'
       dataLength={posts.length}
       hasMore={hasMore}
-      loader={<Spinner />}
+      loader={"loading..."}
       next={fetchMorePosts}>
       {posts.map((post: PostType) => (
         <PostCard

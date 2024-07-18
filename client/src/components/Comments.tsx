@@ -9,7 +9,6 @@ import { createComment, getComments } from "@/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Spinner from "./Spinner";
 import { commentType } from "@/lib/types";
 import CommentCard from "./CommentCard";
 const Comments = ({ totalComments }: { totalComments: number }) => {
@@ -108,7 +107,7 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
             className='flex flex-col items-center justify-center'
             dataLength={comments.length}
             hasMore={hasMore}
-            loader={<Spinner />}
+            loader={"Loading..."}
             next={fetchMorePosts}>
             {comments.map((comment) => (
               <CommentCard

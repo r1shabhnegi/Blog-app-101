@@ -1,6 +1,5 @@
 import { followingPosts } from "@/api";
 import PostCard from "@/components/PostCard";
-import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -49,7 +48,7 @@ const HomeFollowing = () => {
       className='flex flex-col items-center justify-center'
       dataLength={posts.length}
       hasMore={hasMore}
-      loader={<Spinner />}
+      loader={"Loading..."}
       next={fetchMorePosts}>
       {posts.map((post: PostType) => (
         <PostCard

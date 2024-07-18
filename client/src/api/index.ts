@@ -440,7 +440,13 @@ export const fiveSavedPost = async () => {
     throw new Error(response?.error?.data);
   }
   return response as {
-    data: { id: string; createdAt: string; readTime: string; title: string }[];
+    data: {
+      id: string;
+      createdAt: string;
+      readTime: string;
+      title: string;
+      authorAvatar: string;
+    }[];
   };
 };
 

@@ -1,6 +1,5 @@
 import { getUserPosts } from "@/api";
 import PostCard from "@/components/PostCard";
-import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
 import { useAppSelector } from "@/redux/hook";
 import { useQuery } from "@tanstack/react-query";
@@ -48,7 +47,7 @@ const ProfileHome = () => {
       className='flex flex-col items-center justify-center'
       dataLength={posts.length}
       hasMore={hasMore}
-      loader={<Spinner />}
+      loader={"Loading..."}
       next={fetchMorePosts}>
       {posts.map((post: PostType) => (
         <PostCard

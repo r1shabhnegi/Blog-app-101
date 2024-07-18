@@ -13,7 +13,7 @@ const HomeSidebar = () => {
   });
   const { data } = useQuery({ queryKey: ["tagNames"], queryFn: tagNames });
 
-  const { avatar, userId } = useAppSelector((state) => state.auth);
+  const { userId } = useAppSelector((state) => state.auth);
 
   return (
     <div className='flex flex-col gap-10'>
@@ -56,6 +56,7 @@ const HomeSidebar = () => {
               createdAt: string;
               readTime: string;
               title: string;
+              authorAvatar: string;
             }) => (
               <div
                 key={post.id}
@@ -65,7 +66,7 @@ const HomeSidebar = () => {
                     className='cursor-pointer size-7'
                     onClick={() => navigate(`/profile/${userId}`)}>
                     <AvatarImage
-                      src={avatar}
+                      src={post.authorAvatar}
                       alt=''
                     />
                     <AvatarFallback>

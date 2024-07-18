@@ -58,7 +58,7 @@ const Followers = () => {
         className='flex flex-col items-center justify-center'
         dataLength={followersData.length}
         hasMore={hasMore}
-        loader={<Spinner />}
+        loader={"Loading..."}
         next={fetchMorePosts}>
         {followersData.map((followerData: GetFollowersType) => (
           <FollowerCard
