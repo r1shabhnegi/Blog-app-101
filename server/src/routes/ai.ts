@@ -35,7 +35,17 @@ router.post("/summary", async (c) => {
       model: "gemini-pro",
     });
 
-    const prompt = `I am providing you the html code, act as a world class copy writer, extract text from this html file and give me the detail summary - here is the html code - ${text}`;
+    const prompt = `You are a world-class copywriter. I'm providing you with HTML code. Please:
+
+1. Extract all relevant text content from this HTML.
+2. Summarize the key points of the extracted content.
+3. If appropriate, create a bulleted list of the main ideas.
+
+Here is the HTML code:
+
+${text}
+
+Please provide your summary and/or bullet points based on the content.`;
 
     const result = await model.generateContent(prompt);
     const response = result.response.text();

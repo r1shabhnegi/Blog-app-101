@@ -34,12 +34,9 @@ const ProfileLayout = () => {
     }
   }, [dispatch, userData]);
 
-  const nameFirstLetter = userData?.name?.slice(0, 1).toUpperCase();
-  const nameRestLetters = userData?.name?.slice(1);
-  const adminName =
-    nameFirstLetter && nameRestLetters
-      ? `${nameFirstLetter}${nameRestLetters}`
-      : "";
+  const adminName = userData?.name
+    ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1)
+    : "";
 
   const handleEditBtn = () => {
     navigate("/settings", {

@@ -45,6 +45,7 @@ const PublishCard = ({
     mutationFn: createPost,
     onSuccess: () => {
       queryClint.invalidateQueries({ queryKey: ["userPosts"] });
+      // queryClint.invalidateQueries({ queryKey: ["latestPosts"] });
       toast({
         title: "Post published successfully!",
         className: "bg-green-400",
@@ -84,14 +85,14 @@ const PublishCard = ({
   };
 
   return (
-    <div className='absolute top-0 bottom-0 left-0 right-0 z-50 bg-white'>
+    <div className='fixed top-0 bottom-0 left-0 right-0 z-50 bg-white'>
       <div className=' w-full max-w-[70rem] mx-auto my-16'>
         <div
           className='flex justify-end'
           onClick={cancel}>
           <X className='hidden text-gray-500 cursor-pointer md:block size-7 ' />
         </div>
-        <div className='flex flex-col items-center justify-center gap-14'>
+        <div className='flex flex-col items-center justify-center md:flex-row gap-14'>
           <div className='p-4 md:w-1/2'>
             <h2 className='text-lg font-semibold text-left '>
               Add Preview photo

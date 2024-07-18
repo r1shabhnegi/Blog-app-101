@@ -19,6 +19,7 @@ import Followers from "./pages/Followers";
 import Followings from "./pages/Followings";
 import NoSidebarLayout from "./layout/NoSidebarLayout";
 import Tag from "./pages/Tag";
+
 const AppRoutes = () => {
   return (
     <Routes>

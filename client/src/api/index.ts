@@ -20,6 +20,7 @@ export const serverStatus = async () => {
 };
 
 export const signup = async (data: signupType) => {
+  // try {
   const response = await apiClient.query({
     url: "/user",
     method: "POST",
@@ -29,6 +30,9 @@ export const signup = async (data: signupType) => {
     throw new Error(response?.error?.data);
   }
   return response;
+  // } catch (error) {
+  //   console.log(error);
+  // }
 };
 
 export const signin = async (data: SigninType) => {

@@ -33,10 +33,14 @@ router.post("/", jwtVerify, async (c) => {
       return c.json({ message: error.message }, 403);
     }
 
+    const tagName = inputData.tag
+      ? inputData.tag.charAt(0).toUpperCase() + inputData.tag.slice(1)
+      : "";
+
     try {
       const foundTag = await prisma.tag.findUnique({
         where: {
-          name: inputData.tag,
+          name: tagName,
         },
         select: {
           name: true,
@@ -46,7 +50,7 @@ router.post("/", jwtVerify, async (c) => {
       if (!foundTag) {
         await prisma.tag.create({
           data: {
-            name: inputData.tag,
+            name: tagName,
           },
         });
       }
@@ -67,8 +71,6 @@ router.post("/", jwtVerify, async (c) => {
     if (!imageFile) {
       return c.json({ message: "Error uploading image" }, 500);
     }
-
-    // c.env.BLOG_APP_UPLOADS.delete()
 
     const imageUrl = `${c.env.R2_URL}/${imageFile?.key}`;
 
@@ -186,6 +188,8 @@ router.delete("/", jwtVerify, async (c) => {
       id: postId,
     },
   });
+
+  await c.env.BLOG_APP_UPLOADS.delete(deletedPost.previewImage);
 
   if (!deletedPost) {
     c.status(400);
