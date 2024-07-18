@@ -32,7 +32,7 @@ router.post("/summary", async (c) => {
     console.log(text);
     const genAI = new GoogleGenerativeAI(c.env.GEMINI_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-flash",
     });
 
     const prompt = `You are a world-class copywriter. I'm providing you with HTML code. Please:
@@ -63,7 +63,7 @@ router.post("/ask-ai", async (c) => {
     const { text } = await c.req.json();
     const genAI = new GoogleGenerativeAI(c.env.GEMINI_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-flash",
       // generationConfig,
     });
     const prompt = `Act as a amazing general knowledge champion and make things simplified for me, the question is - ${text}`;
@@ -82,7 +82,7 @@ router.post("/extend", async (c) => {
     const { text } = await c.req.json();
     const genAI = new GoogleGenerativeAI(c.env.GEMINI_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-flash",
       // generationConfig,
     });
     const prompt = `I am providing you a paragraph, act as a world class writer and extend this paragraph according to it, paragraph - ${text}`;

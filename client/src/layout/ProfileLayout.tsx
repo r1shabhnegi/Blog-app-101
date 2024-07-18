@@ -113,7 +113,7 @@ const ProfileLayout = () => {
           </span>
         </div>
       </div>
-      <div>
+      <div className='mt-20 lg:mt-0'>
         <Outlet />
       </div>
     </div>
