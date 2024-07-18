@@ -15,7 +15,7 @@ const ProfileAbout = () => {
   const { mutateAsync } = useMutation({ mutationFn: addAbout });
 
   useEffect(() => {
-    if (about && about.about.length > 0) {
+    if (about && about.about && about.about.length > 0) {
       setAboutValue(about.about);
     }
   }, [about]);
@@ -48,7 +48,7 @@ const ProfileAbout = () => {
         </button>
       </div>
     </form>
-  ) : about && about?.about.length > 0 ? (
+  ) : about && about.about && about.about.length > 0 ? (
     <div className='flex flex-col items-end gap-5'>
       <p className='w-full p-5 border-b medium text-'>{about.about}</p>
       <span>
