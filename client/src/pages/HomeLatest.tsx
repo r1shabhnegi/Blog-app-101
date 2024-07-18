@@ -40,7 +40,7 @@ const HomeLatest = () => {
 
   return (
     <InfiniteScroll
-      className='flex flex-col items-center justify-center'
+      className='flex flex-col items-center justify-center overflow-hidden'
       dataLength={posts.length}
       hasMore={hasMore}
       loader={<Spinner />}
