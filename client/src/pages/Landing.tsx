@@ -64,7 +64,7 @@ const Landing = () => {
             AI-assisted blogging for
           </h2>
           <h2 className='leading-relaxed text-gray-600 font-inter'>
-            developers and teams.
+            everyone.
           </h2>
         </span>
         <button
