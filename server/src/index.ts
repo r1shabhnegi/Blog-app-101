@@ -16,7 +16,7 @@ const app = new Hono();
 app.use(
   cors({
     credentials: true,
-    origin: ["https://readpool-ai.vercel.app", "http://localhost:5174"],
+    origin: ["https://readpool-ai.vercel.app", "http://localhost:5173"],
   })
 );
 app.use("/api/v1/*", prismaConfigMiddleware);

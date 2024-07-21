@@ -1,4 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} from "@google/generative-ai";
 import { Hono } from "hono";
 import { PublishPostInput } from "../../../common-types/index";
 import { PrismaClient } from "@prisma/client/edge";
@@ -18,18 +22,9 @@ const router = new Hono<{
   };
 }>();
 
-const generationConfig = {
-  stopSequences: ["red"],
-  maxOutputTokens: 200,
-  temperature: 0.9,
-  topP: 0.1,
-  topk: 16,
-};
-
-router.post("/summary", async (c) => {
+router.post("/summary", jwtVerify, async (c) => {
   try {
     const { text } = await c.req.json();
-    console.log(text);
     const genAI = new GoogleGenerativeAI(c.env.GEMINI_KEY);
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -64,8 +59,8 @@ router.post("/ask-ai", async (c) => {
     const genAI = new GoogleGenerativeAI(c.env.GEMINI_KEY);
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
-      // generationConfig,
     });
+
     const prompt = `Act as a amazing general knowledge champion and make things simplified for me, the question is - ${text}`;
     const result = await model.generateContent(prompt);
     const response = result.response.text();
