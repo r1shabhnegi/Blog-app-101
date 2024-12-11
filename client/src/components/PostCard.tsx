@@ -22,19 +22,27 @@ import {
 } from "@/api";
 import { useToast } from "./ui/use-toast";
 import PostCardDropdown from "./PostCardDropdown";
+import { useEffect, useState } from "react";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
+  const [isBookmark, setIsBookmark] = useState<boolean>(false);
 
   const { userId } = useAppSelector((state) => state.auth);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isMod: boolean = postData?.authorId === userId ? true : false;
 
-  const { data: isBookmark } = useQuery({
+  const { data: isBookmarkData, isSuccess: isSuccessBookmarkData } = useQuery({
     queryKey: ["check-bookmark", postData?.id],
     queryFn: () => isBookmarked(postData?.id),
     enabled: !!postData?.id,
   });
+  console.log(isBookmarkData);
+  useEffect(() => {
+    if (isSuccessBookmarkData) {
+      setIsBookmark(isBookmarkData);
+    }
+  }, [isBookmarkData, isSuccessBookmarkData]);
   const { data: postStatsData } = useQuery({
     queryKey: ["postStats", postData?.id],
     queryFn: () => postStats(postData?.id),

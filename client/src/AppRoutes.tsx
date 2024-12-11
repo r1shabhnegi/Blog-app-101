@@ -1,7 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-
 import AuthLayout from "@/layout/AuthLayout";
-
 import MainPageLayout from "./layout/MainPageLayout";
 import ProfileLayout from "./layout/ProfileLayout";
 import ProfileHome from "./pages/ProfileHome";

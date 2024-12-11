@@ -174,7 +174,7 @@ export const isBookmarked = async (postId: string | undefined) => {
   if (response.error) {
     throw new Error(response.error.data);
   }
-  return response.data;
+  return response.data as unknown as boolean;
 };
 
 export const addReadingHistory = async ({ postId }: { postId: string }) => {

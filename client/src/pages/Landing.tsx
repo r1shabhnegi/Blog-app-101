@@ -56,10 +56,16 @@ const Landing = () => {
         </header>
       </div>
       <div className='flex flex-col items-center justify-center flex-1 gap-10 my-28'>
-        <h1 className='text-4xl leading-normal tracking-tight text-center text-gray-900 sm:text-5xl font-logo'>
-          Effortless Publishing.
-        </h1>
-        <span className='flex flex-col items-center justify-center text-xl sm:text-2xl md:text-3xl lg:text-4xl'>
+        <div className='flex flex-col text-center sm:flex-row'>
+          <h1 className='text-5xl leading-normal tracking-tight text-center text-gray-900 lg:text-6xl font-logo'>
+            Effortless
+          </h1>
+          <h1 className='text-5xl leading-normal tracking-tight text-center text-gray-900 lg:text-6xl font-logo'>
+            Publishing
+          </h1>
+          .
+        </div>
+        <span className='flex flex-col items-center justify-center text-2xl md:text-3xl lg:text-4xl'>
           <h2 className='leading-relaxed text-gray-600 font-inter'>
             AI-assisted blogging for
           </h2>
@@ -74,7 +80,7 @@ const Landing = () => {
         </button>
       </div>
       <div
-        className='flex flex-col flex-wrap justify-between gap-6 lg:flex-row'
+        className='flex flex-col flex-wrap justify-between gap-6 mx-6 sm:mx-20 md:mx-36 lg:mx-44 lg:flex-row'
         onClick={() => {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}>
