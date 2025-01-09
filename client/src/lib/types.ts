@@ -1,3 +1,14 @@
+export type SignupType = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type SigninType = {
+  email: string;
+  password: string;
+};
+
 export type UserCredentialsType = {
   isAuth: boolean;
   userId: undefined | string;

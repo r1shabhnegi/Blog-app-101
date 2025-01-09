@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
-import { signupType } from "../../../common-types/index";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { signup, signin } from "@/api";
+import { signup, signin } from "@/api/AuthApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppDispatch } from "@/redux/hook";
 import { setUserCredentials } from "@/redux/authSlice";
 import { LoaderCircle } from "lucide-react";
+import { SignupType } from "@/lib/types";
 
 const SignupCard = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ const SignupCard = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<signupType>();
+  } = useForm<SignupType>();
 
   const { mutateAsync: mutateSignin, isPending: signinPending } = useMutation({
     mutationFn: signin,

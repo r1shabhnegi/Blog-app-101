@@ -19,45 +19,6 @@ export const serverStatus = async () => {
   return response;
 };
 
-export const signup = async (data: signupType) => {
-  // try {
-  const response = await apiClient.query({
-    url: "/user",
-    method: "POST",
-    data,
-  });
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-  return response;
-  // } catch (error) {
-  //   console.log(error);
-  // }
-};
-
-export const signin = async (data: SigninType) => {
-  const response = await apiClient.query({
-    url: "/auth",
-    method: "POST",
-    data,
-  });
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-  return response.data;
-};
-
-export const refreshToken = async () => {
-  const response = await apiClient.query({
-    url: "/auth",
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-  return response.data;
-};
-
 export const logout = async () => {
   const response = await apiClient.query({
     url: "/auth/logout",

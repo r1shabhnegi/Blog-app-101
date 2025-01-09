@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
-import { Input } from "./ui/input";
-import { SigninType } from "../../../common-types/index";
-import { Button } from "./ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { setUserCredentials } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/hook";
-import { useToast } from "./ui/use-toast";
-import { signin } from "@/api";
+import { useToast } from "@/components/ui/use-toast";
+import { signin } from "@/api/AuthApi";
 import { LoaderCircle } from "lucide-react";
+import { SigninType } from "@/lib/types";
 
 const SigninCard = () => {
   const dispatch = useAppDispatch();

@@ -5,7 +5,8 @@ import bcrypt from "bcryptjs";
 import { signinInput } from "../../../common-types/index";
 import { sign, verify } from "hono/jwt";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
-// import { jwtVerify } from "../middlewares/jwtVerify";
+// import { oauth2client } from "../utils/googleConfig";
+import axios from "axios";
 
 const router = new Hono<{
   Bindings: {
@@ -18,8 +19,84 @@ const router = new Hono<{
     userId: string;
     email: string;
     prisma: PrismaClient & ReturnType<typeof withAccelerate>;
+    oauth2client: any; // Add the correct type for oauth2client if known
   };
 }>();
+
+router.get("/googleLogin", async (c) => {
+  const prisma = c.get("prisma");
+  console.log("called");
+  const oauth2client = c.get("oauth2client");
+  try {
+    const { code } = c.req.query();
+
+    if (!code) {
+      c.status(400);
+      return c.text("Code is required");
+    }
+
+    const googleRes = await oauth2client.getToken(code);
+    oauth2client.setCredentials(googleRes.tokens);
+
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
+
+    const { email, name } = userRes.data;
+
+    let user = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name,
+          email,
+        },
+      });
+    }
+
+    const { id, name: userName, email: userEmail } = user;
+
+    const jwtPayload = (expIn: number) => {
+      return {
+        userId: id,
+        name: userName,
+        email: userEmail,
+        exp: expIn,
+      };
+    };
+    console.log("sds");
+    const expireIn3h = Math.floor(Date.now() / 1000) + 60 * 180;
+    const expireIn1d = Math.floor(Date.now() / 1000) + 60 * 1440;
+
+    const accessToken = await sign(
+      jwtPayload(expireIn3h),
+      c.env.JWT_ACCESS_TOKEN_SECRET
+    );
+
+    const refreshToken = await sign(
+      jwtPayload(expireIn1d),
+      c.env.JWT_REFRESH_TOKEN_SECRET
+    );
+
+    return c.json(
+      {
+        accessToken,
+        refreshToken,
+      },
+      201
+    );
+  } catch (error: any) {
+    c.status(500);
+    return c.text(`Error: ${error.message || "something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
 
 // signin
 router.post("/", async (c) => {
@@ -44,6 +121,10 @@ router.post("/", async (c) => {
         { message: "User does not exist, Please create account" },
         403
       );
+    }
+
+    if (!foundUser.password) {
+      return c.json({ message: "Password does not match" }, 403);
     }
 
     const isPwMatch = await bcrypt.compare(
@@ -147,6 +228,8 @@ router.post("/", async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -277,6 +360,8 @@ router.get("/", async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -308,7 +393,7 @@ router.post("/logout", async (c) => {
     });
   }
 
-  const deletedCookie = deleteCookie(c, "jwt", {
+  deleteCookie(c, "jwt", {
     secure: true,
     httpOnly: true,
     sameSite: "None",

@@ -1,4 +1,4 @@
-import Landing from "@/pages/Landing";
+import Landing from "@/pages/Landing/Landing";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect } from "react";
 import { setLoading } from "@/redux/authSlice";

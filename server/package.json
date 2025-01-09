@@ -6,10 +6,15 @@
   "dependencies": {
     "@google/generative-ai": "^0.14.1",
     "@prisma/extension-accelerate": "^1.1.0",
+    "@types/gapi": "^0.0.47",
+    "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0",
     "hono": "^4.4.2",
-    "ioredis": "^5.4.1"
+    "http2": "^3.3.7",
+    "ioredis": "^5.4.1",
+    "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
