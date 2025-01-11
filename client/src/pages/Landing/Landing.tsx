@@ -29,24 +29,24 @@ const Landing = () => {
     setOnSignin(false);
   };
   return (
-    <main className='min-h-screen bg-[#fbfbfb]'>
+    <main className='min-h-screen bg-primary-bg'>
       <div className='flex flex-col'>
-        <div className='px-6 border-black shadow-2xl sm:px-16 md:px-28 lg:px-48 shadow-gray-200/35'>
+        <div className='px-6 border-black shadow-2xl sm:px-16 md:px-28 lg:px-48 shadow-gray-300/30'>
           <div className='flex items-center justify-between h-16'>
             <span className='flex items-end justify-center gap-2'>
-              <Newspaper className='text-green-600 size-6 sm:size-7 md:size-8' />
-              <h1 className='-mb-0.5 text-md sm:text-lg md:text-2xl font-bold tracking-tighter text-gray-700 font-logo'>
+              <Newspaper className='text-green-600 size-5 sm:size-5 md:size-7' />
+              <h1 className='-mb-0.5 text-sm sm:text-md md:text-lg font-bold tracking-tighter text-gray-700 font-logo'>
                 Readpool.AI
               </h1>
             </span>
             <nav className='flex gap-4'>
               <button
-                className='font-semibold hover:text-green-700  text-[10px] md:px-3 md:text-[12px]'
+                className='font-semibold tracking-wide hover:text-green-700  text-[10px] md:px-3 md:text-[12px]'
                 onClick={handleSigninBtn}>
                 Sign in
               </button>
               <button
-                className='px-2 md:px-5 py-1.5 md:py-2 text-[10px] md:text-[12px] font-semibold text-white bg-gray-900 hover:bg-green-600  rounded-full'
+                className='px-2 md:px-5 py-1.5 tracking-wide md:py-2 text-[10px] md:text-[12px] font-semibold text-white bg-gray-900 hover:bg-green-600  rounded-full'
                 onClick={handleGetStartedBtn}>
                 Get started
               </button>
@@ -69,7 +69,7 @@ const Landing = () => {
             </h2>
           </span>
           <button
-            className='px-5 md:px-8 lg:px-10 py-2 md:py-3 text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] font-semibold text-white bg-gray-900 rounded-full hover:bg-green-600  drop-shadow-lg'
+            className='px-5 md:px-8 lg:px-10 py-2 md:py-3 text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] font-semibold text-white bg-gray-900 rounded-full hover:bg-green-600  drop-shadow-lg tracking-wide'
             onClick={handleGetStartedBtn}>
             Start Writing
           </button>

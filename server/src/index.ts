@@ -21,6 +21,10 @@ app.use(
 );
 app.use("/api/v1/*", prismaConfigMiddleware);
 
+app.use("/api/v1/googleLogin", async (c) => {
+  return c.text("Google Login Endpoint");
+});
+
 app.route("/api/v1/server", serverRouter);
 app.route("/api/v1/auth", authRouter);
 app.route("/api/v1/user", userRouter);

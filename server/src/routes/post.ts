@@ -174,6 +174,7 @@ router.get("/:userId/:page", async (c) => {
   return c.json(userAllPosts);
 });
 
+//delete post
 router.delete("/", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
 
@@ -199,6 +200,7 @@ router.delete("/", jwtVerify, async (c) => {
   return c.json({ message: "Post deleted successfully" }, 200);
 });
 
+// history
 router.get("/reading-history", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -267,7 +269,7 @@ router.get("/get/stats/:postId", jwtVerify, async (c) => {
   }
 });
 
-router.post("/likePost/:postId", async (c) => {
+router.post("/likePost/:postId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { postId } = c.req.param();
@@ -338,39 +340,70 @@ router.get("/get/five/posts", jwtVerify, async (c) => {
   }
 });
 
-router.get("/followingUserPosts/get/:page", async (c) => {
+router.get("/latest", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
-  const { page } = c.req.param();
-  const pageSize = 5;
+
+  const { cursor } = c.req.query();
+  console.log(cursor);
+  const pageSize = 10;
+
   try {
     const posts = await prisma.post.findMany({
-      where: {
-        author: {
-          following: {
-            some: { id: userId },
-          },
-        },
-      },
-      skip: (+page - 1) * pageSize,
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
       take: pageSize,
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    const countFollowingPosts = await prisma.post.count({
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, result: posts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+router.get("/following", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+
+  const { cursor } = c.req.query();
+  console.log(cursor);
+  const pageSize = 10;
+
+  try {
+    const posts = await prisma.post.findMany({
       where: {
         author: {
           following: {
-            some: { id: userId },
+            some: {
+              followerId: userId,
+            },
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
+    console.log(posts);
 
-    console.log("posts-", posts);
-    return c.json({ posts, numberOfPosts: countFollowingPosts }, 200);
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, result: posts }, 200);
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);

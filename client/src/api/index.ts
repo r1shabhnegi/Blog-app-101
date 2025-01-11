@@ -1,4 +1,3 @@
-import { signupType, SigninType } from "../../../common-types/index";
 import { apiClient } from "./baseQuery";
 import {
   commentServerResponse,

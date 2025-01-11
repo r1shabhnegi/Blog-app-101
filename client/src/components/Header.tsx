@@ -1,22 +1,27 @@
 import { Newspaper, Search, SquarePen } from "lucide-react";
 import { Input } from "./ui/input";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HeaderDropdown from "./HeaderDropdown";
 import { useState } from "react";
 import AskAi from "./AskAi";
 
+const NoHeaderPageArray = ["/publish"];
+
 const Header = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [askAiModal, setAskAiModal] = useState<boolean>(false);
+  const { pathname } = useLocation();
   const navigate = useNavigate();
-  return (
+  const isNoHeaderPage = NoHeaderPageArray.indexOf(pathname);
+
+  return isNoHeaderPage === -1 ? (
     <div className='flex items-center justify-between  px-2 sm:px-5 border-b-[0.01rem] border-gray-200 py-2'>
       <span className='flex items-center justify-center gap-4'>
         <span
-          className='flex items-center gap-1 cursor-pointer'
+          className='flex items-end justify-center gap-2 cursor-pointer'
           onClick={() => navigate("/")}>
-          <Newspaper className='-mt-1 text-green-600 size-5 md:size-6' />
-          <h1 className='text-lg font-bold tracking-tighter text-gray-700 md:text-xl'>
+          <Newspaper className='text-green-600 size-5 sm:size-5 md:size-7' />
+          <h1 className='-mb-0.5 text-sm sm:text-md md:text-lg font-bold tracking-tighter text-gray-700 font-logo'>
             Readpool.AI
           </h1>
         </span>
@@ -56,6 +61,6 @@ const Header = () => {
       </span>
       {askAiModal ? <AskAi cancel={() => setAskAiModal(!askAiModal)} /> : null}
     </div>
-  );
+  ) : null;
 };
 export default Header;

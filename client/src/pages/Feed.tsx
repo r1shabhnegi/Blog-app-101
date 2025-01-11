@@ -1,0 +1,42 @@
+import { useEffect, useState } from "react";
+import FeedTabs from "@/components/Feed/FeedTabs";
+import { useSearchParams } from "react-router-dom";
+import FeedPosts from "@/components/Feed/FeedPosts";
+import FeedLatest from "@/components/Feed/FeedLatest";
+import FeedFollowing from "@/components/Feed/FeedFollowing";
+
+const Feed = () => {
+  const [searchParams] = useSearchParams();
+
+  const initialTab =
+    searchParams.get("feed") === "following"
+      ? "/following"
+      : searchParams.get("tag")
+      ? `/${searchParams.get("tag")}`
+      : "/";
+
+  const [currentTab, setCurrentTab] = useState<string>(initialTab);
+
+  useEffect(() => {
+    const feedParam = searchParams.get("feed");
+    const tagParam = searchParams.get("tag");
+    if (feedParam === "following" && currentTab !== "/following") {
+      setCurrentTab("/following");
+    } else if (tagParam && currentTab !== `/${tagParam}`) {
+      setCurrentTab(`/${tagParam}`);
+    } else if (!tagParam && !feedParam && currentTab !== "/") {
+      setCurrentTab("/");
+    }
+  }, [searchParams, currentTab]);
+
+  return (
+    <div className='w-[20rem] sm:w-[35rem] lg:w-[40rem] xl:w-[42rem] lg:pr-5 xl:mr-20'>
+      <FeedTabs currentTab={currentTab} />
+
+      {currentTab === "/" && <FeedLatest />}
+      {currentTab === "/following" && <FeedFollowing />}
+    </div>
+  );
+};
+
+export default Feed;

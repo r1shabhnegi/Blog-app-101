@@ -37,7 +37,6 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     queryFn: () => isBookmarked(postData?.id),
     enabled: !!postData?.id,
   });
-  console.log(isBookmarkData);
   useEffect(() => {
     if (isSuccessBookmarkData) {
       setIsBookmark(isBookmarkData);
@@ -87,7 +86,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     await readingHistoryMutate({ postId: postData.id });
   };
   return (
-    <div className='flex flex-col justify-center gap-2 items-center w-full max-w-[20rem] sm:max-w-[27rem] md:max-w-[40rem] xl:max-w-full my-2 mt-8 border-b border-[#e8e8e8]'>
+    <div className='flex w-full flex-col justify-center gap-2 items-center mb-2 mt-8 border-b border-[#e8e8e8]'>
       <div className='flex items-center justify-between w-full'>
         <div className='flex items-center justify-start w-full gap-1 mb-1'>
           <div

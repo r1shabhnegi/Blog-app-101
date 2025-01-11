@@ -15,7 +15,7 @@ export const refreshToken = async () => {
 export const signup = async (data: SignupType) => {
   // try {
   const response = await apiClient.query({
-    url: "/user",
+    url: "/auth/create",
     method: "POST",
     data,
   });
@@ -30,6 +30,17 @@ export const signin = async (data: SigninType) => {
     url: "/auth",
     method: "POST",
     data,
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response.data;
+};
+
+export const googleAuth = async (code: any) => {
+  const response = await apiClient.query({
+    url: `/googleLogin?code=${code}`,
+    method: "GET",
   });
   if (response.error) {
     throw new Error(response?.error?.data);

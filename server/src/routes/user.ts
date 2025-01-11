@@ -54,40 +54,6 @@ router.get("/:userId", async (c) => {
   }
 });
 
-// create user
-router.post("/", async (c) => {
-  const prisma = c.get("prisma");
-
-  try {
-    const body = await c.req.json();
-    console.log(body);
-    const { data: inputData, error: inputError } = signupInput.safeParse(body);
-
-    if (inputError) {
-      return c.json({ message: inputError.errors }, 403);
-    }
-    const hashedPassword = bcrypt.hashSync(inputData.password);
-    console.log(inputData.name, inputData.email, hashedPassword);
-
-    const user = await prisma.user.create({
-      data: {
-        name: inputData.name,
-        email: inputData.email,
-        password: hashedPassword,
-      },
-    });
-    console.log(user);
-    if (!user) {
-      return c.json({ message: "Error registering user" }, 500);
-    }
-
-    return c.json({ message: "User registered successfully" }, 201);
-  } catch (error) {
-    c.status(500);
-    return c.text(`${error || "Something went wrong!"}`);
-  }
-});
-
 // edit user info
 router.patch("/", jwtVerify, async (c) => {
   const prisma = c.get("prisma");

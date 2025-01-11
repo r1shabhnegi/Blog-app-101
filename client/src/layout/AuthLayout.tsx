@@ -1,29 +1,30 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../redux/hook";
-import NavLayout from "./NavLayout";
+import Landing from "@/pages/Landing/Landing";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect } from "react";
 import { setLoading } from "@/redux/authSlice";
-import Loader from "@/components/Loader";
+import { Loader } from "lucide-react";
+import { Outlet } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const AuthLayout = () => {
+  //oauth
+
+  const GoogleAuthWrapper = () => {
+    const clientId = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID;
+    return (
+      <GoogleOAuthProvider clientId={clientId}>
+        <Landing />
+      </GoogleOAuthProvider>
+    );
+  };
+
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
-  const { isAuth } = useAppSelector((state) => state.auth);
+  const { isLoading, isAuth } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(setLoading(false));
-  }, [dispatch]);
+  }, []);
 
-  return !isLoading ? (
-    isAuth ? (
-      <NavLayout>
-        <Outlet />
-      </NavLayout>
-    ) : (
-      <Navigate to='/' />
-    )
-  ) : (
-    <Loader />
-  );
+  return isLoading ? <Loader /> : isAuth ? <Outlet /> : <GoogleAuthWrapper />;
 };
 export default AuthLayout;

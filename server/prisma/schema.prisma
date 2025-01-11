@@ -9,65 +9,67 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String @db.VarChar(20)
-  email String @unique 
-  password String?
-  bio String?
-  avatar String?
-  posts Post[]
-  createdAt DateTime @default(now())
-  readingHistory String[]
-  about String?
-  savedPosts SavedPost[]
-  comments Comment[]
-  follower Follows[] @relation("follower")
-  following Follows[] @relation("following")
-  refreshToken String[]
+  id                    String @id @default(uuid())
+  name                  String @db.VarChar(20)
+  email                 String @unique 
+  password              String?
+  bio                   String?
+  avatar                String?
+  posts                 Post[]
+  createdAt             DateTime @default(now())
+  readingHistory        String[]
+  about                 String?
+  savedPosts            SavedPost[]
+  comments              Comment[]
+  follower              Follows[] @relation("follower")
+  following             Follows[] @relation("following")
+  refreshToken          String[]
 }
 
 model SavedPost {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  postId    String
-  user User @relation(fields: [userId],references: [id])
-  createdAt DateTime @default(now())
+  id          Int @id @default(autoincrement())
+  userId      String
+  postId      String
+  user        User @relation(fields: [userId],references: [id])
+  post        Post     @relation(fields: [postId], references: [id])
+  createdAt   DateTime @default(now())
   @@unique([userId, postId])
 }
 
 model Post {
-  id String @id @default(uuid())
-  title String
-  content String
-  authorId String
-  authorName String
-  authorAvatar String?
-  previewImage String
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  claps Int @default(0)
-  createdAt DateTime @default(now())
-  readTime Int @default(0)
-  comments Comment[]
-  tag String
+  id                 String @id @default(uuid())
+  title              String
+  content            String
+  authorId           String
+  authorName         String
+  authorAvatar       String?
+  previewImage       String
+  author             User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  claps              Int @default(0)
+  createdAt          DateTime @default(now())
+  readTime           Int @default(0)
+  comments           Comment[]
+  tag                String
+  savedPosts         SavedPost[]
 }
 
 model Comment {
-  id String @id @default(uuid())
-  content String
-  createdAt DateTime @default(now())
-  authorId String
-  author User @relation(fields: [authorId],references: [id])
-  postId String
-  post Post @relation(fields: [postId],references: [id])
-  clap Int? @default(0)
+  id            String @id @default(uuid())
+  content       String
+  createdAt     DateTime @default(now())
+  authorId      String
+  author        User @relation(fields: [authorId],references: [id])
+  postId        String
+  post          Post @relation(fields: [postId],references: [id])
+  clap          Int? @default(0)
 }
 
 model Follows {
-  id String @id @default(uuid())
-  followerId String
-  followingId String
-  follower User @relation("follower",fields: [followerId],references: [id])
-  following User @relation("following",fields: [followingId],references: [id])
+  id             String @id @default(uuid())
+  followerId     String
+  followingId    String
+  follower       User @relation("follower",fields: [followerId],references: [id])
+  following      User @relation("following",fields: [followingId],references: [id])
 }
 
 model Tag {

@@ -2,11 +2,11 @@ import { ErrorHandler, Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import bcrypt from "bcryptjs";
-import { signinInput } from "../../../common-types/index";
+import { signinInput, signupInput } from "../../../common-types/index";
 import { sign, verify } from "hono/jwt";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
-// import { oauth2client } from "../utils/googleConfig";
 import axios from "axios";
+import { jwtVerify } from "../middlewares/jwtVerify";
 
 const router = new Hono<{
   Bindings: {
@@ -19,11 +19,13 @@ const router = new Hono<{
     userId: string;
     email: string;
     prisma: PrismaClient & ReturnType<typeof withAccelerate>;
-    oauth2client: any; // Add the correct type for oauth2client if known
+    oauth2client: any;
   };
 }>();
 
+// google signin
 router.get("/googleLogin", async (c) => {
+  console.log("gooleLoginn");
   const prisma = c.get("prisma");
   console.log("called");
   const oauth2client = c.get("oauth2client");
@@ -95,6 +97,40 @@ router.get("/googleLogin", async (c) => {
     return c.text(`Error: ${error.message || "something went wrong"}`);
   } finally {
     await prisma.$disconnect();
+  }
+});
+
+// create user
+router.post("/create", async (c) => {
+  const prisma = c.get("prisma");
+
+  try {
+    const body = await c.req.json();
+    console.log(body);
+    const { data: inputData, error: inputError } = signupInput.safeParse(body);
+
+    if (inputError) {
+      return c.json({ message: inputError.errors }, 403);
+    }
+    const hashedPassword = bcrypt.hashSync(inputData.password);
+    console.log(inputData.name, inputData.email, hashedPassword);
+
+    const user = await prisma.user.create({
+      data: {
+        name: inputData.name,
+        email: inputData.email,
+        password: hashedPassword,
+      },
+    });
+    console.log(user);
+    if (!user) {
+      return c.json({ message: "Error registering user" }, 500);
+    }
+
+    return c.json({ message: "User registered successfully" }, 201);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong!"}`);
   }
 });
 
@@ -366,7 +402,7 @@ router.get("/", async (c) => {
 });
 
 //logout
-router.post("/logout", async (c) => {
+router.post("/logout", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
 
   const cookieToken = getCookie(c, "jwt");

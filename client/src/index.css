@@ -12,6 +12,11 @@
   box-sizing: border-box;
   font-family: poppins;
 }
+
+body {
+  background-color: #fafafa;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:active {
   -webkit-background-clip: text;
@@ -95,4 +100,14 @@ input:-webkit-autofill:active {
   color: #4b5563;
   border-bottom: 1px solid #bbf7d0;
   font-size: 15px;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+  }
 }

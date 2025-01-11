@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import AuthLayout from "@/layout/AuthLayout";
-import MainPageLayout from "./layout/MainPageLayout";
+import MainPageLayout from "./layout/AuthLayout";
 import ProfileLayout from "./layout/ProfileLayout";
 import ProfileHome from "./pages/ProfileHome";
 import ProfileLists from "./pages/ProfileLists";
@@ -17,6 +17,7 @@ import Followers from "./pages/Followers";
 import Followings from "./pages/Followings";
 import NoSidebarLayout from "./layout/NoSidebarLayout";
 import Tag from "./pages/Tag";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const AppRoutes = () => {
   return (
