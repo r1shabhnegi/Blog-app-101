@@ -1,4 +1,4 @@
-import { bookmark, getPost, isBookmarked, likePost, postStats } from "@/api";
+import { bookmark, getPost, likePost, postStats } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
@@ -12,6 +12,7 @@ import SummaryAi from "@/components/SummaryAi";
 
 const PostDetail = () => {
   const [summaryModal, setSummaryModal] = useState(false);
+  const [isBookmark, setIsBookmark] = useState<boolean>(false);
   const { postId } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -20,16 +21,22 @@ const PostDetail = () => {
     queryFn: () => getPost(postId),
   });
 
-  const { data: isBookmark } = useQuery({
-    queryKey: ["check-bookmark", data?.id],
-    queryFn: () => isBookmarked(data?.id),
-    enabled: !!data?.id,
-  });
+  // const { data: isBookmark } = useQuery({
+  //   queryKey: ["check-bookmark", data?.id],
+  //   queryFn: () => isBookmarked(data?.id),
+  //   enabled: !!data?.id,
+  // });
   const { data: postStatsData } = useQuery({
     queryKey: ["postStats", postId],
     queryFn: () => postStats(postId),
     enabled: !!postId,
   });
+  useEffect(() => {
+    if (postStatsData)
+      if ("isSavedByUser" in postStatsData) {
+        setIsBookmark(postStatsData?.isSavedByUser);
+      }
+  }, [postStatsData]);
 
   const { mutateAsync: BookmarkMutate } = useMutation({
     mutationFn: bookmark,
@@ -48,6 +55,7 @@ const PostDetail = () => {
     : "";
 
   const handleBookmark = async () => {
+    setIsBookmark(!isBookmark);
     await BookmarkMutate(data?.id);
   };
 

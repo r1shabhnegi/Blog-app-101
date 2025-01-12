@@ -20,9 +20,9 @@ const router = new Hono<{
 router.post("/", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
-  const body = await c.req.parseBody();
 
   try {
+    const body = await c.req.parseBody();
     const {
       success,
       data: inputData,
@@ -30,85 +30,85 @@ router.post("/", jwtVerify, async (c) => {
     } = PublishPostInput.safeParse(body);
 
     if (!success) {
-      return c.json({ message: error.message }, 403);
+      c.status(400);
+      return c.json({ message: error.errors[0].message });
     }
 
+    // Validate user exists
+    const userDetails = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, avatar: true },
+    });
+
+    if (!userDetails) {
+      c.status(404);
+      return c.json({ message: "User not found" });
+    }
+
+    // Format tag name
     const tagName = inputData.tag
-      ? inputData.tag.charAt(0).toUpperCase() + inputData.tag.slice(1)
+      ? inputData.tag.charAt(0).toUpperCase() +
+        inputData.tag.slice(1).toLowerCase()
       : "";
 
-    try {
-      const foundTag = await prisma.tag.findUnique({
-        where: {
-          name: tagName,
-        },
-        select: {
-          name: true,
-        },
-      });
+    // Handle tag creation in transaction
+    await prisma.tag.upsert({
+      where: { name: tagName },
+      update: {},
+      create: { name: tagName },
+    });
 
-      if (!foundTag) {
-        await prisma.tag.create({
-          data: {
-            name: tagName,
-          },
-        });
-      }
-    } catch (error) {
-      c.status(500);
-      return c.text("Error creating tag!");
-    }
-
-    const uniqueName = `${inputData.image.name}${Date.now()}${Math.round(
-      Math.random() * 1e9
-    )}${Math.round(Math.random() * 1e4)}`;
-
+    // Handle image upload
+    const uniqueName = `${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2)}`;
     const imageFile = await c.env.BLOG_APP_UPLOADS.put(
       uniqueName,
       inputData.image
     );
 
     if (!imageFile) {
-      return c.json({ message: "Error uploading image" }, 500);
+      c.status(500);
+      return c.json({ message: "Error uploading image" });
     }
 
-    const imageUrl = `${c.env.R2_URL}/${imageFile?.key}`;
+    const imageUrl = `${c.env.R2_URL}/${imageFile.key}`;
 
-    const contentLength = inputData.content.split(" ").length;
-    const readTime = Math.max(1, Math.round(contentLength / 200));
+    // Calculate read time
+    const contentLength = inputData.content.split(/\s+/).length;
+    const readTime = Math.max(1, Math.ceil(contentLength / 200));
 
-    const userDetails = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        name: true,
-        avatar: true,
-      },
-    });
-    if (!userDetails) {
-      throw new Error("Something went wrong");
-    }
-
-    const createdPost = await prisma.post.create({
-      data: {
-        title: inputData.title,
-        content: inputData.content,
-        authorId: userId,
-        authorAvatar: userDetails.avatar,
-        authorName: userDetails.name,
-        previewImage: imageUrl,
-        readTime,
-        tag: inputData.tag,
-      },
+    // Create post in transaction
+    const createdPost = await prisma.$transaction(async (tx) => {
+      return tx.post.create({
+        data: {
+          title: inputData.title.trim(),
+          content: inputData.content.trim(),
+          authorId: userId,
+          authorAvatar: userDetails.avatar,
+          authorName: userDetails.name,
+          previewImage: imageUrl,
+          readTime,
+          tag: tagName,
+        },
+      });
     });
 
-    if (!createdPost) {
-      return c.json({ message: "Error creating post" }, 500);
-    }
-    return c.json({ message: "Post successfully created" }, 201);
+    return c.json(
+      {
+        message: "Post successfully created",
+        postId: createdPost.id,
+      },
+      201
+    );
   } catch (error) {
-    return c.json({ message: error }, 500);
+    console.error("Post creation error:", error);
+    c.status(500);
+    return c.json({
+      message: error instanceof Error ? error.message : "Internal server error",
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -116,6 +116,9 @@ router.post("/", jwtVerify, async (c) => {
 router.get("/get/:postId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const { postId } = c.req.param();
+  if (!postId) {
+    return c.json({ message: "Post ID is required" }, 400);
+  }
 
   try {
     const postDetails = await prisma.post.findUnique({
@@ -135,24 +138,24 @@ router.get("/get/:postId", jwtVerify, async (c) => {
 });
 
 // all posts
-router.get("/all/:page", async (c) => {
-  const prisma = c.get("prisma");
-  const { page } = c.req.param();
-  const pageSize = 5;
-  try {
-    const allPosts = await prisma.post.findMany({
-      skip: (+page - 1) * pageSize,
-      take: pageSize,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return c.json(allPosts, 200);
-  } catch (error) {
-    c.status(500);
-    return c.text(`${error || "Something went wrong"}`);
-  }
-});
+// router.get("/all/:page", async (c) => {
+//   const prisma = c.get("prisma");
+//   const { page } = c.req.param();
+//   const pageSize = 5;
+//   try {
+//     const allPosts = await prisma.post.findMany({
+//       skip: (+page - 1) * pageSize,
+//       take: pageSize,
+//       orderBy: {
+//         createdAt: "desc",
+//       },
+//     });
+//     return c.json(allPosts, 200);
+//   } catch (error) {
+//     c.status(500);
+//     return c.text(`${error || "Something went wrong"}`);
+//   }
+// });
 
 // user posts
 router.get("/:userId/:page", async (c) => {
@@ -243,25 +246,58 @@ router.get("/get/stats/:postId", jwtVerify, async (c) => {
   const userId = c.get("userId");
   const { postId } = c.req.param();
   console.log(postId);
+
+  if (!postId) {
+    return c.json(
+      {
+        success: false,
+        message: "Post ID is required",
+      },
+      400
+    );
+  }
+
   try {
-    const countClaps = await prisma.post.findUnique({
+    const findStats = prisma.post.findUnique({
       where: {
         id: postId,
       },
       select: {
         claps: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
       },
     });
 
-    const countComments = await prisma.comment.count({
+    const isSavedByUser = prisma.savedPost.findFirst({
       where: {
         postId,
+        userId,
+      },
+      select: {
+        id: true,
       },
     });
 
+    const [postData, isSaved] = await Promise.all([findStats, isSavedByUser]);
+
+    if (!postData) {
+      return c.json(
+        {
+          success: false,
+          message: "Post not found",
+        },
+        404
+      );
+    }
+
     return c.json({
-      totalClaps: countClaps?.claps,
-      totalComments: countComments,
+      totalClaps: postData?.claps ?? 0,
+      totalComments: postData?._count.comments,
+      isSavedByUser: !!isSaved,
     });
   } catch (error) {
     c.status(500);
@@ -340,6 +376,7 @@ router.get("/get/five/posts", jwtVerify, async (c) => {
   }
 });
 
+////
 router.get("/latest", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -364,13 +401,13 @@ router.get("/latest", jwtVerify, async (c) => {
       ? Number(cursor) + 1
       : null;
 
-    return c.json({ nextCursor, result: posts }, 200);
+    return c.json({ nextCursor, posts }, 200);
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
   }
 });
-
+////
 router.get("/following", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -390,6 +427,8 @@ router.get("/following", jwtVerify, async (c) => {
           },
         },
       },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
       orderBy: {
         createdAt: "desc",
       },
@@ -403,7 +442,42 @@ router.get("/following", jwtVerify, async (c) => {
       ? Number(cursor) + 1
       : null;
 
-    return c.json({ nextCursor, result: posts }, 200);
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+////
+router.get("/tag", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  // const userId = c.get("userId");
+  const { cursor, tag } = c.req.query();
+  const pageSize = 10;
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        tag: tag,
+      },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    console.log(posts);
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);

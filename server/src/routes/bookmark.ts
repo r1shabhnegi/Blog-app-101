@@ -21,55 +21,52 @@ router.post("/", jwtVerify, async (c) => {
   const { postId } = await c.req.json();
   const userId = c.get("userId");
 
-  try {
-    const isSavedPost = await prisma.savedPost.findFirst({
-      where: {
-        postId,
-        userId,
+  if (!postId) {
+    return c.json(
+      {
+        success: false,
+        message: "Post ID is required",
       },
-      select: {
-        id: true,
-      },
-    });
-
-    if (isSavedPost) {
-      const removeSavedPost = await prisma.savedPost.delete({
-        where: {
-          id: isSavedPost.id,
-        },
-      });
-    } else {
-      const savedPost = await prisma.savedPost.create({
-        data: {
-          postId,
-          userId,
-        },
-      });
-    }
-
-    return c.json({ message: "bookmark handled" }, 200);
-  } catch (error) {
-    return c.text(`${error} || something went wrong`);
+      400
+    );
   }
-});
 
-router.get("/:postId", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-  const { postId } = c.req.param();
-  console.log(postId);
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { id: true },
+  });
+
+  if (!post) {
+    return c.json(
+      {
+        success: false,
+        message: "Post not found",
+      },
+      404
+    );
+  }
+
   try {
-    const isSavedPost = await prisma.savedPost.findFirst({
-      where: {
-        postId,
-        userId,
-      },
-      select: {
-        id: true,
-      },
+    const result = await prisma.$transaction(async (tx) => {
+      const existingBookmark = await tx.savedPost.findFirst({
+        where: { postId, userId },
+        select: { id: true },
+      });
+
+      if (existingBookmark) {
+        await tx.savedPost.delete({
+          where: { id: existingBookmark.id },
+        });
+        return false;
+      }
+
+      await tx.savedPost.create({
+        data: { postId, userId },
+      });
+      return true;
     });
-    const isBookmarked = isSavedPost ? true : false;
-    return c.json(isBookmarked, 200);
+
+    return c.json({ message: !!result }, 200);
   } catch (error) {
     return c.text(`${error} || something went wrong`);
   }

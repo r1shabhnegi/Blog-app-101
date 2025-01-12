@@ -1,33 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import InfiniteScroll from "react-infinite-scroller";
 import { useEffect, useRef, useCallback, FC } from "react";
 import { followingPosts, latestPosts, tagPosts } from "@/api/postApi";
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-}
-
-const fetchPostsPage = async (tag: string, cursor: string | null) => {
-  const cleanTag = tag.replace("/", "");
-
-  if (cleanTag === "") {
-    const res = await latestPosts(cursor);
-    console.log(res);
-    return res.data;
-  }
-
-  if (cleanTag === "following") {
-    const res = await followingPosts(cursor);
-    return res.data;
-  }
-
-  if (cleanTag !== "following" && cleanTag !== "") {
-    const res = await tagPosts(cursor, cleanTag);
-    return res.data;
-  }
-};
+import PostCard from "../PostCard";
+import { PostType } from "@/lib/types";
+import Spinner from "../Spinner";
 
 interface props {
   currentTab: string;
@@ -35,6 +11,26 @@ interface props {
 
 const FeedPosts: FC<props> = ({ currentTab }) => {
   const observerTarget = useRef<HTMLDivElement>(null);
+
+  const fetchPostsPage = async (
+    cursor: string | null
+  ): Promise<{ nextCursor: string | null; posts: PostType[] }> => {
+    const cleanTag =
+      currentTab === "/"
+        ? "/"
+        : currentTab === "/following"
+        ? "/following"
+        : currentTab.slice(1);
+
+    switch (cleanTag) {
+      case "/":
+        return latestPosts(cursor);
+      case "/following":
+        return followingPosts(cursor);
+      default:
+        return tagPosts(cursor, cleanTag);
+    }
+  };
 
   const {
     data,
@@ -46,15 +42,14 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
     refetch,
   } = useInfiniteQuery({
     queryKey: ["posts", currentTab],
-    queryFn: ({ pageParam }) => fetchPostsPage(currentTab, pageParam),
+    queryFn: ({ pageParam }: { pageParam: string | null }) =>
+      fetchPostsPage(pageParam),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    staleTime: 1 * 60 * 1000, // Data becomes stale after 1 minute
-    // Cache is kept for 5 minutes
-    refetchOnMount: "always", // Always refetch first page when component mounts
+    staleTime: 1 * 60 * 1000,
+    refetchOnMount: "always",
     initialPageParam: null,
   });
 
-  // Intersection Observer for infinite scrolling
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
@@ -77,13 +72,10 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
     };
   }, [handleObserver]);
 
-  // Effect to refetch when tab changes
   useEffect(() => {
-    // Scroll to top when tab changes
     window.scrollTo(0, 0);
-    // Refetch the first page
     refetch();
-  }, [currentTab, refetch]);
+  }, [refetch]);
 
   if (error) {
     return (
@@ -93,25 +85,26 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className='space-y-4'>
-        {data}
-        {/* {[1, 2, 3].map((i) => (
-          <Card
-            key={i}
-            className='p-4'>
-            <Skeleton className='w-3/4 h-4 mb-2' />
-            <Skeleton className='w-full h-20' />
-          </Card>
-        ))} */}
-      </div>
-    );
-  }
+  return (
+    <div className='relative'>
+      {data?.pages.map((page, pageIndex) => (
+        <div key={pageIndex}>
+          {page?.posts.map((post: PostType) => (
+            <PostCard
+              key={post.id}
+              postData={post}
+            />
+          ))}
+        </div>
+      ))}
 
-  ///////////////////////////////////////////////////
-
-  return <div>sds</div>;
+      <div
+        ref={observerTarget}
+        className='absolute h-[50rem] bottom-[25rem]'
+      />
+      {isFetchingNextPage || (isLoading && <Spinner className='mt-40' />)}
+    </div>
+  );
 };
 
 export default FeedPosts;

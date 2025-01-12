@@ -125,18 +125,6 @@ export const bookmark = async (postId: string | undefined) => {
   return response.data;
 };
 
-export const isBookmarked = async (postId: string | undefined) => {
-  const response = await apiClient.query({
-    url: `/bookmark/${postId}`,
-    method: "GET",
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as unknown as boolean;
-};
-
 export const addReadingHistory = async ({ postId }: { postId: string }) => {
   const response = await apiClient.query({
     url: `/user/reading-history`,
@@ -344,7 +332,11 @@ export const postStats = async (postId: string | undefined) => {
   if (response.error) {
     throw new Error(response.error.data);
   }
-  return response.data as { totalClaps: number; totalComments: number };
+  return response.data as {
+    totalClaps: number;
+    totalComments: number;
+    isSavedByUser: boolean;
+  };
 };
 
 export const likePost = async (postId: string | undefined) => {

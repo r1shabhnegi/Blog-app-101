@@ -60,7 +60,7 @@ const HeaderDropdown = () => {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='p-3 mr-2 w-60'>
+      <DropdownMenuContent className='p-3 mr-6 w-60'>
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'

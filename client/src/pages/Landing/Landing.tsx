@@ -56,15 +56,15 @@ const Landing = () => {
 
         <div className='flex flex-col items-center justify-center flex-1 gap-6 my-12 md:gap-10 md:my-28'>
           <div className='flex flex-col text-center sm:flex-row'>
-            <h1 className='text-3xl leading-normal tracking-tight text-center text-gray-900 md:text-5xl lg:text-6xl font-logo'>
+            <h1 className='text-3xl leading-normal tracking-tight text-center text-gray-900 md:text-5xl lg:text-6xl font-logo text-nowrap'>
               Effortless Publishing.
             </h1>
           </div>
           <span className='flex flex-col items-center justify-center text-xl md:text-3xl lg:text-4xl'>
-            <h2 className='leading-relaxed text-gray-600 font-inter'>
+            <h2 className='leading-relaxed text-gray-600 text-nowrap font-inter'>
               AI-assisted blogging
             </h2>
-            <h2 className='leading-relaxed text-gray-600 font-inter'>
+            <h2 className='leading-relaxed text-gray-600 text-nowrap font-inter'>
               for everyone.
             </h2>
           </span>

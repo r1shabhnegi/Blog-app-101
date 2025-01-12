@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import FeedTabs from "@/components/Feed/FeedTabs";
 import { useSearchParams } from "react-router-dom";
 import FeedPosts from "@/components/Feed/FeedPosts";
-import FeedLatest from "@/components/Feed/FeedLatest";
-import FeedFollowing from "@/components/Feed/FeedFollowing";
 
 const Feed = () => {
   const [searchParams] = useSearchParams();
@@ -30,12 +28,10 @@ const Feed = () => {
   }, [searchParams, currentTab]);
 
   return (
-    <div className='w-[20rem] sm:w-[35rem] lg:w-[40rem] xl:w-[42rem] lg:pr-5 xl:mr-20'>
+    <>
       <FeedTabs currentTab={currentTab} />
-
-      {currentTab === "/" && <FeedLatest />}
-      {currentTab === "/following" && <FeedFollowing />}
-    </div>
+      <FeedPosts currentTab={currentTab} />
+    </>
   );
 };
 

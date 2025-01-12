@@ -18,7 +18,7 @@ import Settings from "./pages/Settings";
 import Publish from "./pages/Publish";
 import PostDetail from "./pages/PostDetail";
 import Followers from "./pages/Followers";
-import Followings from "./pages/Followings";
+// import Followings from "./pages/Followings";
 import Tag from "./pages/Tag";
 import Feed from "./pages/Feed";
 import MainLayout from "./layout/MainLayout";
@@ -85,10 +85,10 @@ const App = () => {
             path='/followers/:userId'
             element={<Followers />}
           />
-          <Route
+          {/* <Route
             path='/followings/:userId'
             element={<Followings />}
-          />
+          /> */}
           <Route
             path='/post/:postId'
             element={<PostDetail />}

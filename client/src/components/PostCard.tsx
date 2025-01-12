@@ -25,6 +25,7 @@ import PostCardDropdown from "./PostCardDropdown";
 import { useEffect, useState } from "react";
 const PostCard = ({ postData }: { postData: PostType }) => {
   const navigate = useNavigate();
+
   const [isBookmark, setIsBookmark] = useState<boolean>(false);
 
   const { userId } = useAppSelector((state) => state.auth);
@@ -32,21 +33,19 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   const queryClient = useQueryClient();
   const isMod: boolean = postData?.authorId === userId ? true : false;
 
-  const { data: isBookmarkData, isSuccess: isSuccessBookmarkData } = useQuery({
-    queryKey: ["check-bookmark", postData?.id],
-    queryFn: () => isBookmarked(postData?.id),
-    enabled: !!postData?.id,
-  });
-  useEffect(() => {
-    if (isSuccessBookmarkData) {
-      setIsBookmark(isBookmarkData);
-    }
-  }, [isBookmarkData, isSuccessBookmarkData]);
   const { data: postStatsData } = useQuery({
     queryKey: ["postStats", postData?.id],
     queryFn: () => postStats(postData?.id),
     enabled: !!postData?.id,
   });
+
+  useEffect(() => {
+    if (postStatsData)
+      if ("isSavedByUser" in postStatsData) {
+        setIsBookmark(postStatsData?.isSavedByUser);
+      }
+  }, [postStatsData]);
+
   const { mutateAsync: deletePostAsync } = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
@@ -54,6 +53,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
       queryClient.invalidateQueries({ queryKey: ["userPosts"] });
     },
   });
+
   const { mutateAsync: BookmarkMutate } = useMutation({
     mutationFn: bookmark,
     onSuccess: () => {
@@ -62,6 +62,12 @@ const PostCard = ({ postData }: { postData: PostType }) => {
       });
     },
   });
+
+  const handleBookmark = async () => {
+    setIsBookmark(!isBookmark);
+    await BookmarkMutate(postData.id);
+  };
+
   const { mutateAsync: readingHistoryMutate } = useMutation({
     mutationFn: addReadingHistory,
   });
@@ -76,9 +82,6 @@ const PostCard = ({ postData }: { postData: PostType }) => {
 
   const handleDeletePost = async () => {
     await deletePostAsync(postData.id);
-  };
-  const handleBookmark = async () => {
-    await BookmarkMutate(postData.id);
   };
 
   const handleClickCard = async () => {
@@ -122,7 +125,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
         </span>
       </div>
       <div
-        className='flex flex-col justify-center w-full cursor-pointer md:justify-between md:items-center gap-7 md:flex-row md:gap-0'
+        className='flex flex-col items-center justify-center w-full cursor-pointer md:justify-between gap-7 md:flex-row md:gap-0'
         onClick={handleClickCard}>
         <div className='flex flex-col w-full gap-2 text-wrap  text-left max-w-[28rem] sm:max-w-[29.5rem]'>
           <span className='font-bold text-gray-900 text-md lg:text-lg md:text-xl '>
