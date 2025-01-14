@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { deleteUser } from "@/api";
-import { useToast } from "./ui/use-toast";
+import { deleteUser } from "@/api/userApi";
+import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/redux/hook";
 import { setLogout } from "@/redux/authSlice";

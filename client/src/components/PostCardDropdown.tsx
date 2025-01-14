@@ -1,4 +1,5 @@
 import { checkFollow, followAndUnFollow } from "@/api";
+import { deletePost } from "@/api/postApi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,20 +8,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Ellipsis } from "lucide-react";
-const PostCardDropdown = ({
-  isMod,
-  authorId,
-  handleDeletePost,
-}: {
+import { useToast } from "./ui/use-toast";
+import { FC } from "react";
+
+type Props = {
   isMod: boolean;
   authorId: string;
-  handleDeletePost: () => void;
-}) => {
-  const clientQuery = useQueryClient();
+  postId: string;
+};
 
+const PostCardDropdown: FC<Props> = ({ isMod, authorId, postId }) => {
+  const clientQuery = useQueryClient();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { data: followingStatus } = useQuery({
     queryKey: ["checkFollow", authorId],
     queryFn: () => checkFollow(authorId),
+  });
+
+  const { mutateAsync: deletePostAsync } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      toast({ title: "Post deleted", className: "bg-green-400" });
+      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+    },
   });
 
   const { mutateAsync: followUnFollowMutate } = useMutation({
@@ -56,7 +67,9 @@ const PostCardDropdown = ({
         {isMod ? (
           <DropdownMenuItem
             className='font-medium text-gray-700 cursor-pointer'
-            onClick={handleDeletePost}>
+            onClick={async () => {
+              await deletePostAsync(postId);
+            }}>
             <span>Delete post</span>
           </DropdownMenuItem>
         ) : null}

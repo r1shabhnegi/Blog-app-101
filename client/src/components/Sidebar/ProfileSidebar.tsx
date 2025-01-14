@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import profileDeno from "../assets/profileImg.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -9,7 +8,7 @@ import {
   followerCount,
 } from "@/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import profileDemo from "../assets/profileImg.png";
+import profileDemo from "@/assets/profileImg.png";
 import { useEffect } from "react";
 import { setFollowerCount } from "@/redux/profileSlice";
 
@@ -65,7 +64,7 @@ const ProfileSidebar = () => {
       },
     });
   };
-  const profilePic = avatar && avatar.length > 5 ? avatar : profileDeno;
+  const profilePic = avatar && avatar.length > 5 ? avatar : profileDemo;
 
   const handleFollowBtn = async () => {
     await followUnFollowMutate(userIdParam);

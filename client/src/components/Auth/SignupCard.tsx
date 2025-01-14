@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { signup, signin } from "@/api/AuthApi";
+import { signup, signin } from "@/api/authApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppDispatch } from "@/redux/hook";
 import { setUserCredentials } from "@/redux/authSlice";

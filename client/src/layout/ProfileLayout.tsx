@@ -1,15 +1,17 @@
 import { useAppDispatch } from "@/redux/hook";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { countFollowing, followerCount, getUser } from "@/api";
+import { countFollowing, followerCount } from "@/api";
+import { getUser } from "@/api/userApi";
 import { useEffect } from "react";
 import { setCurrentProfile } from "@/redux/profileSlice";
 import Spinner from "@/components/Spinner";
-import ProfileDropDown from "@/components/ProfileDropDown";
+import ProfileDropDown from "@/components/User/ProfileDropDown";
 
 const ProfileLayout = () => {
-  const { pathname } = useLocation();
   const { userId } = useParams();
+  const { pathname } = useLocation();
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -22,6 +24,7 @@ const ProfileLayout = () => {
     queryKey: ["followingCount", userId],
     queryFn: () => countFollowing(userId),
   });
+
   const { data: userData, isPending } = useQuery({
     queryKey: ["getUser", userId],
     queryFn: () => getUser(userId),
@@ -32,7 +35,7 @@ const ProfileLayout = () => {
     if (userData) {
       dispatch(setCurrentProfile(userData));
     }
-  }, [dispatch, userData]);
+  }, [userData]);
 
   const adminName = userData?.name
     ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1)
@@ -46,7 +49,7 @@ const ProfileLayout = () => {
     });
   };
 
-  if (isPending) return <Spinner />;
+  if (isPending) return <Spinner className='m-56' />;
 
   return (
     <div>

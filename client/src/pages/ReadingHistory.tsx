@@ -1,4 +1,4 @@
-import { getHistoryPost } from "@/api";
+import { getHistory } from "@/api/userApi";
 import Spinner from "@/components/Spinner";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,7 +8,7 @@ import { useEffect } from "react";
 const ReadingHistory = () => {
   const { data: historyPosts, isPending } = useQuery({
     queryKey: ["getHistoryPosts"],
-    queryFn: getHistoryPost,
+    queryFn: getHistory,
   });
 
   useEffect(() => {

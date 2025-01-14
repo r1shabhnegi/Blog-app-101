@@ -4,7 +4,6 @@ import {
   FiveFollowingType,
   GetFollowersType,
   PostType,
-  UserType,
 } from "@/lib/types";
 
 export const serverStatus = async () => {
@@ -18,100 +17,6 @@ export const serverStatus = async () => {
   return response;
 };
 
-export const logout = async () => {
-  const response = await apiClient.query({
-    url: "/auth/logout",
-    method: "POST",
-  });
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-  return response.data;
-};
-
-export const editUserInfo = async (data: FormData) => {
-  const response = await apiClient.query({
-    url: "/user",
-    method: "PATCH",
-    data,
-  });
-  if (response.error) {
-    throw new Error(response?.error.data);
-  }
-
-  return response.data;
-};
-
-export const createPost = async (data: FormData) => {
-  const response = await apiClient.query({
-    url: "/post",
-    method: "POST",
-    data,
-  });
-  if (response.error) {
-    throw new Error(response?.error.data);
-  }
-  return response.data;
-};
-
-export const getUser = async (userId: string | undefined) => {
-  const response = await apiClient.query({
-    url: `/user/${userId}`,
-    method: "GET",
-  });
-
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-
-  return response.data as UserType;
-};
-
-export const getUserPosts = async ({
-  userId,
-  page,
-}: {
-  userId: string | undefined;
-  page: number;
-}) => {
-  const response = await apiClient.query({
-    url: `/post/${userId}/${page}`,
-    method: "GET",
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-
-  return response.data as PostType[];
-};
-
-export const deleteUser = async ({ password }: { password: string }) => {
-  const response = await apiClient.query({
-    url: "/user/delete",
-    method: "POST",
-    data: { password },
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data;
-};
-
-export const deletePost = async (postId: string) => {
-  const response = await apiClient.query({
-    url: "/post",
-    method: "DELETE",
-    data: { postId },
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data;
-};
-
 export const bookmark = async (postId: string | undefined) => {
   const response = await apiClient.query({
     url: "/bookmark",
@@ -123,41 +28,6 @@ export const bookmark = async (postId: string | undefined) => {
     throw new Error(response.error.data);
   }
   return response.data;
-};
-
-export const addReadingHistory = async ({ postId }: { postId: string }) => {
-  const response = await apiClient.query({
-    url: `/user/reading-history`,
-    method: "POST",
-    data: { postId },
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data;
-};
-
-export const getPost = async (postId: string | undefined) => {
-  const response = await apiClient.query({
-    url: `/post/get/${postId}`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as PostType;
-};
-
-export const allLatestPost = async (page: number) => {
-  const response = await apiClient.query({
-    url: `/post/all/${page}`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as PostType[];
 };
 
 export const followAndUnFollow = async (userId: string | undefined) => {
@@ -205,28 +75,6 @@ export const fiveFollowing = async (userId: string | undefined) => {
   return response.data as FiveFollowingType[];
 };
 
-export const getHistoryPost = async () => {
-  const response = await apiClient.query({
-    url: `/post/reading-history`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as PostType[];
-};
-
-export const countHistoryPost = async () => {
-  const response = await apiClient.query({
-    url: `/user/get/countReadingHistory`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as { count: number };
-};
-
 export const getFollowers = async ({
   userId,
   page,
@@ -242,29 +90,6 @@ export const getFollowers = async ({
     throw new Error(response.error.data);
   }
   return response.data as GetFollowersType[];
-};
-
-export const getAbout = async () => {
-  const response = await apiClient.query({
-    url: `/user/get/about`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as { about: string } | undefined;
-};
-
-export const addAbout = async (about: string) => {
-  const response = await apiClient.query({
-    url: `/user/about`,
-    method: "POST",
-    data: { about },
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data;
 };
 
 export const getFollowings = async (userId: string | undefined) => {
@@ -293,62 +118,6 @@ export const getTag = async ({
     throw new Error(response.error.data);
   }
   return response.data as { countTagPosts: number; posts: PostType[] };
-};
-
-export const tagNames = async () => {
-  const response = await apiClient.query({
-    url: `/tag/names`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as {
-    id: string;
-    name: string;
-  }[];
-};
-
-export const getSavedPosts = async (page: number) => {
-  const response = await apiClient.query({
-    url: `/user/get/saved-post/${page}`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as {
-    countSaved: number;
-    savedPosts: PostType[];
-  };
-};
-
-export const postStats = async (postId: string | undefined) => {
-  const response = await apiClient.query({
-    url: `/post/get/stats/${postId}`,
-    method: "GET",
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data as {
-    totalClaps: number;
-    totalComments: number;
-    isSavedByUser: boolean;
-  };
-};
-
-export const likePost = async (postId: string | undefined) => {
-  const response = await apiClient.query({
-    url: `/post/likePost/${postId}`,
-    method: "POST",
-  });
-
-  if (response.error) {
-    throw new Error(response.error.data);
-  }
-  return response.data;
 };
 
 export const createComment = async (data: {
@@ -381,36 +150,6 @@ export const getComments = async ({
     throw new Error(response.error.data);
   }
   return response.data as commentServerResponse;
-};
-
-export const fiveSavedPost = async () => {
-  const response = await apiClient.query({
-    url: "/post/get/five/posts",
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-  return response as {
-    data: {
-      id: string;
-      createdAt: string;
-      readTime: string;
-      title: string;
-      authorAvatar: string;
-    }[];
-  };
-};
-
-export const followingPosts = async (page: number | undefined) => {
-  const response = await apiClient.query({
-    url: `/post/followingUserPosts/get/${page}`,
-    method: "GET",
-  });
-  if (response.error) {
-    throw new Error(response?.error?.data);
-  }
-  return response as { data: { posts: PostType[]; numberOfPosts: number } };
 };
 
 export const getAiSummary = async (data: {

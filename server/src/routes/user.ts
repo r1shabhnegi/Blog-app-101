@@ -17,7 +17,7 @@ const router = new Hono<{
   };
 }>();
 
-router.get("/:userId", async (c) => {
+router.get("/info/:userId", async (c) => {
   const prisma = c.get("prisma");
 
   const { userId } = c.req.param();
@@ -54,8 +54,45 @@ router.get("/:userId", async (c) => {
   }
 });
 
+router.get("/home-sidebar", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+
+  try {
+    // 5 Saved posts
+    const savedPosts = await prisma.savedPost.findMany({
+      where: { userId },
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      include: {
+        post: true,
+      },
+    });
+    const posts = savedPosts.map((savedPost) => savedPost.post);
+
+    const mostFollowedTags = await prisma.tag.findMany({
+      orderBy: {
+        followers: {
+          _count: "desc",
+        },
+      },
+      take: 10,
+    });
+
+    return c.json({ posts, mostFollowedTags }, 200);
+  } catch (error) {
+    console.error("Error fetching sidebar info:", error);
+    c.status(500);
+    return c.json({
+      message: error instanceof Error ? error.message : "Something went wrong",
+    });
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
 // edit user info
-router.patch("/", jwtVerify, async (c) => {
+router.patch("/edit", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const body = await c.req.parseBody();
@@ -145,6 +182,11 @@ router.post("/delete", jwtVerify, async (c) => {
       return c.text("something went wrong");
     }
 
+    if (!foundUser.password) {
+      c.status(500);
+      return c.text("Password not found");
+    }
+
     const isMatch = bcrypt.compareSync(password, foundUser.password);
     console.log(isMatch);
     if (!isMatch) {
@@ -179,120 +221,8 @@ router.post("/delete", jwtVerify, async (c) => {
   }
 });
 
-router.get("/get/countReadingHistory", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-  // console.log(userId);
-  console.log(userId);
-  try {
-    const readingHistoryPosts = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        readingHistory: true,
-      },
-    });
-
-    const count = readingHistoryPosts?.readingHistory.length;
-    console.log(count);
-    return c.json({ count }, 200);
-  } catch (error) {
-    return c.text(`${error || "Something went wrong"}`);
-  }
-});
-
-router.post("/reading-history", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-  const { postId } = await c.req.json();
-  try {
-    const count = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        readingHistory: true,
-      },
-    });
-
-    if (count && +count?.readingHistory.length >= 20) {
-      const newArr = count?.readingHistory.slice(11, 20);
-
-      const newFilteredArr = newArr.filter((id) => id !== postId);
-
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          readingHistory: newFilteredArr,
-        },
-      });
-    }
-
-    const foundUser = await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        readingHistory: {
-          push: postId,
-        },
-      },
-    });
-
-    if (!foundUser) {
-      return c.text(`something went wrong`);
-    }
-
-    return c.json({ message: "Reading history updated" });
-  } catch (error) {
-    return c.text(`${error || "something went wrong"}`);
-  }
-});
-
-router.get("/get/saved-post/:page", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-  const { page } = c.req.param();
-  const pageSize = 5;
-  try {
-    const countSaved = await prisma.savedPost.count({
-      where: {
-        userId,
-      },
-    });
-
-    const savedPosts = await prisma.savedPost.findMany({
-      where: { userId },
-      skip: (+page - 1) * pageSize,
-      take: pageSize,
-      orderBy: {
-        createdAt: "desc",
-      },
-      select: {
-        postId: true,
-      },
-    });
-
-    const savedPostArr = [];
-    for (const { postId } of savedPosts) {
-      const postData = await prisma.post.findUnique({
-        where: {
-          id: postId,
-        },
-      });
-      if (postData) savedPostArr.push(postData);
-    }
-
-    return c.json({ countSaved, savedPosts: savedPostArr }, 200);
-  } catch (error) {
-    return c.text(`${error || "something went wrong"}`);
-  }
-});
-
-router.get("/get/about", jwtVerify, async (c) => {
+// get user about
+router.get("/get-about", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   console.log("userId-", userId);
@@ -313,7 +243,7 @@ router.get("/get/about", jwtVerify, async (c) => {
   }
 });
 
-router.post("/about", jwtVerify, async (c) => {
+router.post("/add-about", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { about } = await c.req.json();

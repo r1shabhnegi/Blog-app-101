@@ -6,7 +6,7 @@ import { jwtVerify } from "../middlewares/jwtVerify";
 
 const router = new Hono<{
   Bindings: {
-    BLOG_APP_UPLOADS: R2Bucket;
+    R2_UPLOAD: R2Bucket;
     R2_URL: string;
   };
   Variables: {
@@ -17,7 +17,7 @@ const router = new Hono<{
 }>();
 
 // create post
-router.post("/", jwtVerify, async (c) => {
+router.post("/create", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
 
@@ -29,7 +29,21 @@ router.post("/", jwtVerify, async (c) => {
       error,
     } = PublishPostInput.safeParse(body);
 
-    if (!success) {
+    // image upload
+    const f = body["image"];
+    let imageName = "";
+
+    if (f && f instanceof File) {
+      imageName = `images/${userId}/${Date.now()}-${Math.random() * 1000}-${
+        f.name
+      }`;
+      await c.env.R2_UPLOAD.put(imageName, f);
+    } else {
+      c.status(400);
+      return c.json({ message: "Image is required" });
+    }
+
+    if (!success && !inputData) {
       c.status(400);
       return c.json({ message: error.errors[0].message });
     }
@@ -46,11 +60,7 @@ router.post("/", jwtVerify, async (c) => {
     }
 
     // Format tag name
-    const tagName = inputData.tag
-      ? inputData.tag.charAt(0).toUpperCase() +
-        inputData.tag.slice(1).toLowerCase()
-      : "";
-
+    const tagName = inputData.tag.toLowerCase().trim();
     // Handle tag creation in transaction
     await prisma.tag.upsert({
       where: { name: tagName },
@@ -58,23 +68,6 @@ router.post("/", jwtVerify, async (c) => {
       create: { name: tagName },
     });
 
-    // Handle image upload
-    const uniqueName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .substring(2)}`;
-    const imageFile = await c.env.BLOG_APP_UPLOADS.put(
-      uniqueName,
-      inputData.image
-    );
-
-    if (!imageFile) {
-      c.status(500);
-      return c.json({ message: "Error uploading image" });
-    }
-
-    const imageUrl = `${c.env.R2_URL}/${imageFile.key}`;
-
-    // Calculate read time
     const contentLength = inputData.content.split(/\s+/).length;
     const readTime = Math.max(1, Math.ceil(contentLength / 200));
 
@@ -87,7 +80,7 @@ router.post("/", jwtVerify, async (c) => {
           authorId: userId,
           authorAvatar: userDetails.avatar,
           authorName: userDetails.name,
-          previewImage: imageUrl,
+          previewImage: `${c.env.R2_URL}/${imageName}`,
           readTime,
           tag: tagName,
         },
@@ -112,8 +105,114 @@ router.post("/", jwtVerify, async (c) => {
   }
 });
 
-// single post
-router.get("/get/:postId", jwtVerify, async (c) => {
+// latest posts
+router.get("/latest", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+
+  const { cursor } = c.req.query();
+  // console.log(cursor);
+  const pageSize = 10;
+
+  try {
+    const posts = await prisma.post.findMany({
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+// get following posts
+router.get("/following", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+
+  const { cursor } = c.req.query();
+  console.log(cursor);
+  const pageSize = 10;
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        author: {
+          following: {
+            some: {
+              followerId: userId,
+            },
+          },
+        },
+      },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+// get user followed tags posts
+router.get("/tag", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  // const userId = c.get("userId");
+  const { cursor, tag } = c.req.query();
+  const pageSize = 10;
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        tag: tag,
+      },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  }
+});
+
+// get single post
+router.get("/single-post/:postId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const { postId } = c.req.param();
   if (!postId) {
@@ -137,116 +236,109 @@ router.get("/get/:postId", jwtVerify, async (c) => {
   }
 });
 
-// all posts
-// router.get("/all/:page", async (c) => {
-//   const prisma = c.get("prisma");
-//   const { page } = c.req.param();
-//   const pageSize = 5;
-//   try {
-//     const allPosts = await prisma.post.findMany({
-//       skip: (+page - 1) * pageSize,
-//       take: pageSize,
-//       orderBy: {
-//         createdAt: "desc",
-//       },
-//     });
-//     return c.json(allPosts, 200);
-//   } catch (error) {
-//     c.status(500);
-//     return c.text(`${error || "Something went wrong"}`);
-//   }
-// });
-
 // user posts
-router.get("/:userId/:page", async (c) => {
+router.get("/user-posts/:userId", async (c) => {
   const prisma = c.get("prisma");
-  const { userId, page } = c.req.param();
-  const pageSize = 5;
+  const { userId } = c.req.param();
+  const { cursor } = c.req.query();
+  try {
+    const pageSize = 10;
 
-  const userAllPosts = await prisma.post.findMany({
-    where: {
-      authorId: userId,
-    },
-    skip: (+page - 1) * pageSize,
-    take: pageSize,
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: userId,
+      },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  return c.json(userAllPosts);
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    c.status(500);
+    c.json({ message: "Something went wrong!" });
+  }
 });
 
-//delete post
-router.delete("/", jwtVerify, async (c) => {
+// user saved posts
+router.get("/saved-posts", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { cursor } = c.req.query();
+  const pageSize = 10;
+  try {
+    const savedPosts = await prisma.savedPost.findMany({
+      where: { userId },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        post: true,
+      },
+    });
+    const posts = savedPosts.map((savedPost) => savedPost.post);
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    return c.text(`${error || "something went wrong"}`);
+  }
+});
+
+// delete post
+router.delete("/delete", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
 
   const { postId } = await c.req.json();
+
   if (!postId) {
     c.status(403);
     return c.text("PostId required");
   }
-
-  const deletedPost = await prisma.post.delete({
-    where: {
-      id: postId,
-    },
-  });
-
-  await c.env.BLOG_APP_UPLOADS.delete(deletedPost.previewImage);
-
-  if (!deletedPost) {
-    c.status(400);
-    return c.text("Error deleting post");
-  }
-
-  return c.json({ message: "Post deleted successfully" }, 200);
-});
-
-// history
-router.get("/reading-history", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-
   try {
-    const getHistory = await prisma.user.findUnique({
+    const deletedPost = await prisma.post.delete({
       where: {
-        id: userId,
-      },
-      select: {
-        readingHistory: true,
+        id: postId,
       },
     });
 
-    if (!getHistory) {
-      throw new Error("Error getting post Ids");
+    const deletedUrl = deletedPost.previewImage.split(c.env.R2_URL)[1];
+    await c.env.R2_UPLOAD.delete(deletedUrl);
+
+    if (!deletedPost) {
+      c.status(400);
+      return c.text("Error deleting post");
     }
 
-    const postsDetailsArray = [];
-
-    for (const postId of getHistory?.readingHistory) {
-      const postDetail = await prisma.post.findUnique({
-        where: {
-          id: postId,
-        },
-      });
-
-      if (postDetail) postsDetailsArray.push(postDetail);
-    }
-
-    return c.json(postsDetailsArray, 200);
+    return c.json({ message: "Post deleted successfully" }, 200);
   } catch (error) {
     c.status(500);
-    return c.text(`${error || "Something went wrong"}`);
+    c.json({ message: "Something went wrong!" });
   }
 });
 
-router.get("/get/stats/:postId", jwtVerify, async (c) => {
+// get post stats
+router.get("/stats/:postId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { postId } = c.req.param();
-  console.log(postId);
-
   if (!postId) {
     return c.json(
       {
@@ -305,9 +397,8 @@ router.get("/get/stats/:postId", jwtVerify, async (c) => {
   }
 });
 
-router.post("/likePost/:postId", jwtVerify, async (c) => {
+router.post("/like-post/:postId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
-  const userId = c.get("userId");
   const { postId } = c.req.param();
   try {
     const foundPost = await prisma.post.findUnique({
@@ -320,7 +411,7 @@ router.post("/likePost/:postId", jwtVerify, async (c) => {
     });
 
     if (foundPost) {
-      const likedPost = await prisma.post.update({
+      await prisma.post.update({
         where: {
           id: postId,
         },
@@ -331,153 +422,6 @@ router.post("/likePost/:postId", jwtVerify, async (c) => {
     }
 
     return c.json({ message: "done" }, 200);
-  } catch (error) {
-    c.status(500);
-    return c.text(`${error || "Something went wrong"}`);
-  }
-});
-
-router.get("/get/five/posts", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-  console.log("userId-", userId);
-  try {
-    const fivePosts = await prisma.savedPost.findMany({
-      where: {
-        userId,
-      },
-      take: 5,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    const postsData = [];
-    for (const post of fivePosts) {
-      const postData = await prisma.post.findUnique({
-        where: {
-          id: post.postId,
-        },
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          readTime: true,
-          authorAvatar: true,
-        },
-      });
-      if (postData) postsData.push(postData);
-    }
-
-    return c.json(postsData, 200);
-  } catch (error) {
-    c.status(500);
-    return c.text(`${error || "Something went wrong"}`);
-  }
-});
-
-////
-router.get("/latest", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-
-  const { cursor } = c.req.query();
-  console.log(cursor);
-  const pageSize = 10;
-
-  try {
-    const posts = await prisma.post.findMany({
-      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
-      take: pageSize,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    const maxCount = 50;
-    const nextCursor = !Number(cursor)
-      ? 1
-      : Number(cursor) <= maxCount
-      ? Number(cursor) + 1
-      : null;
-
-    return c.json({ nextCursor, posts }, 200);
-  } catch (error) {
-    c.status(500);
-    return c.text(`${error || "Something went wrong"}`);
-  }
-});
-////
-router.get("/following", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  const userId = c.get("userId");
-
-  const { cursor } = c.req.query();
-  console.log(cursor);
-  const pageSize = 10;
-
-  try {
-    const posts = await prisma.post.findMany({
-      where: {
-        author: {
-          following: {
-            some: {
-              followerId: userId,
-            },
-          },
-        },
-      },
-      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
-      take: pageSize,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    console.log(posts);
-
-    const maxCount = 50;
-    const nextCursor = !Number(cursor)
-      ? 1
-      : Number(cursor) <= maxCount
-      ? Number(cursor) + 1
-      : null;
-
-    return c.json({ nextCursor, posts }, 200);
-  } catch (error) {
-    c.status(500);
-    return c.text(`${error || "Something went wrong"}`);
-  }
-});
-
-////
-router.get("/tag", jwtVerify, async (c) => {
-  const prisma = c.get("prisma");
-  // const userId = c.get("userId");
-  const { cursor, tag } = c.req.query();
-  const pageSize = 10;
-
-  try {
-    const posts = await prisma.post.findMany({
-      where: {
-        tag: tag,
-      },
-      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
-      take: pageSize,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    console.log(posts);
-
-    const maxCount = 50;
-    const nextCursor = !Number(cursor)
-      ? 1
-      : Number(cursor) <= maxCount
-      ? Number(cursor) + 1
-      : null;
-
-    return c.json({ nextCursor, posts }, 200);
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);

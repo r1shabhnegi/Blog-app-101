@@ -10,11 +10,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { logout } from "../api";
-import { useToast } from "./ui/use-toast";
+import { logout } from "@/api/authApi";
+import { useToast } from "@/components/ui/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setLogout } from "@/redux/authSlice";
-import profileDemo from "../assets/profileImg.png";
+import profileDemo from "@/assets/profileImg.png";
 
 const HeaderDropdown = () => {
   const { toast } = useToast();

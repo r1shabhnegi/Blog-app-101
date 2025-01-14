@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { serverStatus } from "./api";
-import { refreshToken } from "./api/AuthApi";
+import { refreshToken } from "./api/authApi";
 import ServerDown from "./pages/ServerDown";
 import Loader from "./components/Loader";
 import { useEffect } from "react";

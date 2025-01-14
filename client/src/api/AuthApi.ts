@@ -47,3 +47,14 @@ export const googleAuth = async (code: any) => {
   }
   return response.data;
 };
+
+export const logout = async () => {
+  const response = await apiClient.query({
+    url: "/auth/logout",
+    method: "POST",
+  });
+  if (response.error) {
+    throw new Error(response?.error?.data);
+  }
+  return response.data;
+};

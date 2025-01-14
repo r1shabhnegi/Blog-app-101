@@ -1,30 +1,34 @@
-import { fiveSavedPost, tagNames } from "@/api";
+import { homeSidebarInfo } from "@/api/userApi";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useAppSelector } from "@/redux/hook";
-import profileDemo from "../assets/profileImg.png";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import profileDemo from "@/assets/profileImg.png";
+import { PostType } from "@/lib/types";
 
 const HomeSidebar = () => {
   const navigate = useNavigate();
-  const { data: fiveSavedPosts } = useQuery({
-    queryKey: ["fiveSavedPosts"],
-    queryFn: fiveSavedPost,
+  const { data: postsData } = useQuery({
+    queryKey: ["home-sidebar-info"],
+    queryFn: homeSidebarInfo,
   });
-  const { data } = useQuery({ queryKey: ["tagNames"], queryFn: tagNames });
 
-  const { userId } = useAppSelector((state) => state.auth);
+  const tags = postsData?.data?.mostFollowedTags;
+  const posts = postsData?.data?.posts;
 
   return (
     <div className='flex flex-col gap-10'>
-      <div className='bg-[#C4E2FF]  p-5 rounded-md'>
-        <p className='mb-4 font-semibold'>
-          Write articles, share knowledge and learn
-        </p>
+      <div
+        className='flex flex-col gap-4 items-start bg-[#C4E2FF]  p-5 rounded-md cursor-pointer'
+        onClick={() => navigate("/publish")}>
+        <h1 className='font-bold'>Writing on Readpool.AI</h1>
 
-        <button
-          className='px-3 py-1 text-sm font-medium text-white bg-gray-800 rounded-full'
-          onClick={() => navigate("/publish")}>
+        <div className='flex flex-col gap-2 font-semibold text-[14px]'>
+          <p>New writer FAQ </p>
+          <p>Expert writing advice</p>
+          <p>Grow your readership</p>
+        </div>
+
+        <button className='px-3 py-1.5 text-sm font-medium text-white bg-gray-800 rounded-full'>
           Start writing
         </button>
       </div>
@@ -32,8 +36,8 @@ const HomeSidebar = () => {
       <div className='flex flex-col gap-4'>
         <h1 className='font-semibold text-gray-800'>Latest Topics</h1>
         <div className='flex flex-wrap gap-2'>
-          {data &&
-            data.map((tag) => (
+          {tags &&
+            tags.map((tag) => (
               <span
                 key={`${tag}+${Math.round(Math.random() * 1000)}`}
                 className='px-3 py-1 text-sm bg-gray-200 rounded-full cursor-pointer'
@@ -44,27 +48,20 @@ const HomeSidebar = () => {
         </div>
       </div>
 
-      <div className='flex flex-col gap-4'>
-        <h1 className='font-semibold text-gray-800'>
-          {" "}
-          {fiveSavedPosts?.data.length !== 0 && "Recent saved posts"}
-        </h1>
-        <div className='flex flex-col gap-2'>
-          {fiveSavedPosts?.data.map(
-            (post: {
-              id: string;
-              createdAt: string;
-              readTime: string;
-              title: string;
-              authorAvatar: string;
-            }) => (
+      {posts && (
+        <div className='flex flex-col gap-4'>
+          {posts.length !== 0 && (
+            <h1 className='font-semibold text-gray-800'>Recent saved posts</h1>
+          )}
+          <div className='flex flex-col gap-2'>
+            {posts.map((post: PostType) => (
               <div
                 key={post.id}
                 className='my-2'>
-                <div className='flex gap-2 '>
+                <div className='flex gap-2'>
                   <Avatar
                     className='cursor-pointer size-7'
-                    onClick={() => navigate(`/profile/${userId}`)}>
+                    onClick={() => navigate(`/profile/${post.authorId}`)}>
                     <AvatarImage
                       src={post.authorAvatar}
                       alt=''
@@ -85,11 +82,12 @@ const HomeSidebar = () => {
                   </span>
                 </div>
               </div>
-            )
-          )}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
+
 export default HomeSidebar;

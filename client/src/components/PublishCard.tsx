@@ -4,7 +4,7 @@ import { Input } from "./ui/input";
 import { useDropzone } from "react-dropzone";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost } from "@/api";
+import { createPost } from "@/api/postApi";
 import imageCompression from "browser-image-compression";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
@@ -72,10 +72,12 @@ const PublishCard = ({
         return;
       }
 
+      const cleanTag = tag.toLowerCase().trim();
+
       const formData = new FormData();
       formData.append("title", titleValue);
       formData.append("content", editorValue);
-      formData.append("tag", tag);
+      formData.append("tag", cleanTag);
       formData.append("image", image);
       await publishMutate(formData);
     } catch (error) {

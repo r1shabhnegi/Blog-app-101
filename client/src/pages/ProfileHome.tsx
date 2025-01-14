@@ -1,61 +1,87 @@
-import { getUserPosts } from "@/api";
+import { getUserPosts } from "@/api/postApi";
 import PostCard from "@/components/PostCard";
+import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
-import { useAppSelector } from "@/redux/hook";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 const ProfileHome = () => {
   const { userId } = useParams();
-  const { numberOfPosts } = useAppSelector((state) => state.profile);
-  const [page, setPage] = useState(1);
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
-  const { data: userPosts, refetch } = useQuery({
-    queryKey: ["userPosts", userId, page],
-    queryFn: () => getUserPosts({ userId, page }),
-    enabled: !!userId,
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["userPosts"],
+    queryFn: ({ pageParam }: { pageParam: string | null }) =>
+      getUserPosts({ userId, cursor: pageParam }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    staleTime: 1 * 60 * 1000,
+    refetchOnMount: "always",
+    initialPageParam: null,
   });
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
 
   useEffect(() => {
-    if (userPosts) {
-      setPosts((prevPosts) => [...prevPosts, ...userPosts]);
-    }
-  }, [userPosts]);
+    const element = observerTarget.current;
+    const option = { threshold: 0 };
 
-  const fetchMorePosts = () => {
-    setPage((prev) => prev + 1);
-    if (+numberOfPosts > posts.length) {
-      refetch();
-    } else {
-      setHasMore(false);
-    }
-  };
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (element) observer.observe(element);
 
-  if (numberOfPosts == 0)
-    return <p className='text-2xl font-semibold text-gray-500'>No posts</p>;
+    return () => {
+      if (element) observer.unobserve(element);
+    };
+  }, [handleObserver]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    refetch();
+  }, [refetch]);
+
+  if (error) {
+    return (
+      <div className='p-4 text-red-500'>
+        Error loading posts. Please try again later.
+      </div>
+    );
+  }
 
   return (
-    <InfiniteScroll
-      className='flex flex-col items-center justify-center'
-      dataLength={posts.length}
-      hasMore={hasMore}
-      loader={"Loading..."}
-      next={fetchMorePosts}>
-      {posts.map((post: PostType) => (
-        <PostCard
-          postData={post}
-          key={post.id}
-        />
+    <div className='relative'>
+      {data?.pages.map((page, pageIndex) => (
+        <div key={pageIndex}>
+          {page?.posts.map((post: PostType) => (
+            <PostCard
+              key={post.id}
+              postData={post}
+            />
+          ))}
+        </div>
       ))}
-    </InfiniteScroll>
+
+      <div
+        ref={observerTarget}
+        className='absolute h-[50rem] bottom-[25rem]'
+      />
+      {isFetchingNextPage || (isLoading && <Spinner className='mt-40' />)}
+    </div>
   );
 };
 export default ProfileHome;

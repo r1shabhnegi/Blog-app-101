@@ -1,9 +1,9 @@
 import { Newspaper, Search, SquarePen } from "lucide-react";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 import { useLocation, useNavigate } from "react-router-dom";
 import HeaderDropdown from "./HeaderDropdown";
 import { useState } from "react";
-import AskAi from "./AskAi";
+import AskAi from "../AskAi";
 
 const NoHeaderPageArray = ["/publish"];
 

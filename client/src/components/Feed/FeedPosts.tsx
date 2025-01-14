@@ -49,7 +49,6 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
     refetchOnMount: "always",
     initialPageParam: null,
   });
-
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];

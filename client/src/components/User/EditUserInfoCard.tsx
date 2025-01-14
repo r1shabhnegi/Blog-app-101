@@ -1,16 +1,15 @@
 import { X } from "lucide-react";
-import profileDeno from "../assets/profileImg.png";
+import profileDeno from "@/assets/profileImg.png";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "./ui/input";
-import { EditUserInfoType } from "../../../common-types/index";
+import { Input } from "@/components/ui/input";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { editUserInfo } from "@/api";
+import { editUserInfo } from "@/api/userApi";
 import imageCompression from "browser-image-compression";
-import { useToast } from "./ui/use-toast";
-import { Textarea } from "./ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();

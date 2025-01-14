@@ -4,7 +4,7 @@ import SignupCard from "./SignupCard";
 import { Button } from "../ui/button";
 import { FC, useEffect, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { googleAuth } from "@/api/AuthApi";
+import { googleAuth } from "@/api/authApi";
 
 interface props {
   closeCardsModal: () => void;

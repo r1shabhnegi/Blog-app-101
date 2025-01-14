@@ -1,5 +1,5 @@
-import DeleteAcCard from "@/components/DeleteAcCard";
-import EditUserInfoCard from "@/components/EditUserInfoCard";
+import DeleteAcCard from "@/components/User/DeleteAcCard";
+import EditUserInfoCard from "@/components/User/EditUserInfoCard";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";

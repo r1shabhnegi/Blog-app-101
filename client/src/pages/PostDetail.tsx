@@ -1,4 +1,6 @@
-import { bookmark, getPost, likePost, postStats } from "@/api";
+import { bookmark } from "@/api";
+import { postStats } from "@/api/postApi";
+import { getPost, likePost } from "@/api/postApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import profileDemo from "@/assets/profileImg.png";
@@ -21,11 +23,6 @@ const PostDetail = () => {
     queryFn: () => getPost(postId),
   });
 
-  // const { data: isBookmark } = useQuery({
-  //   queryKey: ["check-bookmark", data?.id],
-  //   queryFn: () => isBookmarked(data?.id),
-  //   enabled: !!data?.id,
-  // });
   const { data: postStatsData } = useQuery({
     queryKey: ["postStats", postId],
     queryFn: () => postStats(postId),

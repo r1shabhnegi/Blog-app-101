@@ -13,14 +13,9 @@ import {
 import { useAppSelector } from "@/redux/hook";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  addReadingHistory,
-  bookmark,
-  deletePost,
-  isBookmarked,
-  postStats,
-} from "@/api";
-import { useToast } from "./ui/use-toast";
+import { bookmark } from "@/api";
+import { postStats } from "@/api/postApi";
+import { addHistory } from "@/api/userApi";
 import PostCardDropdown from "./PostCardDropdown";
 import { useEffect, useState } from "react";
 const PostCard = ({ postData }: { postData: PostType }) => {
@@ -29,8 +24,8 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   const [isBookmark, setIsBookmark] = useState<boolean>(false);
 
   const { userId } = useAppSelector((state) => state.auth);
-  const { toast } = useToast();
   const queryClient = useQueryClient();
+
   const isMod: boolean = postData?.authorId === userId ? true : false;
 
   const { data: postStatsData } = useQuery({
@@ -46,14 +41,6 @@ const PostCard = ({ postData }: { postData: PostType }) => {
       }
   }, [postStatsData]);
 
-  const { mutateAsync: deletePostAsync } = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      toast({ title: "Post deleted", className: "bg-green-400" });
-      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
-    },
-  });
-
   const { mutateAsync: BookmarkMutate } = useMutation({
     mutationFn: bookmark,
     onSuccess: () => {
@@ -63,13 +50,8 @@ const PostCard = ({ postData }: { postData: PostType }) => {
     },
   });
 
-  const handleBookmark = async () => {
-    setIsBookmark(!isBookmark);
-    await BookmarkMutate(postData.id);
-  };
-
   const { mutateAsync: readingHistoryMutate } = useMutation({
-    mutationFn: addReadingHistory,
+    mutationFn: addHistory,
   });
 
   const authorName = postData.authorName
@@ -77,19 +59,20 @@ const PostCard = ({ postData }: { postData: PostType }) => {
         .charAt(0)
         .toUpperCase()}${postData.authorName.slice(1)}`
     : "";
-
   const createdAt = multiFormatDateString(postData.createdAt);
 
-  const handleDeletePost = async () => {
-    await deletePostAsync(postData.id);
+  const handleBookmark = async () => {
+    setIsBookmark(!isBookmark);
+    await BookmarkMutate(postData.id);
   };
 
   const handleClickCard = async () => {
     navigate(`/post/${postData?.id}`);
     await readingHistoryMutate({ postId: postData.id });
   };
+
   return (
-    <div className='flex w-full flex-col justify-center gap-2 items-center mb-2 mt-8 border-b border-[#e8e8e8]'>
+    <div className='w-[21rem] sm:w-[40rem] md:w-[46rem] lg:w-[43rem] xl:w-[45rem] flex flex-col justify-center gap-2 items-center mb-2 mt-8 border-b border-[#e8e8e8]'>
       <div className='flex items-center justify-between w-full'>
         <div className='flex items-center justify-start w-full gap-1 mb-1'>
           <div
@@ -107,7 +90,7 @@ const PostCard = ({ postData }: { postData: PostType }) => {
                 />
               </AvatarFallback>
             </Avatar>
-            <p className='text-xs font-medium text-gray-800 cursor-pointer sm:text-sm'>
+            <p className='text-xs font-medium text-gray-800 cursor-pointer hover:underline md:text-sm'>
               {authorName}
             </p>
           </div>
@@ -120,40 +103,43 @@ const PostCard = ({ postData }: { postData: PostType }) => {
           <PostCardDropdown
             authorId={postData.authorId}
             isMod={isMod}
-            handleDeletePost={() => handleDeletePost()}
+            postId={postData.id}
           />
         </span>
       </div>
+
       <div
-        className='flex flex-col items-center justify-center w-full cursor-pointer md:justify-between gap-7 md:flex-row md:gap-0'
+        className='flex items-center justify-between w-full cursor-pointer gap-7 md:flex-row md:gap-0'
         onClick={handleClickCard}>
-        <div className='flex flex-col w-full gap-2 text-wrap  text-left max-w-[28rem] sm:max-w-[29.5rem]'>
-          <span className='font-bold text-gray-900 text-md lg:text-lg md:text-xl '>
+        <div className='flex flex-col gap-2 text-left w-[29rem] md:w-[33rem] lg:w-[30rem] xl:w-[32rem]'>
+          <span className='font-bold tracking-tighter text-gray-900 line-clamp-3 text-md md:text-[1.4rem] leading-tight'>
             {postData.title}
           </span>
           <span
-            className='text-xs font-medium text-gray-500 md:text-base line-clamp-2 htmlContentCard post-card-content'
+            className='text-xs font-medium tracking-tighter text-gray-500 md:text-base line-clamp-2 htmlContentCard post-card-content'
             dangerouslySetInnerHTML={{ __html: postData.content }}></span>
         </div>
-        {postData.previewImage && postData.previewImage !== "" ? (
-          <img
-            src={postData.previewImage}
-            alt='Img'
-            className='object-cover rounded-lg h-[10rem] md:h-[9rem] w-[20rem] sm:w-[27rem]  md:w-[9rem]'
-          />
-        ) : null}
+        {postData.previewImage && (
+          <div className='size-5/12 sm:size-1/5  md:w-[10.5rem] md:h-[7rem] '>
+            <img
+              src={postData.previewImage}
+              alt='preview image'
+              className='object-cover w-full h-full rounded'
+            />
+          </div>
+        )}
       </div>
 
       <div className='flex items-center justify-between w-full my-8 '>
         <div className='flex items-center gap-2 cursor-pointer'>
           <p
-            className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-900 cursor-pointer bg-gray-200 rounded-full '
+            className='pb-1 px-2.5 pt-0.5 text-[10px] md:text-xs font-medium text-center text-gray-900 cursor-pointer bg-gray-200 rounded-full '
             onClick={() => navigate(`/tag/${postData.tag}`)}>
             {postData.tag}
           </p>
 
           <p
-            className='pb-1 px-2.5 pt-0.5 text-xs font-medium text-center text-gray-600'
+            className='pb-1 px-2.5 pt-0.5 text-[10px] md:text-xs font-medium text-center text-gray-600'
             onClick={handleClickCard}>
             {postData.readTime} min read
           </p>
@@ -161,11 +147,11 @@ const PostCard = ({ postData }: { postData: PostType }) => {
             onClick={handleClickCard}
             className='flex gap-4'>
             <span className='flex items-center gap-1'>
-              <HandHeart className='text-gray-500 cursor-pointer size-5' />
+              <HandHeart className='text-gray-500 cursor-pointer size-4 md:size-5' />
               <p className='text-gray-400'>{postStatsData?.totalClaps}</p>
             </span>
             <span className='flex items-center gap-1'>
-              <MessageCircle className='text-gray-500 cursor-pointer size-4' />
+              <MessageCircle className='text-gray-500 cursor-pointer size-3 md:size-4' />
               <p className='text-gray-400'>{postStatsData?.totalComments}</p>
             </span>
           </span>
@@ -176,16 +162,16 @@ const PostCard = ({ postData }: { postData: PostType }) => {
             className=''
             onClick={handleBookmark}>
             {isBookmark ? (
-              <BookmarkCheck className='text-gray-500 fill-gray-500 size-5' />
+              <BookmarkCheck className='text-gray-500 fill-gray-500 size-4 md:size-5' />
             ) : (
-              <Bookmark className='text-gray-500 size-5' />
+              <Bookmark className='text-gray-500 size-4 md:size-5' />
             )}
           </button>
           <span className='hidden md:block'>
             <PostCardDropdown
               authorId={postData.authorId}
               isMod={isMod}
-              handleDeletePost={() => handleDeletePost()}
+              postId={postData.id}
             />
           </span>
         </div>

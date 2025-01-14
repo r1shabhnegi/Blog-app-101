@@ -24,14 +24,15 @@ model User {
   follower              Follows[] @relation("follower")
   following             Follows[] @relation("following")
   refreshToken          String[]
+  tagFollows            TagFollow[]
 }
 
 model SavedPost {
-  id          Int @id @default(autoincrement())
+  id          String @id @default(uuid())
   userId      String
   postId      String
   user        User @relation(fields: [userId],references: [id])
-  post        Post     @relation(fields: [postId], references: [id])
+  post        Post @relation(fields: [postId], references: [id])
   createdAt   DateTime @default(now())
   @@unique([userId, postId])
 }
@@ -49,10 +50,10 @@ model Post {
   createdAt          DateTime @default(now())
   readTime           Int @default(0)
   comments           Comment[]
-  tag                String
+  tag       String
+  tagRel    Tag     @relation("TagToPost", fields: [tag], references: [name])
   savedPosts         SavedPost[]
 }
-
 model Comment {
   id            String @id @default(uuid())
   content       String
@@ -73,6 +74,21 @@ model Follows {
 }
 
 model Tag {
-  id String @id @default(uuid())
-  name String @unique
+  id         String      @id @default(uuid())
+  name       String      @unique
+  postCount  Int         @default(0)
+  posts      Post[]      @relation("TagToPost")
+  followers  TagFollow[]
+  createdAt  DateTime    @default(now())
+}
+
+
+model TagFollow {
+  id        String   @id @default(uuid())
+  tagId     String
+  userId    String
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  @@unique([userId, tagId])
 }

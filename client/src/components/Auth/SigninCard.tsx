@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { setUserCredentials } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/hook";
 import { useToast } from "@/components/ui/use-toast";
-import { signin } from "@/api/AuthApi";
+import { signin } from "@/api/authApi";
 import { LoaderCircle } from "lucide-react";
 import { SigninType } from "@/lib/types";
 

@@ -1,4 +1,4 @@
-import { addAbout, getAbout } from "@/api";
+import { addAbout, getAbout } from "@/api/userApi";
 import Spinner from "@/components/Spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery } from "@tanstack/react-query";
