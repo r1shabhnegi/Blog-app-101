@@ -15,45 +15,110 @@ const router = new Hono<{
   };
 }>();
 
-router.get("/names", jwtVerify, async (c) => {
+router.post("/follow-tag/:tagId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { tagId } = c.req.param();
+  console.log(`User ${userId} is trying to follow/unfollow tag ${tagId}`);
   try {
-    const tagNames = await prisma.tag.findMany({
-      orderBy: {
-        id: "asc",
+    const existingFollow = await prisma.tagFollow.findFirst({
+      where: {
+        userId,
+        tagId,
       },
-      take: 10,
-      skip: 0,
     });
-    return c.json(tagNames);
-  } catch (error) {}
+
+    if (!existingFollow) {
+      const addTag = await prisma.tagFollow.create({
+        data: {
+          userId,
+          tagId,
+        },
+      });
+      return c.json(
+        {
+          message: "Tag followed successfully",
+          data: addTag,
+        },
+        200
+      );
+    } else {
+      const removeTag = await prisma.tagFollow.delete({
+        where: {
+          id: existingFollow.id,
+        },
+      });
+      return c.json(
+        {
+          message: "Tag unfollowed successfully",
+          data: removeTag,
+        },
+        200
+      );
+    }
+  } catch (error: any) {
+    // Check for specific Prisma errors
+    if (error.code === "P2003") {
+      c.status(400);
+      return c.json({ error: "Invalid user or tag reference" });
+    }
+
+    c.status(500);
+    return c.json({ error: "Internal Server Error" });
+  }
 });
 
-router.get("/get/:name/:page", jwtVerify, async (c) => {
+router.get("/check-follow/:tagId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
-  const { name, page } = c.req.param();
+  const userId = c.get("userId");
+  const { tagId } = c.req.param();
 
-  const pageSize = 10;
+  console.log(`Checking follow status for user ${userId} and tag ${tagId}`);
+
   try {
-    const countTagPosts = await prisma.post.count({
+    const existingFollow = await prisma.tagFollow.findFirst({
       where: {
-        tag: name,
+        tagId,
+        userId,
       },
     });
 
-    const allTagPosts = await prisma.post.findMany({
-      where: {
-        tag: name,
+    if (existingFollow) {
+      return c.json({ isFollow: true }, 200);
+    } else {
+      return c.json({ isFollow: false }, 200);
+    }
+  } catch (error: any) {
+    c.status(500);
+    return c.json({ error: error.message || "Internal Server Error" });
+  }
+});
+
+router.get("/suggestions", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  try {
+    const tags = await prisma.tag.findMany({
+      take: 10,
+      include: {
+        _count: {
+          select: {
+            posts: true,
+            followers: true,
+          },
+        },
       },
-      skip: (+page - 1) * pageSize,
-      take: pageSize,
       orderBy: {
-        createdAt: "desc",
+        followers: {
+          _count: "desc",
+        },
       },
     });
 
-    return c.json({ countTagPosts, posts: allTagPosts });
-  } catch (error) {}
+    return c.json(tags, 200);
+  } catch (error: any) {
+    c.status(500);
+    return c.json({ error: error.message || "Internal Server Error" });
+  }
 });
 
 export default router;

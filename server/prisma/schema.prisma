@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id                    String @id @default(uuid())
+  id                    String @id @default(uuid()) @unique
   name                  String @db.VarChar(20)
   email                 String @unique 
   password              String?
@@ -28,7 +28,7 @@ model User {
 }
 
 model SavedPost {
-  id          String @id @default(uuid())
+  id          String @id @default(uuid()) @unique
   userId      String
   postId      String
   user        User @relation(fields: [userId],references: [id])
@@ -38,7 +38,7 @@ model SavedPost {
 }
 
 model Post {
-  id                 String @id @default(uuid())
+  id                 String @id @default(uuid()) @unique
   title              String
   content            String
   authorId           String
@@ -55,7 +55,7 @@ model Post {
   savedPosts         SavedPost[]
 }
 model Comment {
-  id            String @id @default(uuid())
+  id            String @id @default(uuid()) @unique
   content       String
   createdAt     DateTime @default(now())
   authorId      String
@@ -66,7 +66,7 @@ model Comment {
 }
 
 model Follows {
-  id             String @id @default(uuid())
+  id             String @id @default(uuid()) @unique
   followerId     String
   followingId    String
   follower       User @relation("follower",fields: [followerId],references: [id])
@@ -74,7 +74,7 @@ model Follows {
 }
 
 model Tag {
-  id         String      @id @default(uuid())
+  id         String      @id @default(uuid()) @unique
   name       String      @unique
   postCount  Int         @default(0)
   posts      Post[]      @relation("TagToPost")
@@ -84,11 +84,12 @@ model Tag {
 
 
 model TagFollow {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) @unique
   tagId     String
   userId    String
   tag       Tag      @relation(fields: [tagId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+
   @@unique([userId, tagId])
 }
