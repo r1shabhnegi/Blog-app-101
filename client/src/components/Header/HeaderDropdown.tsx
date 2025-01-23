@@ -10,11 +10,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { logout } from "@/api/authApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setLogout } from "@/redux/authSlice";
 import profileDemo from "@/assets/profileImg.png";
+import { logout } from "@/api/auth";
 
 const HeaderDropdown = () => {
   const { toast } = useToast();
@@ -63,7 +63,7 @@ const HeaderDropdown = () => {
       <DropdownMenuContent className='p-1.5 md:p-2 mr-6 w-44 sm:w-48 md:w-60'>
         <DropdownMenuGroup>
           <DropdownMenuItem
-            className='gap-2 sm:my-2 md:my-3 font-medium text-gray-600 cursor-pointer'
+            className='gap-2 font-medium text-gray-600 cursor-pointer sm:my-2 md:my-3'
             onClick={() => navigate(`/profile/${userId}`)}>
             <User className='mr-2 size-4 md:size-5' />
             <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
@@ -72,7 +72,7 @@ const HeaderDropdown = () => {
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='gap-2 sm:my-2 md:my-3 font-medium text-gray-600 cursor-pointer'
+            className='gap-2 font-medium text-gray-600 cursor-pointer sm:my-2 md:my-3'
             onClick={() => navigate(`/settings/${userId}`)}>
             <Settings className='mr-2 size-4 md:size-5' />
             <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
@@ -81,7 +81,7 @@ const HeaderDropdown = () => {
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='gap-2 sm:my-2 md:my-3  font-medium text-gray-600 cursor-pointer'
+            className='gap-2 font-medium text-gray-600 cursor-pointer sm:my-2 md:my-3'
             onClick={() => navigate(`/reading-history/${userId}`)}>
             <History className='mr-2 size-4 md:size-5' />
             <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
@@ -90,7 +90,7 @@ const HeaderDropdown = () => {
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='gap-2 sm:my-2 md:my-3 font-medium text-gray-600 cursor-pointer'
+            className='gap-2 font-medium text-gray-600 cursor-pointer sm:my-2 md:my-3'
             onClick={() => handleLogout()}>
             <LogOut className='mr-2 size-4 md:size-5' />
             <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>

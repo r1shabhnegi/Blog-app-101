@@ -7,7 +7,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useToast } from "@/components/ui/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { SigninType } from "@/lib/types";
-import { signin } from "@/api/authApi";
+import { signin } from "@/api/auth";
 
 const SigninCard = () => {
   const dispatch = useAppDispatch();

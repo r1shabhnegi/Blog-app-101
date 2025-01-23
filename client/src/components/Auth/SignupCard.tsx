@@ -7,7 +7,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { setUserCredentials } from "@/redux/authSlice";
 import { LoaderCircle } from "lucide-react";
 import { SignupType } from "@/lib/types";
-import { signin, signup } from "@/api/authApi";
+import { signin, signup } from "@/api/auth";
 
 const SignupCard = () => {
   const dispatch = useAppDispatch();

@@ -1,8 +1,6 @@
 import { lazy, Suspense } from "react";
-
 import { useQuery } from "@tanstack/react-query";
 import { serverStatus } from "./api";
-import { refreshToken } from "./api/authApi";
 import ServerDown from "./pages/ServerDown";
 import Loader from "./components/Loader";
 import { useEffect } from "react";
@@ -15,6 +13,7 @@ import ProfileHome from "./pages/ProfileHome";
 import ProfileLists from "./pages/ProfileLists";
 import Feed from "./pages/Feed";
 import MainLayout from "./layout/MainLayout";
+import { refreshToken } from "./api/auth";
 
 const ProfileLayout = lazy(() => import("./layout/ProfileLayout"));
 const ProfileAbout = lazy(() => import("./pages/ProfileAbout"));
