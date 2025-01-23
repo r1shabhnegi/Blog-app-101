@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import profileDeno from "@/assets/profileImg.png";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useDropzone } from "react-dropzone";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -38,7 +38,7 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<EditUserInfoType>();
+  } = useForm();
 
   const { mutateAsync: mutateEditUserInfo } = useMutation({
     mutationFn: editUserInfo,
@@ -86,7 +86,7 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
     };
     function appendFormData(
       formData: FormData,
-      data: EditUserInfoType,
+      data: FieldValues,
       avatarFile: File | string
     ) {
       formData.append("name", data.name);
@@ -203,7 +203,7 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
             />
             {errors?.name && (
               <p className='text-xs font-semibold text-red-500'>
-                {errors.name.message}
+                {errors?.name?.message?.toString()}
               </p>
             )}
           </label>
@@ -226,7 +226,7 @@ const EditUserInfoCard = ({ cancelBtn }: { cancelBtn: () => void }) => {
 
             {errors?.bio && (
               <p className='text-xs font-semibold text-red-500'>
-                {errors.bio.message}
+                {errors.bio?.message?.toString()}
               </p>
             )}
           </label>

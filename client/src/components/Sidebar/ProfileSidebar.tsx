@@ -58,7 +58,7 @@ const ProfileSidebar = () => {
     : "";
 
   const handleEditBtn = () => {
-    navigate("/settings", {
+    navigate(`/settings/${userId}`, {
       state: {
         isOpenEditCard: true,
       },
@@ -86,7 +86,7 @@ const ProfileSidebar = () => {
         onClick={() => navigate(`/followers/${userIdParam}`)}>
         {followerCountData?.followerCount} Followers
       </p>
-      {bio !== "null" || bio !== null ? (
+      {bio ? (
         <span className='mt-2'>
           <p className='text-sm font-medium text-gray-500 text-wrap'>{bio}</p>
         </span>

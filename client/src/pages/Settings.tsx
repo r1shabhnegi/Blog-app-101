@@ -22,8 +22,8 @@ const Settings = () => {
   }, [isOpenEditCard]);
 
   return (
-    <div className='mx-10 sm:mx-20 md:mx-32 lg:mx-10 xl:mx-0'>
-      <div className='flex flex-col justify-between my-16'>
+    <div className='mx-2 md:mx-0'>
+      <div className='my-16'>
         <h1 className='text-4xl font-semibold tracking-tight text-gray-800 sm:text-5xl '>
           Settings
         </h1>

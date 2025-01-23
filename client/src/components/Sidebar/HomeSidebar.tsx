@@ -16,11 +16,11 @@ const HomeSidebar = () => {
   const posts = postsData?.data?.posts;
 
   return (
-    <div className='flex flex-col gap-10'>
+    <div className='flex flex-col gap-8'>
       <div
         className='flex flex-col gap-4 items-start bg-[#C4E2FF]  p-5 rounded-md cursor-pointer'
         onClick={() => navigate("/publish")}>
-        <h1 className='font-bold'>Writing on Readpool.AI</h1>
+        <h1 className='font-bold'>Writing on ReadPool.AI</h1>
 
         <div className='flex flex-col gap-2 font-semibold text-[14px]'>
           <p>New writer FAQ </p>
@@ -39,10 +39,12 @@ const HomeSidebar = () => {
           {tags &&
             tags.map((tag) => (
               <span
-                key={`${tag}+${Math.round(Math.random() * 1000)}`}
+                key={tag + tag.id}
                 className='px-3 py-1 text-sm bg-gray-200 rounded-full cursor-pointer'
-                onClick={() => navigate(`/tag/${tag.name.toLowerCase()}`)}>
-                {tag.name}
+                onClick={() =>
+                  navigate(`/tag/${tag.name.toLowerCase().trim()}`)
+                }>
+                {tag.name.split("")[0].toUpperCase() + tag.name.slice(1)}
               </span>
             ))}
         </div>
@@ -56,7 +58,7 @@ const HomeSidebar = () => {
           <div className='flex flex-col gap-2'>
             {posts.map((post: PostType) => (
               <div
-                key={post.id}
+                key={post.id + post.title}
                 className='my-2'>
                 <div className='flex gap-2'>
                   <Avatar

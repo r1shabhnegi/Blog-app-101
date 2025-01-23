@@ -15,6 +15,7 @@ const router = new Hono<{
   };
 }>();
 
+// follow un-follow tag
 router.post("/follow-tag/:tagId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -65,9 +66,12 @@ router.post("/follow-tag/:tagId", jwtVerify, async (c) => {
 
     c.status(500);
     return c.json({ error: "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
+// check if followed by user
 router.get("/check-follow/:tagId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
@@ -91,9 +95,12 @@ router.get("/check-follow/:tagId", jwtVerify, async (c) => {
   } catch (error: any) {
     c.status(500);
     return c.json({ error: error.message || "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
+// top suggestions
 router.get("/suggestions", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   try {
@@ -118,6 +125,63 @@ router.get("/suggestions", jwtVerify, async (c) => {
   } catch (error: any) {
     c.status(500);
     return c.json({ error: error.message || "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
+// get followed tag names
+router.get("/followed-tags", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+
+  try {
+    const tagsData = await prisma.tagFollow.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        tag: true,
+      },
+    });
+
+    const tags = tagsData.map((tag) => tag.tag);
+
+    return c.json(tags, 200);
+  } catch (error: any) {
+    c.status(500);
+    return c.json({ error: error.message || "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
+// get tag details
+router.get("/detail/:tagName", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const { tagName } = c.req.param();
+
+  try {
+    const tag = await prisma.tag.findUnique({
+      where: {
+        name: tagName,
+      },
+      include: {
+        _count: {
+          select: {
+            posts: true,
+            followers: true,
+          },
+        },
+      },
+    });
+
+    return c.json(tag, 200);
+  } catch (error: any) {
+    c.status(500);
+    return c.json({ error: error.message || "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 

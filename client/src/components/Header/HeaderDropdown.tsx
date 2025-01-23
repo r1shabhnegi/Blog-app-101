@@ -60,34 +60,42 @@ const HeaderDropdown = () => {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='p-3 mr-6 w-60'>
+      <DropdownMenuContent className='p-1.5 md:p-2 mr-6 w-44 sm:w-48 md:w-60'>
         <DropdownMenuGroup>
           <DropdownMenuItem
-            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
+            className='gap-2 sm:my-2 md:my-3 font-medium text-gray-600 cursor-pointer'
             onClick={() => navigate(`/profile/${userId}`)}>
-            <User className='mr-2 size-5' />
-            <span>Profile</span>
+            <User className='mr-2 size-4 md:size-5' />
+            <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
+              Profile
+            </span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
-            onClick={() => navigate("/settings")}>
-            <Settings className='mr-2 size-5' />
-            <span>Settings</span>
+            className='gap-2 sm:my-2 md:my-3 font-medium text-gray-600 cursor-pointer'
+            onClick={() => navigate(`/settings/${userId}`)}>
+            <Settings className='mr-2 size-4 md:size-5' />
+            <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
+              Settings
+            </span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
+            className='gap-2 sm:my-2 md:my-3  font-medium text-gray-600 cursor-pointer'
             onClick={() => navigate(`/reading-history/${userId}`)}>
-            <History className='mr-2 size-5' />
-            <span>Reading history</span>
+            <History className='mr-2 size-4 md:size-5' />
+            <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
+              Reading history
+            </span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className='gap-2 my-3 font-medium text-gray-600 cursor-pointer'
+            className='gap-2 sm:my-2 md:my-3 font-medium text-gray-600 cursor-pointer'
             onClick={() => handleLogout()}>
-            <LogOut className='mr-2 size-5' />
-            <span>Log out</span>
+            <LogOut className='mr-2 size-4 md:size-5' />
+            <span className='text-[12px]  md:text-[13px] lg:text-[14px]'>
+              Log out
+            </span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

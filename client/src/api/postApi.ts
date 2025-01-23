@@ -138,3 +138,20 @@ export const postStats = async (postId: string | undefined) => {
     isSavedByUser: boolean;
   };
 };
+
+// get tag page posts
+export const getTagPagePosts = async (
+  tagId: string | undefined,
+  cursor: string | null
+) => {
+  console.log(tagId);
+  const response = await apiClient.query({
+    url: `/post/tag-page/${tagId}?cursor=${cursor}`,
+    method: "GET",
+  });
+
+  if (response.error) {
+    throw new Error(response.error.data);
+  }
+  return response.data as { nextCursor: string | null; posts: PostType[] };
+};

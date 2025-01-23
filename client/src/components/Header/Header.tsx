@@ -22,7 +22,7 @@ const Header = () => {
           onClick={() => navigate("/")}>
           <Newspaper className='text-green-600 size-5 sm:size-5 md:size-7' />
           <h1 className='-mb-0.5 text-sm sm:text-md md:text-lg font-bold tracking-tighter text-gray-700 font-logo'>
-            Readpool.AI
+            ReadPool.AI
           </h1>
         </span>
         <span className='flex justify-center items-center gap-2 bg-[#f6f6f6] px-3 py-0.5 rounded-full'>

@@ -54,37 +54,40 @@ const PublishCard = ({
   });
 
   const onSubmit = async () => {
-    if (prevImgFile === "" || tag === "") {
-      setErr("Please add preview image or at least one tag");
-      return;
-    }
-    const options = {
-      maxSizeMB: 0.5,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    };
     try {
-      let image: string | File = "";
+      if (!prevImgFile || !tag) {
+        setErr("Please add preview image or at least one tag");
+        return;
+      }
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
 
-      if (prevImgFile instanceof File) {
-        image = await imageCompression(prevImgFile, options);
-      } else {
+      if (!(prevImgFile instanceof File)) {
+        setErr("Invalid image file");
         return;
       }
 
+      const image = await imageCompression(prevImgFile, options);
       const cleanTag = tag.toLowerCase().trim();
 
       const formData = new FormData();
-      formData.append("title", titleValue);
-      formData.append("content", editorValue);
+      formData.append("title", titleValue.trim());
+      formData.append("content", editorValue.trim());
       formData.append("tag", cleanTag);
       formData.append("image", image);
+
       await publishMutate(formData);
     } catch (error) {
-      console.log(error);
+      setErr(
+        "Failed to publish: " +
+          (error instanceof Error ? error.message : "Unknown error")
+      );
+      console.error(error);
     }
   };
-
   return (
     <div className='fixed top-0 bottom-0 left-0 right-0 z-50 bg-white'>
       <div className=' w-full max-w-[70rem] mx-auto my-16'>

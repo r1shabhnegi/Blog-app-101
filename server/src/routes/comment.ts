@@ -65,6 +65,8 @@ router.get("/:postId/:page", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -94,6 +96,8 @@ router.post("/", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 

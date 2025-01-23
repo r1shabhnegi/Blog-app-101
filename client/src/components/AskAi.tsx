@@ -38,7 +38,7 @@ const AskAi = ({ cancel }: { cancel: () => void }) => {
 
   return (
     <div
-      className='fixed top-0 left-0 z-30 flex items-center justify-center w-full h-screen bg-black bg-opacity-60'
+      className='fixed top-0 left-0 flex z-[999] items-center justify-center w-full h-screen bg-black bg-opacity-60'
       onClick={cancel}>
       <div
         onClick={(e) => e.stopPropagation()}

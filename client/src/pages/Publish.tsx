@@ -9,7 +9,7 @@ import PublishCard from "@/components/PublishCard";
 import Placeholder from "@tiptap/extension-placeholder";
 
 const Publish = () => {
-  const [editorState, setEditorState] = useState("<p>Write something...</p>");
+  const [editorState, setEditorState] = useState("");
   const [isPublish, setIsPublish] = useState(false);
   const [titleValue, setTitleValue] = useState("");
 
@@ -19,7 +19,13 @@ const Publish = () => {
       StarterKit,
       Image,
       Placeholder.configure({
-        placeholder: "Write something …",
+        placeholder: ({ node }) => {
+          if (node.type.name === "paragraph") {
+            return "Write something...";
+          }
+          return "";
+        },
+        showOnlyWhenEditable: true,
       }),
     ],
     content: editorState,
@@ -33,6 +39,12 @@ const Publish = () => {
       },
     },
   });
+
+  const hasValidContent = useCallback(() => {
+    if (!editorState) return false;
+    const textContent = editorState.replace(/<[^>]*>/g, "").trim();
+    return textContent.length > 0;
+  }, [editorState]);
 
   const addImage = useCallback(() => {
     const url = window.prompt("URL");
@@ -50,7 +62,7 @@ const Publish = () => {
     <div className='mx-auto w-full flex flex-col bg-red-00 max-w-[65rem]'>
       <PublishPageNav
         setIsPublish={() => setIsPublish(!isPublish)}
-        isPublish={titleValue.length > 0 && editorState.length > 9}
+        isPublish={titleValue.length > 0 && hasValidContent()}
       />
       <div className='flex flex-col items-center'>
         {editor && (
@@ -61,7 +73,7 @@ const Publish = () => {
         )}
         <div className=' xl:w-[55rem] flex flex-col justify-center items-center'>
           <Input
-            className='h-28 text-4xl md:text-5xl lg:text-6xl px-7 border-t-0 border-b-0 border-r-0 rounded-none outline-none ring-0 focus-visible:ring-0 text-[#565555] placeholder:text-[#a2a2a2]'
+            className='h-28 text-4xl md:text-5xl lg:text-6xl px-7 border-t-0 border-b-1 border-r-0 rounded-none outline-none ring-0 focus-visible:ring-0 text-[#565555] placeholder:text-[#a2a2a2] border-gray-300'
             placeholder='Title'
             value={titleValue}
             onChange={(e) => setTitleValue(e.target.value)}
@@ -69,7 +81,7 @@ const Publish = () => {
 
           <EditorContent
             editor={editor}
-            className='w-full pb-6 pl-3 mx-auto border-l border-gray-200'
+            className='w-full pb-6 pl-3 mx-auto border-b border-l border-gray-300'
             placeholder='write'
           />
         </div>

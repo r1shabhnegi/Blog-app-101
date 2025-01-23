@@ -5,14 +5,15 @@ import HomeSidebar from "./HomeSidebar";
 
 const sidebarConfig = {
   "/profile": ProfileSidebar,
-  "reading-history": ProfileSidebar,
+  "/reading-history": ProfileSidebar,
   "/followers": ProfileSidebar,
   "/settings": ProfileSidebar,
   "/": HomeSidebar,
-  "feed-following": HomeSidebar,
+  "/feed-following": HomeSidebar,
+  "/tag-suggestions": HomeSidebar,
 };
 
-const NoSidebarPageArray = ["/publish"];
+const NoSidebarPageArray = ["/publish", "/tag", "/post"];
 
 const SidebarLayout = () => {
   const { pathname } = useLocation();
@@ -20,7 +21,9 @@ const SidebarLayout = () => {
     pathname.startsWith(key)
   );
 
-  const shouldShowSidebar = !NoSidebarPageArray.includes(pathname);
+  const shouldShowSidebar = !NoSidebarPageArray.includes(
+    `/${pathname.split("/")[1]}`
+  );
 
   if (!shouldShowSidebar) {
     return null;

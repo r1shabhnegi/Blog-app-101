@@ -79,15 +79,15 @@ export const addHistory = async ({ postId }: { postId: string }) => {
 };
 
 // get reading history
-export const getHistory = async () => {
+export const getHistory = async (cursor: string | null) => {
   const response = await apiClient.query({
-    url: `/user/get-history`,
+    url: `/user/reading-history?cursor=${cursor}`,
     method: "GET",
   });
   if (response.error) {
     throw new Error(response.error.data);
   }
-  return response.data as PostType[];
+  return response.data as { nextCursor: string | null; posts: PostType[] };
 };
 
 // get user about

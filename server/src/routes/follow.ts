@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { PublishPostInput } from "../../../common-types/index";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { jwtVerify } from "../middlewares/jwtVerify";
@@ -35,7 +34,10 @@ router.get("/:userId", jwtVerify, async (c) => {
     const isFollowing = foundFollow ? true : false;
 
     return c.json(isFollowing, 200);
-  } catch (error) {}
+  } catch (error) {
+  } finally {
+    await prisma.$disconnect();
+  }
 });
 
 // count followers
@@ -53,6 +55,8 @@ router.get("/followers-count/:userId", jwtVerify, async (c) => {
     return c.json({ followerCount }, 200);
   } catch (error) {
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -101,6 +105,8 @@ router.get("/get/five-following/:userId", jwtVerify, async (c) => {
     return c.json(fiveFollowing, 200);
   } catch (error) {
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -139,6 +145,8 @@ router.post("/", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -192,6 +200,8 @@ router.get("/followers/:userId/:page", jwtVerify, async (c) => {
           `Error fetching user data: ${error || "Something went wrong"}`
         );
         throw error;
+      } finally {
+        await prisma.$disconnect();
       }
     };
 
@@ -200,6 +210,8 @@ router.get("/followers/:userId/:page", jwtVerify, async (c) => {
     return c.json(usersData, 200);
   } catch (error) {
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -249,6 +261,8 @@ router.get("/followings/:userId", async (c) => {
           `Error fetching user data: ${error || "Something went wrong"}`
         );
         throw error; // Rethrow the error or handle it further
+      } finally {
+        await prisma.$disconnect();
       }
     };
 
@@ -257,6 +271,8 @@ router.get("/followings/:userId", async (c) => {
     return c.json(usersData, 200);
   } catch (error) {
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -274,6 +290,8 @@ router.get("/get/followingCount/:userId", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 

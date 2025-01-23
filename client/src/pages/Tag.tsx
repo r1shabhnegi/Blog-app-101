@@ -1,82 +1,168 @@
-import { getTag } from "@/api";
-import PostCard from "@/components/PostCard";
-import { PostType } from "@/lib/types";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { checkTagFollow, followTag, getTagDetail } from "@/api/tagApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Dot } from "lucide-react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getTagPagePosts } from "@/api/postApi";
+import PostCard from "@/components/Post/PostCard";
+import Spinner from "@/components/Spinner";
+import { PostType } from "@/lib/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const Tag = () => {
-  const [page, setPage] = useState(1);
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [numberOfPosts, setNumberOfPosts] = useState<number>(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [isFollow, setIsFollow] = useState(false);
+  const queryClient = useQueryClient();
   const { name } = useParams();
+  const observerTarget = useRef<HTMLDivElement>(null);
 
-  const tagName = name ? `${name.charAt(0).toUpperCase()}${name.slice(1)}` : "";
+  const { data: tagBasicDetail } = useQuery({
+    queryKey: ["tagDetail"],
+    queryFn: () => getTagDetail(name || ""),
+    enabled: !!name,
+  });
 
-  const { data, refetch } = useQuery({
-    queryKey: ["tag", tagName, page],
-    queryFn: () => getTag({ name, page }),
+  const {
+    data: followData,
+    isSuccess,
+    isLoading: followingDataLoading,
+  } = useQuery({
+    queryKey: ["checkTagFollow", tagBasicDetail?.id],
+    queryFn: () => checkTagFollow(tagBasicDetail?.id || ""),
+    enabled: !!tagBasicDetail?.id,
   });
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  console.log(data?.posts);
-  useEffect(() => {
-    if (data) {
-      setPosts((prevPosts) => [...prevPosts, ...data.posts]);
+    if (isSuccess && followData) {
+      setIsFollow(followData.isFollow);
     }
-  }, [data]);
+  }, [isSuccess, followData]);
+
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["tagPagePosts", tagBasicDetail?.id],
+    queryFn: ({ pageParam }: { pageParam: string | null }) =>
+      getTagPagePosts(tagBasicDetail?.id, pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    staleTime: 1 * 60 * 1000,
+    refetchOnMount: "always",
+    initialPageParam: null,
+    enabled: !!tagBasicDetail?.id,
+  });
+  console.log(data);
+  const { mutateAsync } = useMutation({
+    mutationKey: ["followTag", tagBasicDetail?.id],
+    mutationFn: followTag,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["checkTagFollow", tagBasicDetail?.id],
+      });
+      queryClient.invalidateQueries({ queryKey: ["tagSuggestions"] });
+      queryClient.invalidateQueries({ queryKey: ["tagDetail"] });
+    },
+  });
+
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
 
   useEffect(() => {
-    if (data && data.countTagPosts) {
-      setNumberOfPosts(data.countTagPosts);
-    }
-  }, [data]);
+    const element = observerTarget.current;
+    const option = { threshold: 0 };
 
-  const fetchMorePosts = () => {
-    setPage((prev) => prev + 1);
-    if (numberOfPosts > posts.length) {
-      refetch();
-    } else {
-      setHasMore(false);
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (element) observer.observe(element);
+
+    return () => {
+      if (element) observer.unobserve(element);
+    };
+  }, [handleObserver]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    refetch();
+  }, [refetch]);
+
+  const handleFollowTag = async (tagId: string) => {
+    try {
+      setIsFollow(!isFollow);
+      await mutateAsync(tagId);
+    } catch (error) {
+      console.error("Error following/unfollowing tag:", error);
     }
   };
 
+  if (error) {
+    return (
+      <div className='p-4 text-red-500'>
+        Error loading posts. Please try again later.
+      </div>
+    );
+  }
+
   return (
     <div className='bg-red-5 w-full max-w-[60rem] mx-auto'>
-      <div className='flex flex-col items-center justify-center py-12 md:py-20'>
+      <div className='flex flex-col items-center justify-center gap-1 py-12 md:py-20'>
         <h1 className='text-4xl font-semibold text-gray-800 md:text-5xl'>
-          {tagName}
+          {tagBasicDetail &&
+            tagBasicDetail.name.split("")[0].toUpperCase() +
+              tagBasicDetail.name.slice(1)}
         </h1>
-        <h1 className='text-xl text-gray-600 md:text-2xl'>
-          {numberOfPosts}
-          {numberOfPosts === 1 ? "Post" : "Posts"}
-        </h1>
-      </div>
-      <div className='lg:px-36'>
-        {numberOfPosts !== 0 ? (
-          <InfiniteScroll
-            className='flex flex-col items-center justify-center'
-            dataLength={posts.length}
-            hasMore={hasMore}
-            loader={"Loading"}
-            next={fetchMorePosts}>
-            {posts.map((post: PostType) => (
-              <PostCard
-                key={post.id}
-                postData={post}
-              />
-            ))}
-          </InfiniteScroll>
-        ) : (
-          <p className='text-2xl font-semibold text-center text-gray-500'>
-            There is no posts for this topic
-          </p>
+        <p className='flex text-[11px] items-center sm:text-[12px] md:text-[13px] lg:text-[14px] text-gray-600'>
+          {tagBasicDetail && tagBasicDetail._count.posts}
+          {tagBasicDetail && tagBasicDetail?._count.posts > 1
+            ? " Posts"
+            : " Post"}
+          <Dot className='text-gray-500 size-3 md:size-4' />
+          {tagBasicDetail && tagBasicDetail._count.followers}
+          {tagBasicDetail && tagBasicDetail?._count.followers > 1
+            ? " Followers"
+            : " Follower"}
+        </p>
+        {!followingDataLoading && (
+          <>
+            {isFollow ? (
+              <span
+                className='text-[10px] cursor-pointer md:text-[11px] lg:text-[12px] rounded-full px-2 py-0.5 border-[0.1rem] border-gray-700'
+                onClick={() => handleFollowTag(tagBasicDetail?.id || "")}>
+                Following
+              </span>
+            ) : (
+              <span
+                className='bg-gray-800 cursor-pointer text-[10px] md:text-[11px] lg:text-[12px]  text-white rounded-full px-2 py-0.5'
+                onClick={() => handleFollowTag(tagBasicDetail?.id || "")}>
+                Follow
+              </span>
+            )}
+          </>
         )}
+      </div>
+      <div className='relative'>
+        {data?.pages.map((page) =>
+          page?.posts.map((post: PostType) => (
+            <PostCard
+              key={post.id + post.title}
+              postData={post}
+            />
+          ))
+        )}
+        <div
+          ref={observerTarget}
+          className='absolute h-[50rem] bottom-[25rem]'
+        />
+        {isFetchingNextPage || (isLoading && <Spinner className='mt-40' />)}
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ const ProfileLayout = () => {
         <div className='flex items-center justify-between px-5 mb-5 lg:px-0'>
           <div className='flex flex-col w-full'>
             <div className='flex items-center justify-between w-full'>
-              <h1 className='text-2xl font-semibold tracking-tight text-gray-800 sm:text-3xl md:text-4xl lg:text-5xl '>
+              <h1 className='text-xl font-semibold tracking-tight text-gray-800 sm:text-2xl md:text-3xl lg:text-4xl '>
                 {adminName}
               </h1>
               <ProfileDropDown prop='lg:hidden' />
@@ -86,29 +86,29 @@ const ProfileLayout = () => {
 
         <div className='flex gap-7 border-b-[0.01rem] border-gray-200  justify-between lg:justify-start '>
           <span
-            className={`text-sm flex-1 lg:flex-none text-center font-medium pb-4 text-gray-600 cursor-pointer ${
+            className={`text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px]  pb-2 md:pb-3  flex-1 lg:flex-none text-center text-gray-600 cursor-pointer ${
               pathname.startsWith("/profile") &&
               !pathname.includes("list") &&
               !pathname.includes("about")
-                ? "border-b-[0.01rem] border-gray-600"
+                ? "border-b-[0.01rem] border-gray-600 font-medium"
                 : ""
             }`}
             onClick={() => navigate(`/profile/${userId}`)}>
             Home
           </span>
           <span
-            className={`text-sm flex-1 lg:flex-none text-center font-medium pb-4 cursor-pointer  text-gray-600 ${
+            className={`text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px]  pb-2 md:pb-3  flex-1 lg:flex-none text-center  cursor-pointer  text-gray-600 ${
               pathname.startsWith("/profile/lists")
-                ? "border-b-[0.01rem] border-gray-600"
+                ? "border-b-[0.01rem] border-gray-600 font-medium"
                 : ""
             }`}
             onClick={() => navigate(`/profile/lists/${userId}`)}>
             Saved
           </span>
           <span
-            className={`text-sm font-medium flex-1 text-center lg:flex-none  pb-4 cursor-pointer  text-gray-600 ${
+            className={`text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px]  pb-2 md:pb-3  flex-1 text-center lg:flex-none  cursor-pointer  text-gray-600 ${
               pathname.startsWith("/profile/about")
-                ? "border-b-[0.01rem] border-gray-600"
+                ? "border-b-[0.01rem] border-gray-600 font-medium"
                 : ""
             }`}
             onClick={() => navigate(`/profile/about/${userId}`)}>

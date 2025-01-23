@@ -2,13 +2,12 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import bcrypt from "bcryptjs";
-import { signupInput, EditUserInfoInput } from "../../../common-types/index";
 import { jwtVerify } from "../middlewares/jwtVerify";
 
 const router = new Hono<{
   Bindings: {
     DATABASE_URL: string;
-    BLOG_APP_UPLOADS: R2Bucket;
+    R2_UPLOAD: R2Bucket;
     R2_URL: string;
   };
   Variables: {
@@ -21,7 +20,6 @@ router.get("/info/:userId", async (c) => {
   const prisma = c.get("prisma");
 
   const { userId } = c.req.param();
-  console.log("userId", userId);
   try {
     const foundUser = await prisma.user.findUnique({
       where: {
@@ -51,6 +49,8 @@ router.get("/info/:userId", async (c) => {
   } catch (error) {
     c.status(500);
     c.text(`${error || "Something went wrong!"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -95,24 +95,22 @@ router.get("/home-sidebar", jwtVerify, async (c) => {
 router.patch("/edit", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
-  const body = await c.req.parseBody();
-  const { data: inputData, error: inputError } =
-    EditUserInfoInput.safeParse(body);
+  const inputData = await c.req.parseBody();
 
-  if (inputError) {
-    return c.json({ message: inputError.errors }, 403);
+  if (!inputData) {
+    return c.json({ message: "Credentials not valid" }, 403);
   }
 
   try {
     let avatarUrl = inputData.avatar;
-
+    const f = inputData.avatar instanceof File ? inputData.avatar.name : "";
     if (avatarUrl === "" && inputData.isAvatarRemoved === "false") {
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
           // avatar: avatarUrl,
-          name: inputData.name,
-          bio: inputData.bio,
+          name: typeof inputData.name === "string" ? inputData.name : "",
+          bio: typeof inputData.bio === "string" ? inputData.bio : "",
         },
       });
 
@@ -122,16 +120,12 @@ router.patch("/edit", jwtVerify, async (c) => {
       return c.json({ message: "User updated" }, 200);
     }
 
-    if (
-      inputData.isAvatarRemoved === "false" &&
-      inputData.avatar &&
-      inputData.avatar instanceof File
-    ) {
-      const uniqueName = `${inputData.avatar.name}${Date.now()}${Math.round(
-        Math.random() * 1e9
-      )}${Math.round(Math.random() * 1e4)}`;
+    if (inputData.isAvatarRemoved === "false" && inputData.avatar) {
+      const uniqueName = `images/${userId}/${Date.now()}-${
+        Math.random() * 1000
+      }-${f}`;
 
-      const avatarFile = await c.env.BLOG_APP_UPLOADS.put(
+      const avatarFile = await c.env.R2_UPLOAD.put(
         uniqueName,
         inputData.avatar
       );
@@ -144,9 +138,9 @@ router.patch("/edit", jwtVerify, async (c) => {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        avatar: avatarUrl,
-        name: inputData.name,
-        bio: inputData.bio,
+        avatar: typeof avatarUrl === "string" ? avatarUrl : "",
+        name: typeof inputData.name === "string" ? inputData.name : "",
+        bio: typeof inputData.bio === "string" ? inputData.bio : "",
       },
     });
 
@@ -158,6 +152,8 @@ router.patch("/edit", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong!"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -218,6 +214,8 @@ router.post("/delete", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -225,7 +223,6 @@ router.post("/delete", jwtVerify, async (c) => {
 router.get("/get-about", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
-  console.log("userId-", userId);
   try {
     const about = await prisma.user.findUnique({
       where: {
@@ -240,6 +237,8 @@ router.get("/get-about", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -266,6 +265,89 @@ router.post("/add-about", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
+// reading history
+router.get("/reading-history", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { cursor } = c.req.query();
+  const pageSize = 10;
+
+  try {
+    const history = await prisma.readingHistory.findMany({
+      where: {
+        userId,
+      },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        post: true,
+      },
+    });
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, history }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
+// add reading history
+router.post("/add-history", jwtVerify, async (c) => {
+  const prisma = c.get("prisma");
+  const userId = c.get("userId");
+  const { postId } = await c.req.json();
+
+  try {
+    const history = await prisma.$transaction(async (tx) => {
+      // Check for existing history
+      const existingHistory = await tx.readingHistory.findFirst({
+        where: {
+          userId,
+          postId,
+        },
+      });
+
+      // Delete if exists
+      if (existingHistory) {
+        await tx.readingHistory.delete({
+          where: {
+            id: existingHistory.id,
+          },
+        });
+      }
+
+      // Create new history entry
+      return tx.readingHistory.create({
+        data: {
+          userId,
+          postId,
+        },
+      });
+    });
+
+    return c.json(history, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 

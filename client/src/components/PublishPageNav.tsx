@@ -20,7 +20,7 @@ const PublishPageNav = ({
         onClick={() => navigate("/")}>
         <Newspaper className='-mt-1 text-green-600 size-5 md:size-6' />
         <h1 className='text-lg font-bold tracking-tighter text-gray-700 md:text-xl font-logo'>
-          Readpool.AI
+          ReadPool.AI
         </h1>
       </span>
       <span className='flex items-center gap-6'>

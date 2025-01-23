@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { PublishPostInput } from "../../../common-types/index";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { jwtVerify } from "../middlewares/jwtVerify";
@@ -22,15 +21,10 @@ router.post("/create", jwtVerify, async (c) => {
   const userId = c.get("userId");
 
   try {
-    const body = await c.req.parseBody();
-    const {
-      success,
-      data: inputData,
-      error,
-    } = PublishPostInput.safeParse(body);
+    const inputData = await c.req.parseBody();
 
     // image upload
-    const f = body["image"];
+    const f = inputData["image"];
     let imageName = "";
 
     if (f && f instanceof File) {
@@ -43,9 +37,9 @@ router.post("/create", jwtVerify, async (c) => {
       return c.json({ message: "Image is required" });
     }
 
-    if (!success && !inputData) {
+    if (!inputData) {
       c.status(400);
-      return c.json({ message: error.errors[0].message });
+      return c.json({ message: "Credentials not valid" });
     }
 
     // Validate user exists
@@ -60,29 +54,39 @@ router.post("/create", jwtVerify, async (c) => {
     }
 
     // Format tag name
-    const tagName = inputData.tag.toLowerCase().trim();
+    const tagName =
+      typeof inputData?.tag === "string"
+        ? inputData.tag.toLowerCase().trim()
+        : "";
     // Handle tag creation in transaction
-    await prisma.tag.upsert({
+    const tag = await prisma.tag.upsert({
       where: { name: tagName },
       update: {},
       create: { name: tagName },
     });
 
-    const contentLength = inputData.content.split(/\s+/).length;
+    const contentLength =
+      typeof inputData.content === "string"
+        ? inputData.content.split(/\s+/).length
+        : 0;
     const readTime = Math.max(1, Math.ceil(contentLength / 200));
 
     // Create post in transaction
     const createdPost = await prisma.$transaction(async (tx) => {
       return tx.post.create({
         data: {
-          title: inputData.title.trim(),
-          content: inputData.content.trim(),
+          title:
+            typeof inputData.title === "string" ? inputData.title.trim() : "",
+          content:
+            typeof inputData.content === "string"
+              ? inputData.content.trim()
+              : "",
           authorId: userId,
           authorAvatar: userDetails.avatar,
           authorName: userDetails.name,
           previewImage: `${c.env.R2_URL}/${imageName}`,
           readTime,
-          tag: tagName,
+          tag: tag.name,
         },
       });
     });
@@ -134,6 +138,8 @@ router.get("/latest", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -175,6 +181,8 @@ router.get("/following", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -208,6 +216,8 @@ router.get("/tag", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -233,6 +243,8 @@ router.get("/single-post/:postId", jwtVerify, async (c) => {
     return c.json(postDetails, 200);
   } catch (error) {
     return c.json({ message: error }, 500);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -266,6 +278,8 @@ router.get("/user-posts/:userId", async (c) => {
   } catch (error) {
     c.status(500);
     c.json({ message: "Something went wrong!" });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -299,6 +313,8 @@ router.get("/saved-posts", jwtVerify, async (c) => {
     return c.json({ nextCursor, posts }, 200);
   } catch (error) {
     return c.text(`${error || "something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -331,6 +347,8 @@ router.delete("/delete", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     c.json({ message: "Something went wrong!" });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -394,6 +412,8 @@ router.get("/stats/:postId", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -425,6 +445,57 @@ router.post("/like-post/:postId", jwtVerify, async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
+// tag page posts
+router.get("/tag-page/:tagId", async (c) => {
+  const prisma = c.get("prisma");
+  const { tagId } = c.req.param();
+  const { cursor } = c.req.query();
+  const pageSize = 10;
+
+  try {
+    const tagName = await prisma.tag.findUnique({
+      where: {
+        id: tagId,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    if (!tagName) {
+      c.status(404);
+      return c.json({ message: "Tag not found" });
+    }
+
+    const posts = await prisma.post.findMany({
+      where: {
+        tag: tagName.name,
+      },
+      skip: Number(cursor) ? Number(cursor) * pageSize : 0,
+      take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const maxCount = 50;
+    const nextCursor = !Number(cursor)
+      ? 1
+      : Number(cursor) <= maxCount
+      ? Number(cursor) + 1
+      : null;
+
+    return c.json({ nextCursor, posts }, 200);
+  } catch (error) {
+    c.status(500);
+    return c.text(`${error || "Something went wrong"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 

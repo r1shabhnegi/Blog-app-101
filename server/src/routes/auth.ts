@@ -2,7 +2,6 @@ import { ErrorHandler, Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import bcrypt from "bcryptjs";
-import { signinInput, signupInput } from "../../../common-types/index";
 import { sign, verify } from "hono/jwt";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import axios from "axios";
@@ -105,15 +104,12 @@ router.post("/create", async (c) => {
   const prisma = c.get("prisma");
 
   try {
-    const body = await c.req.json();
-    console.log(body);
-    const { data: inputData, error: inputError } = signupInput.safeParse(body);
-
-    if (inputError) {
-      return c.json({ message: inputError.errors }, 403);
+    const inputData = await c.req.json();
+    console.log(inputData);
+    if (!inputData) {
+      return c.json({ message: "Credentials not valid" }, 403);
     }
     const hashedPassword = bcrypt.hashSync(inputData.password);
-    console.log(inputData.name, inputData.email, hashedPassword);
 
     const user = await prisma.user.create({
       data: {
@@ -131,6 +127,8 @@ router.post("/create", async (c) => {
   } catch (error) {
     c.status(500);
     return c.text(`${error || "Something went wrong!"}`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -139,16 +137,14 @@ router.post("/", async (c) => {
   const prisma = c.get("prisma");
 
   try {
-    const body = await c.req.json();
-    const input = signinInput.safeParse(body);
+    const input = await c.req.json();
 
-    if (input.error) {
-      return c.json({ message: input.error.errors }, 403);
+    if (!input) {
+      return c.json({ message: "Credentials not valid" }, 403);
     }
-
     const foundUser = await prisma.user.findUnique({
       where: {
-        email: input.data.email,
+        email: input.email,
       },
     });
 
@@ -163,10 +159,7 @@ router.post("/", async (c) => {
       return c.json({ message: "Password does not match" }, 403);
     }
 
-    const isPwMatch = await bcrypt.compare(
-      input.data.password,
-      foundUser.password
-    );
+    const isPwMatch = await bcrypt.compare(input.password, foundUser.password);
 
     if (!isPwMatch) {
       return c.json({ message: "Password does not match" }, 403);

@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { PublishPostInput } from "../../../common-types/index";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { jwtVerify } from "../middlewares/jwtVerify";
@@ -69,6 +68,8 @@ router.post("/", jwtVerify, async (c) => {
     return c.json({ message: !!result }, 200);
   } catch (error) {
     return c.text(`${error} || something went wrong`);
+  } finally {
+    await prisma.$disconnect();
   }
 });
 

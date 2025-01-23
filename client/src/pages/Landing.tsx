@@ -36,7 +36,7 @@ const Landing = () => {
             <span className='flex items-end justify-center gap-2'>
               <Newspaper className='text-green-600 size-5 sm:size-5 md:size-7' />
               <h1 className='-mb-0.5 text-sm sm:text-md md:text-lg font-bold tracking-tighter text-gray-700 font-logo'>
-                Readpool.AI
+                ReadPool.AI
               </h1>
             </span>
             <nav className='flex gap-4'>

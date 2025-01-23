@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useCallback, FC } from "react";
 import { followingPosts, latestPosts, tagPosts } from "@/api/postApi";
-import PostCard from "../PostCard";
+import PostCard from "../Post/PostCard";
 import { PostType } from "@/lib/types";
 import Spinner from "../Spinner";
 
@@ -86,16 +86,14 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
 
   return (
     <div className='relative'>
-      {data?.pages.map((page, pageIndex) => (
-        <div key={pageIndex}>
-          {page?.posts.map((post: PostType) => (
-            <PostCard
-              key={post.id}
-              postData={post}
-            />
-          ))}
-        </div>
-      ))}
+      {data?.pages.map((page) =>
+        page?.posts.map((post: PostType) => (
+          <PostCard
+            key={post.id + post.title}
+            postData={post}
+          />
+        ))
+      )}
 
       <div
         ref={observerTarget}

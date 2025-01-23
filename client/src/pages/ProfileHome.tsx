@@ -1,5 +1,5 @@
 import { getUserPosts } from "@/api/postApi";
-import PostCard from "@/components/PostCard";
+import PostCard from "@/components/Post/PostCard";
 import Spinner from "@/components/Spinner";
 import { PostType } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -65,16 +65,14 @@ const ProfileHome = () => {
 
   return (
     <div className='relative'>
-      {data?.pages.map((page, pageIndex) => (
-        <div key={pageIndex}>
-          {page?.posts.map((post: PostType) => (
-            <PostCard
-              key={post.id}
-              postData={post}
-            />
-          ))}
-        </div>
-      ))}
+      {data?.pages.map((page) =>
+        page?.posts.map((post: PostType) => (
+          <PostCard
+            key={post.id + post.title}
+            postData={post}
+          />
+        ))
+      )}
 
       <div
         ref={observerTarget}

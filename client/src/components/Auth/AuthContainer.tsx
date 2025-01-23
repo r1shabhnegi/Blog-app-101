@@ -3,8 +3,8 @@ import SigninCard from "./SigninCard";
 import SignupCard from "./SignupCard";
 import { Button } from "../ui/button";
 import { FC, useEffect, useState } from "react";
-import { useGoogleLogin } from "@react-oauth/google";
-import { googleAuth } from "@/api/authApi";
+// import { useGoogleLogin } from "@react-oauth/google";
+// import { googleAuth } from "@/api/authApi";
 
 interface props {
   closeCardsModal: () => void;
@@ -31,35 +31,35 @@ const AuthCard: FC<props> = ({
     };
   }, []);
 
-  const responseGoogle = async (authResult: { code?: string }) => {
-    try {
-      if (authResult["code"]) {
-        const result = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/googleLogin}`,
-          {
-            credentials: "include",
-          }
-        );
-        console.log(result);
-        // const result = await googleAuth(authResult["code"]);
-        console.log(result);
-      }
-      console.log(authResult);
-    } catch (error) {
-      console.log("error while requesting google code: ", error);
-    }
-  };
+  // const responseGoogle = async (authResult: { code?: string }) => {
+  //   try {
+  //     if (authResult["code"]) {
+  //       const result = await fetch(
+  //         `${import.meta.env.VITE_BACKEND_URL}/googleLogin}`,
+  //         {
+  //           credentials: "include",
+  //         }
+  //       );
+  //       console.log(result);
+  //       // const result = await googleAuth(authResult["code"]);
+  //       console.log(result);
+  //     }
+  //     console.log(authResult);
+  //   } catch (error) {
+  //     console.log("error while requesting google code: ", error);
+  //   }
+  // };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: responseGoogle,
-    onError: (error) => {
-      console.log("Google login error: ", error);
-    },
+  //  const googleLogin = useGoogleLogin({
+  //     onSuccess: responseGoogle,
+  //     onError: (error) => {
+  //       console.log("Google login error: ", error);
+  //     },
 
-    flow: "auth-code",
-    ux_mode: "redirect",
-    redirect_uri: "http://localhost:5173/",
-  });
+  //     flow: "auth-code",
+  //     ux_mode: "redirect",
+  //     redirect_uri: "http://localhost:5173/",
+  //   }); c
 
   return (
     <div
@@ -84,7 +84,7 @@ const AuthCard: FC<props> = ({
           onClick={closeCardsModal}
         />
         <h1 className='text-2xl tracking-tight font-logo mb-14'>
-          {onSignin && !onSignup ? "Welcome back." : "Join readpool.ai"}
+          {onSignin && !onSignup ? "Welcome back." : "Join ReadPool.ai"}
         </h1>
 
         <div className='transition-opacity duration-200'>
@@ -92,7 +92,7 @@ const AuthCard: FC<props> = ({
           {onSignin ? <SigninCard /> : null}
         </div>
 
-        <div className='w-full mt-4 md:border-t-2 md:pt-8 md:mt-8 md:mb-8'>
+        {/* <div className='w-full mt-4 md:border-t-2 md:pt-8 md:mt-8 md:mb-8'>
           <Button
             className='w-full transition-colors bg-slate-400 hover:bg-slate-500'
             onClick={googleLogin}>
@@ -105,35 +105,36 @@ const AuthCard: FC<props> = ({
               <path d='M 15.003906 3 C 8.3749062 3 3 8.373 3 15 C 3 21.627 8.3749062 27 15.003906 27 C 25.013906 27 27.269078 17.707 26.330078 13 L 25 13 L 22.732422 13 L 15 13 L 15 17 L 22.738281 17 C 21.848702 20.448251 18.725955 23 15 23 C 10.582 23 7 19.418 7 15 C 7 10.582 10.582 7 15 7 C 17.009 7 18.839141 7.74575 20.244141 8.96875 L 23.085938 6.1289062 C 20.951937 4.1849063 18.116906 3 15.003906 3 z' />
             </svg>
           </Button>
-        </div>
+        </div> */}
 
         <Button
           className='w-full mt-4 mb-4 transition-colors bg-red-400 hover:bg-red-500 md:hidden'
           onClick={closeCardsModal}>
           Cancel
         </Button>
+        <div className='mt-4'>
+          {onSignin && !onSignup ? (
+            <p className='text-sm font-semibold tracking-wide text-gray-800'>
+              No account?
+              <span
+                className='ml-1 text-green-600 transition-colors cursor-pointer hover:text-green-700'
+                onClick={handleSignupBtn}>
+                Create one
+              </span>
+            </p>
+          ) : null}
 
-        {onSignin && !onSignup ? (
-          <p className='text-sm font-semibold tracking-wide text-gray-800'>
-            No account?
-            <span
-              className='ml-1 text-green-600 transition-colors cursor-pointer hover:text-green-700'
-              onClick={handleSignupBtn}>
-              Create one
-            </span>
-          </p>
-        ) : null}
-
-        {onSignup && !onSignin ? (
-          <p className='text-sm font-semibold tracking-wide text-gray-800'>
-            Already have an account?
-            <span
-              className='ml-1 text-green-600 transition-colors cursor-pointer hover:text-green-700'
-              onClick={handleSignInBtn}>
-              Sign in
-            </span>
-          </p>
-        ) : null}
+          {onSignup && !onSignin ? (
+            <p className='text-sm font-semibold tracking-wide text-gray-800'>
+              Already have an account?
+              <span
+                className='ml-1 text-green-600 transition-colors cursor-pointer hover:text-green-700'
+                onClick={handleSignInBtn}>
+                Sign in
+              </span>
+            </p>
+          ) : null}
+        </div>
       </div>
     </div>
   );
