@@ -2,12 +2,12 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { signup, signin } from "@/api/authApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppDispatch } from "@/redux/hook";
 import { setUserCredentials } from "@/redux/authSlice";
 import { LoaderCircle } from "lucide-react";
 import { SignupType } from "@/lib/types";
+import { signin, signup } from "@/api/authApi";
 
 const SignupCard = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +44,7 @@ const SignupCard = () => {
     },
   });
 
-  const onSubmit = handleSubmit(async (formData) => {
+  const onSubmit = handleSubmit(async (formData: SignupType) => {
     const response = await mutateSignup(formData);
     if (response) {
       await mutateSignin({

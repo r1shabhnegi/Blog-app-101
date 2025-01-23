@@ -5,9 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 import { setUserCredentials } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/hook";
 import { useToast } from "@/components/ui/use-toast";
-import { signin } from "@/api/authApi";
 import { LoaderCircle } from "lucide-react";
 import { SigninType } from "@/lib/types";
+import { signin } from "@/api/authApi";
 
 const SigninCard = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +31,7 @@ const SigninCard = () => {
     },
   });
 
-  const onSubmit = handleSubmit(async (formData) => {
+  const onSubmit = handleSubmit(async (formData: SigninType) => {
     await mutateSignin(formData);
   });
 
@@ -46,7 +46,7 @@ const SigninCard = () => {
           className='text-[#454545] border-gray-300 focus-visible:ring-gray-600'
           {...register("email", {
             pattern: {
-              value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+              value: /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/,
               message: "Invalid email address",
             },
           })}
