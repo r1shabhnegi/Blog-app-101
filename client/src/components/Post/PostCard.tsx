@@ -72,108 +72,120 @@ const PostCard = ({ postData }: { postData: PostType }) => {
   };
 
   return (
-    <div className='max-w-full mx-2 sm:mx-0 sm:w-[40rem] md:w-[46rem] lg:w-[43rem] xl:w-[45rem] flex flex-col justify-center gap-2 items-center md:mb-2 mt-4 sm:mt-6 md:mt-8 border-b border-[#e8e8e8]'>
+    // PostCard.tsx
+    <div className='max-w-full w-full px-4 sm:px-0 sm:max-w-[40rem] md:max-w-[46rem] lg:max-w-[43rem] xl:max-w-[45rem] flex flex-col gap-4 py-6 border-b border-gray-200'>
+      {/* Author Info Section */}
       <div className='flex items-center justify-between w-full'>
-        <div className='flex items-center justify-start w-full gap-1 mb-1'>
+        <div className='flex items-center gap-2'>
           <div
-            className='flex justify-center items-center gap-1.5 md:gap-2.5'
+            className='flex items-center gap-2 cursor-pointer'
             onClick={() => navigate(`/profile/${postData?.authorId}`)}>
-            <Avatar className='cursor-pointer size-6 md:size-7'>
+            <Avatar className='size-6 md:size-7'>
               <AvatarImage
                 src={postData?.authorAvatar}
-                alt=''
+                alt={authorName}
               />
               <AvatarFallback>
                 <img
                   src={profileDemo}
-                  alt=''
+                  alt={authorName}
                 />
               </AvatarFallback>
             </Avatar>
-            <p className='text-xs font-medium text-gray-800 cursor-pointer hover:underline md:text-sm'>
+            <p className='text-xs md:text-sm font-medium text-gray-800 hover:underline truncate max-w-[150px]'>
               {authorName}
             </p>
           </div>
-          <Dot className='text-gray-600 size-5' />
-          <p className='text-[10px] sm:text-xs font-medium text-gray-800'>
+          <Dot className='text-gray-600 size-4' />
+          <p className='text-[10px] sm:text-xs font-medium text-gray-800 truncate'>
             {createdAt}
           </p>
         </div>
-        <span className='md:hidden'>
+        <div className='md:hidden'>
           <PostCardDropdown
             authorId={postData.authorId}
             isMod={isMod}
             postId={postData.id}
           />
-        </span>
+        </div>
       </div>
 
+      {/* Content Section */}
       <div
-        className='flex items-center justify-between w-full cursor-pointer gap-7 md:flex-row md:gap-0'
+        className='flex gap-4 cursor-pointer group'
         onClick={handleClickCard}>
-        <div className='flex flex-col gap-2 text-left max-w-full md:w-[33rem] lg:w-[30rem]'>
-          <span className='font-bold tracking-tighter text-gray-900 line-clamp-3 text-md md:text-[1.4rem] leading-tight'>
+        <div className='flex-1 w-10 min-w-0'>
+          <h2 className='mb-2 text-base font-bold tracking-tight text-gray-900 md:text-xl line-clamp-3'>
             {postData.title}
-          </span>
-          <span
-            className='text-xs font-medium tracking-tighter text-gray-500 md:text-base line-clamp-2 htmlContentCard post-card-content'
-            dangerouslySetInnerHTML={{ __html: postData.content }}></span>
+          </h2>
+          <div
+            className='overflow-hidden text-xs text-gray-500 md:text-sm line-clamp-2'
+            dangerouslySetInnerHTML={{ __html: postData.content }}></div>
         </div>
+
         {postData.previewImage && (
-          <div className='aspect-video size-16 md:w-[8.5rem] md:h-[5rem] lg:w-[10rem] lg:h-[6.5rem] '>
+          <div className='flex-shrink-0 w-20 h-20 md:w-32 md:h-24 lg:w-40 lg:h-28'>
             <img
               src={postData.previewImage}
-              alt='preview image'
-              className='object-cover w-full h-full rounded'
+              alt='Preview'
+              className='object-cover w-full h-full rounded-lg'
             />
           </div>
         )}
       </div>
 
-      <div className='flex items-center justify-between w-full my-3 sm:my-4 md:my-6 lg:my-8 '>
-        <div className='flex items-center gap-2 cursor-pointer'>
-          <p
-            className='pb-1 px-2.5 pt-0.5 text-[10px] md:text-xs font-medium text-center text-gray-900 cursor-pointer bg-gray-200 rounded-full '
-            onClick={() => navigate(`/tag/${postData.tag}`)}>
-            {postData.tag}
-          </p>
-
-          <p
-            className='pb-1 px-2.5 pt-0.5 text-[10px] md:text-xs font-medium text-center text-gray-600'
-            onClick={handleClickCard}>
-            {postData.readTime} min read
-          </p>
+      {/* Footer Section */}
+      <div className='flex items-center justify-between gap-4'>
+        <div className='flex flex-wrap items-center gap-4'>
           <span
-            onClick={handleClickCard}
-            className='flex gap-4'>
-            <span className='flex items-center gap-1'>
-              <HandHeart className='text-gray-500 cursor-pointer size-4 md:size-5' />
-              <p className='text-gray-400'>{postStatsData?.totalClaps}</p>
-            </span>
-            <span className='flex items-center gap-1'>
-              <MessageCircle className='text-gray-500 cursor-pointer size-3 md:size-4' />
-              <p className='text-gray-400'>{postStatsData?.totalComments}</p>
-            </span>
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/tag/${postData.tag}`);
+            }}
+            className='px-3 py-1 text-xs font-medium text-gray-900 bg-gray-200 rounded-full hover:bg-gray-300'>
+            {postData.tag}
           </span>
+
+          <span className='text-xs text-gray-600'>
+            {postData.readTime} min read
+          </span>
+
+          <div className='flex items-center gap-4'>
+            <span className='flex items-center gap-1'>
+              <HandHeart className='text-gray-500 size-4' />
+              <span className='text-xs text-gray-500'>
+                {postStatsData?.totalClaps}
+              </span>
+            </span>
+            <span className='flex items-center gap-1'>
+              <MessageCircle className='text-gray-500 size-4' />
+              <span className='text-xs text-gray-500'>
+                {postStatsData?.totalComments}
+              </span>
+            </span>
+          </div>
         </div>
 
-        <div className='md:mr-[12rem] flex gap-5'>
+        <div className='flex items-center gap-4'>
           <button
-            className=''
-            onClick={handleBookmark}>
+            onClick={(e) => {
+              e.stopPropagation();
+              handleBookmark();
+            }}
+            className='hover:text-gray-700'>
             {isBookmark ? (
               <BookmarkCheck className='text-gray-500 fill-gray-500 size-4 md:size-5' />
             ) : (
               <Bookmark className='text-gray-500 size-4 md:size-5' />
             )}
           </button>
-          <span className='hidden md:block'>
+          <div className='hidden md:block'>
             <PostCardDropdown
               authorId={postData.authorId}
               isMod={isMod}
               postId={postData.id}
             />
-          </span>
+          </div>
         </div>
       </div>
     </div>
