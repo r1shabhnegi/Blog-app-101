@@ -28,10 +28,10 @@ const Feed = () => {
   }, [searchParams, currentTab]);
 
   return (
-    <>
+    <div className=''>
       <FeedTabs currentTab={currentTab} />
       <FeedPosts currentTab={currentTab} />
-    </>
+    </div>
   );
 };
 

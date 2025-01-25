@@ -103,5 +103,4 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
     </div>
   );
 };
-
 export default FeedPosts;
