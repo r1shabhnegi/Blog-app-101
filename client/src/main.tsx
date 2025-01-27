@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/_store.ts";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 // import { HashRouter } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster.tsx";
 
 const queryClient = new QueryClient({
@@ -18,12 +18,12 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
+  <HashRouter>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <App />
         <Toaster />
       </QueryClientProvider>
     </Provider>
-  </BrowserRouter>
+  </HashRouter>
 );

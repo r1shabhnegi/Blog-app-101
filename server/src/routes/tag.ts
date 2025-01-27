@@ -20,7 +20,6 @@ router.post("/follow-tag/:tagId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { tagId } = c.req.param();
-  console.log(`User ${userId} is trying to follow/unfollow tag ${tagId}`);
   try {
     const existingFollow = await prisma.tagFollow.findFirst({
       where: {
@@ -76,8 +75,6 @@ router.get("/check-follow/:tagId", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { tagId } = c.req.param();
-
-  console.log(`Checking follow status for user ${userId} and tag ${tagId}`);
 
   try {
     const existingFollow = await prisma.tagFollow.findFirst({

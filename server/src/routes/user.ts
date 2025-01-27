@@ -81,7 +81,6 @@ router.get("/home-sidebar", jwtVerify, async (c) => {
 
     return c.json({ posts, mostFollowedTags }, 200);
   } catch (error) {
-    console.error("Error fetching sidebar info:", error);
     c.status(500);
     return c.json({
       message: error instanceof Error ? error.message : "Something went wrong",
@@ -162,7 +161,6 @@ router.post("/delete", jwtVerify, async (c) => {
   const prisma = c.get("prisma");
   const userId = c.get("userId");
   const { password } = await c.req.json();
-  console.log(password);
   try {
     const foundUser = await prisma.user.findUnique({
       where: {
@@ -184,7 +182,6 @@ router.post("/delete", jwtVerify, async (c) => {
     }
 
     const isMatch = bcrypt.compareSync(password, foundUser.password);
-    console.log(isMatch);
     if (!isMatch) {
       c.status(403);
       return c.text("Wrong Password!");
@@ -232,7 +229,6 @@ router.get("/get-about", jwtVerify, async (c) => {
         about: true,
       },
     });
-    console.log(about);
     return c.json(about, 200);
   } catch (error) {
     c.status(500);

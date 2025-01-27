@@ -27,8 +27,6 @@ const FollowerCard = ({ followerData }: { followerData: GetFollowersType }) => {
     followUnFollowMutate(followerData?.id);
   };
 
-  console.log(followingStatus);
-
   const name = followerData.name
     ? `${followerData.name.charAt(0).toUpperCase()}${followerData.name.slice(
         1

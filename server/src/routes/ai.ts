@@ -97,7 +97,6 @@ router.post("/summary", async (c) => {
 
     const response = await chat.invoke(formattedChatPrompt);
 
-    console.log("response", response.content);
     return c.json({ text: response.content }, 200);
   } catch (error) {
     c.status(500);

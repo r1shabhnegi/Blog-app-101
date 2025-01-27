@@ -42,7 +42,7 @@ const ProfileLayout = () => {
     : "";
 
   const handleEditBtn = () => {
-    navigate("/settings", {
+    navigate(`/settings/${userId}`, {
       state: {
         isOpenEditCard: true,
       },

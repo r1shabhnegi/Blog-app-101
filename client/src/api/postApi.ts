@@ -144,7 +144,6 @@ export const getTagPagePosts = async (
   tagId: string | undefined,
   cursor: string | null
 ) => {
-  console.log(tagId);
   const response = await apiClient.query({
     url: `/post/tag-page/${tagId}?cursor=${cursor}`,
     method: "GET",

@@ -149,7 +149,6 @@ router.get("/following", jwtVerify, async (c) => {
   const userId = c.get("userId");
 
   const { cursor } = c.req.query();
-  console.log(cursor);
   const pageSize = 10;
 
   try {

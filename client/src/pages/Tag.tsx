@@ -55,7 +55,6 @@ const Tag = () => {
     initialPageParam: null,
     enabled: !!tagBasicDetail?.id,
   });
-  console.log(data);
   const { mutateAsync } = useMutation({
     mutationKey: ["followTag", tagBasicDetail?.id],
     mutationFn: followTag,

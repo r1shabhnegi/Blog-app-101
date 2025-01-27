@@ -24,9 +24,7 @@ const router = new Hono<{
 
 // google signin
 router.get("/googleLogin", async (c) => {
-  console.log("gooleLoginn");
   const prisma = c.get("prisma");
-  console.log("called");
   const oauth2client = c.get("oauth2client");
   try {
     const { code } = c.req.query();
@@ -70,7 +68,6 @@ router.get("/googleLogin", async (c) => {
         exp: expIn,
       };
     };
-    console.log("sds");
     const expireIn3h = Math.floor(Date.now() / 1000) + 60 * 180;
     const expireIn1d = Math.floor(Date.now() / 1000) + 60 * 1440;
 
@@ -105,7 +102,6 @@ router.post("/create", async (c) => {
 
   try {
     const inputData = await c.req.json();
-    console.log(inputData);
     if (!inputData) {
       return c.json({ message: "Credentials not valid" }, 403);
     }
@@ -118,7 +114,6 @@ router.post("/create", async (c) => {
         password: hashedPassword,
       },
     });
-    console.log(user);
     if (!user) {
       return c.json({ message: "Error registering user" }, 500);
     }
