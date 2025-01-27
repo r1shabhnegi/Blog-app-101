@@ -42,7 +42,7 @@ const Header = () => {
       <span className='flex items-center gap-3 sm:gap-10'>
         <Search
           className='text-gray-500 cursor-pointer sm:hidden hover:text-gray-800 size-5'
-          onClick={() => navigate(`/tag/${searchValue}`)}
+          onClick={() => navigate(`/tag-suggestions`)}
         />
         <span
           className='flex items-center gap-2 cursor-pointer'
