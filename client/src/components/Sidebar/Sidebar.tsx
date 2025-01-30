@@ -31,8 +31,8 @@ const SidebarLayout = () => {
 
   return (
     <div className='border-gray-200 lg:border-l-[0.01rem]'>
-      <div className='sticky top-0 w-[21rem] hidden lg:block md:w-[18rem] xl:w-[21rem]'>
-        <div className='pt-10 pl-7 xl:pl-10'>
+      <div className='sticky top-0 hidden md:block md:w-[14rem] lg:w-[18rem] xl:w-[21rem]'>
+        <div className='pt-12 md:pl-2 lg:pl-7 xl:pl-10'>
           {SidebarComponent &&
           sidebarConfig[SidebarComponent as keyof typeof sidebarConfig]
             ? React.createElement(

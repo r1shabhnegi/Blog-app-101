@@ -28,7 +28,7 @@ const Feed = () => {
   }, [searchParams, currentTab]);
 
   return (
-    <div className=''>
+    <div>
       <FeedTabs currentTab={currentTab} />
       <FeedPosts currentTab={currentTab} />
     </div>

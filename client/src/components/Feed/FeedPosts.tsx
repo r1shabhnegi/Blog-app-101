@@ -85,7 +85,7 @@ const FeedPosts: FC<props> = ({ currentTab }) => {
   }
 
   return (
-    <div className='relative'>
+    <div>
       {data?.pages.map((page) =>
         page?.posts.map((post: PostType) => (
           <PostCard
